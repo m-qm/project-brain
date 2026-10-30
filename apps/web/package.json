@@ -1,0 +1,28 @@
+{
+  "name": "@project-brain/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/copy-docs.mjs",
+    "prebuild": "node scripts/copy-docs.mjs",
+    "clean": "rm -rf .next",
+    "dev": "next dev --port 3000",
+    "prestart": "node scripts/copy-docs.mjs",
+    "start": "next start",
+    "build": "next build"
+  },
+  "dependencies": {
+    "@project-brain/core": "workspace:*",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
+    "typescript": "^5.7.2"
+  }
+}

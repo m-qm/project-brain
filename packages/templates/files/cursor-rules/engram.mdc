@@ -1,0 +1,31 @@
+---
+description: Engram MCP — cross-session memory alongside brain/
+alwaysApply: false
+---
+
+# Engram + this repo
+
+**Two layers (use both):**
+
+* **`brain/`** — git reviewed ground truth (facts, stories, open questions).
+* **Engram** — persistent memory across chats (decisions, bugfixes, session summaries).
+
+Project slug: `.engram/config.json` → `project` field.
+
+## Session start
+
+1. `mem_current_project`
+2. `mem_context`
+3. `mem_search` when the task may have history
+
+Read `brain/AGENTS.md` and `brain/facts/project.md` in the same session before coding.
+
+## During work
+
+After a durable discovery, decision, or bugfix: `mem_save` (use `topic_key` for evolving topics).
+
+## Session end
+
+`mem_session_summary` before you say the task is done.
+
+Do not treat Engram as a substitute for updating `brain/facts/` when the team should see the change in git.

@@ -1,0 +1,16 @@
+---
+description: Load Agent KBase facts before coding
+alwaysApply: true
+---
+
+# Agent KBase
+
+Before non trivial work on this repo:
+
+1. Read `brain/AGENTS.md`
+2. Read `brain/facts/project.md` and `brain/open-questions.md`
+3. Do not invent facts missing from `brain/facts/`
+
+**In parallel:** use Engram MCP (`mem_context`, `mem_search`) for cross-session continuity. Git truth stays in `brain/`; Engram holds decisions and session history. See `.cursor/rules/engram.mdc`.
+
+When you learn something durable for the **team**, update `brain/facts/` or `brain/stories/`. Use `mem_save` for **session** memory that may not belong in git yet.

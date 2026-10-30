@@ -1,0 +1,10 @@
+---
+description: Agent KBase monorepo conventions
+alwaysApply: true
+---
+
+# Agent KBase development
+
+* Shared logic lives in `packages/core`; browser safe exports in `@project-brain/core/browser`.
+* Templates are embedded via `packages/templates/scripts/embed-files.mjs` before build.
+* CLI must not duplicate pack logic; web wizard uses the same validation as `brain validate`.

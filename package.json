@@ -1,0 +1,19 @@
+{
+  "name": "project-brain",
+  "private": true,
+  "description": "Agent KBase — git native agent knowledge base (facts, stories, CLI, web wizard).",
+  "scripts": {
+    "build:packages": "pnpm --filter @project-brain/templates build && pnpm --filter @project-brain/core build && pnpm --filter @project-brain/cli build",
+    "build": "pnpm run build:packages && pnpm --filter @project-brain/web run build",
+    "predev": "pnpm run build:packages",
+    "dev": "pnpm --filter @project-brain/web run dev",
+    "dev:clean": "pnpm clean && pnpm dev",
+    "clean": "rm -rf apps/web/.next packages/templates/dist packages/core/dist packages/cli/dist",
+    "brain": "node ./packages/cli/dist/index.js",
+    "validate:example": "node ./packages/cli/dist/index.js validate --dir ./examples/fictional-saas-brain"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
