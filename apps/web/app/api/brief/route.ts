@@ -1,4 +1,4 @@
-import { buildBrief, validateBrainInputStrict, type BrainInput } from "@project-brain/core";
+import { buildBrief, validateBrainInputStrict, type BrainInput } from "@agentkbase/core";
 
 export async function POST(req: Request) {
   const input = (await req.json()) as BrainInput;

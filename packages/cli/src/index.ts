@@ -13,7 +13,7 @@ import {
   printSetupSummary,
   EMPTY_BRAIN_INPUT,
   type BrainInput,
-} from "@project-brain/core";
+} from "@agentkbase/core";
 
 const program = new Command();
 

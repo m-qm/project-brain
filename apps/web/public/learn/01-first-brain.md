@@ -1,8 +1,21 @@
 # First brain in 15 minutes
 
-Run commands from the **Agent KBase** OSS repository root (`project-brain` on GitHub; `package.json` name `project-brain`).
+Install the CLI from npm (recommended) or from the **Agent KBase** OSS repo (`project-brain` on GitHub).
 
-## Recommended: full agent KB in one command
+## From npm
+
+```bash
+npm install -g @agentkbase/cli
+brain setup -n "My Product" -d "What we do in one sentence" ~/path/to/your-repo
+brain validate --dir ~/path/to/your-repo
+brain brief --dir ~/path/to/your-repo
+```
+
+With a public site draft: `brain setup --url https://yourproduct.com -n "My Product" ~/path/to/your-repo`
+
+## From source (monorepo)
+
+### Full agent KB in one command
 
 Creates `brain/`, Cursor rules, and `.engram/config.json` in **your** project folder.
 

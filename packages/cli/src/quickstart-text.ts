@@ -3,13 +3,15 @@ export function quickstartText(): string {
 Agent KBase — quick start
 ===========================
 
-Run these from the project-brain repository (Agent KBase OSS; clone from GitHub).
+From npm (recommended):
+
+  npm install -g @agentkbase/cli
+  brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
+
+From source (project-brain repo on GitHub):
 
   pnpm install
   pnpm run build:packages
-
-Scaffold a full agent knowledge base into YOUR project:
-
   pnpm brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
 
 With a public website draft:

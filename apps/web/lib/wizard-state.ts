@@ -1,4 +1,4 @@
-import type { BrainInput } from "@project-brain/core";
+import type { BrainInput } from "@agentkbase/core";
 
 export const STORAGE_KEY = "project-brain-wizard-v1";
 export const SITE_URL_KEY = "project-brain-wizard-site-url";

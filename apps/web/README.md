@@ -17,7 +17,7 @@ pnpm dev
 1. Import the **monorepo** repository.
 2. Set **Root Directory** to `apps/web`.
 3. **Install Command:** `cd ../.. && pnpm install`
-4. **Build Command:** `cd ../.. && pnpm --filter @project-brain/templates build && pnpm --filter @project-brain/core build && pnpm --filter @project-brain/web build`
+4. **Build Command:** `cd ../.. && pnpm --filter @agentkbase/templates build && pnpm --filter @agentkbase/core build && pnpm --filter @agentkbase/web build`
 5. Deploy. Add the URL to GitHub repository **Website**.
 
 ## Hiring demo

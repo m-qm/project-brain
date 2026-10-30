@@ -1,5 +1,5 @@
 {
-  "name": "@project-brain/cli",
+  "name": "@agentkbase/cli",
   "version": "0.1.0",
   "description": "CLI to scaffold and validate agent knowledge bases (brain/)",
   "type": "module",
@@ -21,7 +21,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@project-brain/core": "workspace:*",
+    "@agentkbase/core": "workspace:*",
     "commander": "^12.1.0"
   },
   "devDependencies": {

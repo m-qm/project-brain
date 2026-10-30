@@ -16,7 +16,16 @@ Import skills from [SkillTree](https://skilltree.ai) or Cursor skills. Same pack
 
 ## Quick start (CLI)
 
-Run these from the **repository root** (`project-brain/`), not from `packages/cli`.
+**From npm** (after publish):
+
+```bash
+npm install -g @agentkbase/cli
+brain setup ./my-app -n "My Product" -d "One line mission"
+brain validate --dir ./my-app
+brain brief --dir ./my-app
+```
+
+**From source:** run these from the **repository root** (`project-brain/`), not from `packages/cli`.
 
 ```bash
 pnpm install

@@ -1,5 +1,5 @@
 {
-  "name": "@project-brain/core",
+  "name": "@agentkbase/core",
   "version": "0.1.0",
   "description": "Pack, validate, brief, and URL extract for Agent KBase",
   "type": "module",
@@ -29,7 +29,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@project-brain/templates": "workspace:*",
+    "@agentkbase/templates": "workspace:*",
     "jszip": "^3.10.1"
   },
   "devDependencies": {

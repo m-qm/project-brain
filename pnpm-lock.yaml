@@ -10,7 +10,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@project-brain/core':
+      '@agentkbase/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@vercel/analytics':
@@ -44,7 +44,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@project-brain/core':
+      '@agentkbase/core':
         specifier: workspace:*
         version: link:../core
       commander:
@@ -60,7 +60,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@project-brain/templates':
+      '@agentkbase/templates':
         specifier: workspace:*
         version: link:../templates
       jszip:

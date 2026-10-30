@@ -1,5 +1,5 @@
 {
-  "name": "@project-brain/templates",
+  "name": "@agentkbase/templates",
   "version": "0.1.0",
   "description": "Embedded markdown templates for Agent KBase brain packs",
   "type": "module",

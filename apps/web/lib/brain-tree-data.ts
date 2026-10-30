@@ -1,4 +1,4 @@
-import type { BrainInput } from "@project-brain/core/browser";
+import type { BrainInput } from "@agentkbase/core/browser";
 
 export type TreeLeaf = { id: string; label: string };
 

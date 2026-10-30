@@ -1,6 +1,6 @@
 import { access, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { renderTemplate } from "@project-brain/templates";
+import { renderTemplate } from "@agentkbase/templates";
 import type { BrainInput } from "./types.js";
 import { slugify } from "./slug.js";
 import { writeBrainToDisk } from "./disk.js";

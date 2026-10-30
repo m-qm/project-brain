@@ -1,4 +1,4 @@
-import { renderTemplate } from "@project-brain/templates";
+import { renderTemplate } from "@agentkbase/templates";
 import type { BrainInput, PackFile } from "./types.js";
 import { isServiceBrain } from "./service-detect.js";
 import { slugify } from "./slug.js";

@@ -3,7 +3,7 @@ import {
   buildZipBuffer,
   validateBrainInputStrict,
   type BrainInput,
-} from "@project-brain/core";
+} from "@agentkbase/core";
 
 export async function POST(req: Request) {
   let input: BrainInput;

@@ -13,5 +13,5 @@ I open sourced Agent KBase (project-brain on GitHub): a validated local knowledg
 ## Interview talking points
 
 * Export gated by `validateBrainInputStrict` (eval mindset)
-* Shared `@project-brain/core` for CLI and web zip parity
+* Shared `@agentkbase/core` for CLI and web zip parity
 * Engram optional doc for cross session memory

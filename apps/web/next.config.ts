@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import { join } from "node:path";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@project-brain/core", "@project-brain/templates"],
+  transpilePackages: ["@agentkbase/core", "@agentkbase/templates"],
   outputFileTracingRoot: join(__dirname, "../.."),
 };
 

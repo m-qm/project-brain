@@ -3,7 +3,7 @@
 import { track } from "@vercel/analytics";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import type { BrainInput } from "@project-brain/core/browser";
+import type { BrainInput } from "@agentkbase/core/browser";
 import {
   buildBrief,
   buildPackFiles,
@@ -11,7 +11,7 @@ import {
   slugify,
   validateBrainInputStrict,
   type WebsiteExtract,
-} from "@project-brain/core/browser";
+} from "@agentkbase/core/browser";
 import { SiteNav } from "../components/SiteNav";
 import { WizardStepper } from "../components/WizardStepper";
 import { canExtractSiteUrl, normalizeSiteUrl } from "@/lib/normalize-site-url";

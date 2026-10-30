@@ -1,4 +1,4 @@
-import { extractBrainFromWebsiteUrl } from "@project-brain/core";
+import { extractBrainFromWebsiteUrl } from "@agentkbase/core";
 
 export async function POST(req: Request) {
   let body: { url?: string };
