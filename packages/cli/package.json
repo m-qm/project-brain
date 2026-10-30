@@ -1,8 +1,18 @@
 {
   "name": "@project-brain/cli",
   "version": "0.1.0",
-  "private": true,
+  "description": "CLI to scaffold and validate agent knowledge bases (brain/)",
   "type": "module",
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-qm/project-brain.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
   "bin": {
     "brain": "./dist/index.js"
   },

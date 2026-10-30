@@ -1,8 +1,18 @@
 {
   "name": "@project-brain/templates",
   "version": "0.1.0",
-  "private": true,
+  "description": "Embedded markdown templates for Agent KBase brain packs",
   "type": "module",
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-qm/project-brain.git",
+    "directory": "packages/templates"
+  },
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
