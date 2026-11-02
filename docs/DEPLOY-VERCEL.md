@@ -9,6 +9,8 @@
 
 Link and deploy from the **repository root** (not only `apps/web`), so `packages/core` and `packages/templates` are included.
 
+**Important:** Vercel **Root Directory** is `apps/web`. Put `vercel.json` only in [`apps/web/vercel.json`](../apps/web/vercel.json), not the repo root. A root `vercel.json` makes Git deploys run `pnpm install` in the wrong context and fails.
+
 ```bash
 cd project-brain
 vercel link    # project: agentkbase
@@ -48,6 +50,30 @@ Domains attached to project **agentkbase**: `agentkbase.com`, `www.agentkbase.co
 
 Dashboard: [Project domains](https://vercel.com/mqms-projects/agentkbase/settings/domains)
 
+## LLM on the public wizard (do **not** on agentkbase.com)
+
+**Do not** put `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` on the public Vercel project without authentication. Anyone can `POST /api/extract-url` and `/api/fill-gaps` and burn your quota.
+
+Default production behavior:
+
+* Wizard **multipage heuristic** extract (no key).
+* **No** server LLM unless you explicitly opt in.
+
+The web API only calls LLM providers when **`AGENTKBASE_ALLOW_SERVER_LLM=true`**. Leave it unset on agentkbase.com.
+
+Vibe coders who want LLM use **`@agentkbase/cli`** locally with their own key (`brain extract-url --deep`, `brain fill-gaps`).
+
+### Private / self-hosted deploy only
+
+If you run a **trusted** instance (team login, rate limits, or internal VPN):
+
+1. `AGENTKBASE_ALLOW_SERVER_LLM=true`
+2. `NEXT_PUBLIC_AGENTKBASE_HOSTED_LLM=true` (shows deep scan + gap LLM in the wizard UI)
+3. `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY` fallback)
+4. Optional: `ANTHROPIC_EXTRACT_MODEL` (default `claude-3-5-haiku-latest`)
+
+Local dev: copy `apps/web/.env.example` → `.env.local` and set the flags above only when testing LLM routes.
+
 ## Analytics
 
 [Vercel Web Analytics](https://vercel.com/docs/analytics) is enabled on project **agentkbase**. The app includes `@vercel/analytics` in `app/layout.tsx` (page views, no cookies banner required for the default setup).
@@ -55,5 +81,12 @@ Dashboard: [Project domains](https://vercel.com/mqms-projects/agentkbase/setting
 View traffic: [Vercel → agentkbase → Analytics](https://vercel.com/mqms-projects/agentkbase/analytics).
 
 Custom events: `wizard_export`, `wizard_extract`, `learn_doc` (props: `slug`, optional `section`; hub uses `slug: index`).
+
+Company Brain fake door: `company_brain_view`, `company_brain_waitlist`, `company_brain_setup_call` (props: `source`, optional `stored`).
+
+Optional env for `/company-brain`:
+
+* `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup
+* `NEXT_PUBLIC_SETUP_CALL_URL` — Cal.com or mailto for “Book setup call (DFY)”
 
 Speed Insights is a separate paid add on; enable only if you want Core Web Vitals in the dashboard.
