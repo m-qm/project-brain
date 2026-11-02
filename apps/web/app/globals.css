@@ -1269,6 +1269,122 @@ pre.preview {
   }
 }
 
+.company-brain-card {
+  margin-bottom: 1rem;
+}
+
+.company-brain-card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.company-brain-list {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.company-brain-tier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .company-brain-tier-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.company-brain-tier {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg-3);
+}
+
+.company-brain-tier-name {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: var(--ivory);
+  font-size: 0.9rem;
+}
+
+.company-brain-tier-price {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.company-brain-tier-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.company-brain-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.company-brain-form-label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.company-brain-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.company-brain-form-row input {
+  flex: 1 1 12rem;
+  margin-bottom: 0;
+}
+
+.company-brain-form-row .btn {
+  flex: 0 0 auto;
+}
+
+.company-brain-form-msg {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.company-brain-form-msg--error {
+  color: color-mix(in srgb, #c44 85%, var(--ink-2));
+}
+
+.company-brain-setup-call {
+  align-self: flex-start;
+}
+
+.company-brain-banner {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 6%, var(--card-muted));
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.company-brain-banner a {
+  font-weight: 600;
+  color: var(--ivory);
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   padding: 2rem 1.5rem;

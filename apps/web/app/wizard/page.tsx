@@ -143,6 +143,10 @@ export default function WizardPage() {
           Step by step ground truth for your repo. Export is blocked until required
           fields pass validation.
         </p>
+        <p className="company-brain-banner">
+          Need marketing, sales, ops, and fulfillment in one validated pack?{" "}
+          <Link href="/company-brain">Company Brain Pack</Link> (waitlist + done-for-you from SkillTree).
+        </p>
         <WizardStepper steps={STEPS} current={step} onStepChange={setStep} />
 
         {step === 0 && (

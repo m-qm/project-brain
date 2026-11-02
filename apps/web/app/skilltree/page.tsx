@@ -30,6 +30,16 @@ export default function SkillTreePage() {
             </Link>
           </p>
         </div>
+        <div className="card company-brain-card" style={{ marginTop: "1rem" }}>
+          <h2 className="company-brain-card-title">After a SkillTree audit</h2>
+          <p className="field-hint" style={{ marginBottom: "1rem" }}>
+            Turn findings into a multi-department brain in git: marketing, sales, ops, fulfillment, and
+            work-logs. Join the waitlist or book a done-for-you setup.
+          </p>
+          <Link className="btn" href="/company-brain">
+            Company Brain Pack →
+          </Link>
+        </div>
       </main>
     </div>
   );

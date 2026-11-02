@@ -89,4 +89,15 @@ Optional env for `/company-brain`:
 * `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup
 * `NEXT_PUBLIC_SETUP_CALL_URL` — Cal.com or mailto for “Book setup call (DFY)”
 
+### Waitlist → Google Sheet (Make.com)
+
+1. [Make.com](https://www.make.com) → **Create scenario** → **Webhooks → Custom webhook** → copy the URL.
+2. Add module **Google Sheets → Add a row** (connect Google, pick a spreadsheet, create columns `email`, `source`, `product`, `at`).
+3. Map webhook body fields to those columns (JSON keys match the POST body from `/api/waitlist`).
+4. Optional: add **Slack → Create a message** on the same webhook for alerts.
+5. Vercel → **agentkbase** → Settings → Environment Variables → `WAITLIST_WEBHOOK_URL` = webhook URL (Production). **Redeploy** after saving.
+6. Test at [agentkbase.com/company-brain](https://agentkbase.com/company-brain). Success copy should say you are on the list (`stored: true`), not “webhook not configured”.
+
+Without `WAITLIST_WEBHOOK_URL`, signups only fire Vercel Analytics events (`company_brain_waitlist`); no email list is stored.
+
 Speed Insights is a separate paid add on; enable only if you want Core Web Vitals in the dashboard.
