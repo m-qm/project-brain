@@ -9,7 +9,7 @@
 
 Link and deploy from the **repository root** (not only `apps/web`), so `packages/core` and `packages/templates` are included.
 
-**Important:** Vercel **Root Directory** is `apps/web`. Put `vercel.json` only in [`apps/web/vercel.json`](../apps/web/vercel.json), not the repo root. A root `vercel.json` makes Git deploys run `pnpm install` in the wrong context and fails.
+**Important:** Vercel **Root Directory** is `apps/web`. Put `vercel.json` only in [`apps/web/vercel.json`](../apps/web/vercel.json), not the repo root. Use `pnpm install` and `pnpm -w run build` (workspace root), not `cd ../..` (that can escape to `/` on Vercel).
 
 ```bash
 cd project-brain
