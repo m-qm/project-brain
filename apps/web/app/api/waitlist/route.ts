@@ -1,4 +1,4 @@
-import { postWaitlistWebhook, sendWaitlistEmail, type WaitlistPayload } from "../../../lib/waitlist-notify";
+import { sendWaitlistEmail, type WaitlistPayload } from "../../../lib/waitlist-notify";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,34 +24,14 @@ export async function POST(req: Request) {
     at: new Date().toISOString(),
   };
 
-  const webhook = process.env.WAITLIST_WEBHOOK_URL?.trim();
-  const apiKey = process.env.WAITLIST_WEBHOOK_API_KEY?.trim();
-
-  let storedVia: "webhook" | "email" | null = null;
-
-  if (webhook) {
-    const result = await postWaitlistWebhook(webhook, apiKey, payload);
-    if (result.ok) {
-      storedVia = "webhook";
-    } else {
-      console.error("[waitlist] webhook failed", result.status, result.body.slice(0, 500));
-    }
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    return Response.json({ error: "Waitlist is not configured on this server." }, { status: 503 });
   }
 
-  if (!storedVia) {
-    const emailed = await sendWaitlistEmail(payload);
-    if (emailed) {
-      storedVia = "email";
-    }
+  const result = await sendWaitlistEmail(payload);
+  if (!result.ok) {
+    return Response.json({ error: "Could not save your signup. Try again or email hello@agentkbase.com." }, { status: 502 });
   }
 
-  if (!storedVia && webhook) {
-    return Response.json({ error: "Waitlist service failed." }, { status: 502 });
-  }
-
-  return Response.json({
-    ok: true,
-    stored: Boolean(storedVia),
-    via: storedVia ?? undefined,
-  });
+  return Response.json({ ok: true, stored: true });
 }

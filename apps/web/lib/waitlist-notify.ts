@@ -5,37 +5,16 @@ export type WaitlistPayload = {
   at: string;
 };
 
-export async function postWaitlistWebhook(
-  webhook: string,
-  apiKey: string | undefined,
+export async function sendWaitlistEmail(
   payload: WaitlistPayload,
-): Promise<{ ok: boolean; status: number; body: string }> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (apiKey) {
-    headers["x-make-apikey"] = apiKey;
-  }
-  try {
-    const res = await fetch(webhook, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
-    const body = await res.text();
-    return { ok: res.ok, status: res.status, body };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "fetch failed";
-    return { ok: false, status: 0, body: message };
-  }
-}
-
-export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<boolean> {
+): Promise<{ ok: boolean; detail?: string }> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
-  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@dualperspective.digital";
+  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "mireiaquerol@gmail.com";
   const from =
-    process.env.RESEND_FROM?.trim() || "Agent KBase <onboarding@resend.dev>";
+    process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
 
   if (!resendKey) {
-    return false;
+    return { ok: false, detail: "RESEND_API_KEY not configured" };
   }
 
   const text = [
@@ -59,10 +38,18 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<boole
         to: [notifyTo],
         subject: `Waitlist: ${payload.email}`,
         text,
+        reply_to: payload.email,
       }),
     });
-    return res.ok;
-  } catch {
-    return false;
+    if (res.ok) {
+      return { ok: true };
+    }
+    const body = await res.text();
+    console.error("[waitlist] resend failed", res.status, body.slice(0, 500));
+    return { ok: false, detail: body.slice(0, 200) };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "resend fetch failed";
+    console.error("[waitlist] resend error", message);
+    return { ok: false, detail: message };
   }
 }
