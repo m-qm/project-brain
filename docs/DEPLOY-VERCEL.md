@@ -87,6 +87,7 @@ Company Brain fake door: `company_brain_view`, `company_brain_waitlist`, `compan
 Optional env for `/company-brain`:
 
 * `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup
+* `WAITLIST_WEBHOOK_API_KEY` — optional; sent as `x-make-apikey` when Make webhook API key auth is enabled
 * `NEXT_PUBLIC_SETUP_CALL_URL` — Cal.com or mailto for “Book setup call (DFY)”
 
 ### Waitlist → Google Sheet (Make.com)

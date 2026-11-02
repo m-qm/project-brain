@@ -17,10 +17,15 @@ export async function POST(req: Request) {
 
   const webhook = process.env.WAITLIST_WEBHOOK_URL?.trim();
   if (webhook) {
+    const apiKey = process.env.WAITLIST_WEBHOOK_API_KEY?.trim();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (apiKey) {
+      headers["x-make-apikey"] = apiKey;
+    }
     try {
       const res = await fetch(webhook, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           email,
           source,
