@@ -29,7 +29,7 @@ export function CompanyBrainWaitlist({ source }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source }),
       });
-      const data = (await res.json()) as { error?: string; stored?: boolean };
+      const data = (await res.json()) as { error?: string; stored?: boolean; via?: string };
       if (!res.ok) {
         setStatus("error");
         setMessage(data.error ?? "Something went wrong.");

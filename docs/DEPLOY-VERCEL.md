@@ -86,8 +86,10 @@ Company Brain fake door: `company_brain_view`, `company_brain_waitlist`, `compan
 
 Optional env for `/company-brain`:
 
-* `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup
+* `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup (Make scenario must be **ON** or Make returns 410)
 * `WAITLIST_WEBHOOK_API_KEY` — optional; sent as `x-make-apikey` when Make webhook API key auth is enabled
+* `RESEND_API_KEY` + `WAITLIST_NOTIFY_EMAIL` — fallback: emails you each signup if the webhook fails or is unset
+* `RESEND_FROM` — optional verified sender for Resend (defaults to `onboarding@resend.dev`)
 * `NEXT_PUBLIC_SETUP_CALL_URL` — Calendly/Cal.com URL for “Book setup call (DFY)” (production: `https://calendly.com/mireiaquerol/15min`)
 
 ### Waitlist → Google Sheet (Make.com)
