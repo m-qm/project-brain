@@ -7,10 +7,10 @@ alwaysApply: true
 
 Before non trivial work on this repo:
 
-1. Read `brain/AGENTS.md`
-2. Read `brain/facts/project.md` and `brain/open-questions.md`
-3. Do not invent facts missing from `brain/facts/`
+1. If the Agent KBase MCP is enabled, call `brain_brief`. Use `brain_read`, `brain_search`, and `brain_open_questions` when you need a specific fact. Call `brain_validate` before you rely on a broken or partial brain.
+2. If that MCP is not available, read `brain/AGENTS.md`, `brain/facts/project.md`, and `brain/open-questions.md`.
+3. Do not invent facts missing from `brain/facts/`.
 
 **In parallel:** use Engram MCP (`mem_context`, `mem_search`) for cross-session continuity. Git truth stays in `brain/`; Engram holds decisions and session history. See `.cursor/rules/engram.mdc`.
 
-When you learn something durable for the **team**, update `brain/facts/` or `brain/stories/`. Use `mem_save` for **session** memory that may not belong in git yet.
+When you learn something durable for the **team**, update `brain/facts/` or `brain/stories/` in git. The Agent KBase MCP is read-only. Use `mem_save` for **session** memory that may not belong in git yet.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="256" viewBox="0 0 1024 256">
+  <g fill="#161618">
+    <rect x="222" y="53" width="150" height="150" rx="34"/>
+  </g>
+  <g fill="#FFFFFF">
+    <circle cx="297" cy="128" r="8"/>
+    <circle cx="297" cy="94" r="5.5"/>
+    <circle cx="321" cy="104" r="5.5"/>
+    <circle cx="331" cy="128" r="5.5"/>
+    <circle cx="321" cy="152" r="5.5"/>
+    <circle cx="297" cy="162" r="5.5"/>
+    <circle cx="273" cy="152" r="5.5"/>
+    <circle cx="263" cy="128" r="5.5"/>
+    <circle cx="273" cy="104" r="5.5"/>
+  </g>
+  <text x="402" y="157" fill="#161618" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="700" letter-spacing="4">AGENT KBASE</text>
+</svg>

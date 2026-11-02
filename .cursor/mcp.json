@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agentkbase": {
+      "command": "node",
+      "args": ["packages/mcp/dist/index.js"],
+      "env": {
+        "BRAIN_DIR": "examples/fictional-saas-brain"
+      }
+    }
+  }
+}

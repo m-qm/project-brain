@@ -17,12 +17,22 @@ Packages (order matters via workspace deps):
 
 * `@agentkbase/templates`
 * `@agentkbase/core`
+* `@agentkbase/mcp` (bin: `agentkbase-mcp`)
 * `@agentkbase/cli` (bin: `brain`)
 
 Verify:
 
 ```bash
 npm view @agentkbase/cli version
+npm view @agentkbase/mcp version
 npm install -g @agentkbase/cli
 brain quickstart
 ```
+
+Public pages:
+
+* https://www.npmjs.com/package/@agentkbase/cli
+* https://www.npmjs.com/package/@agentkbase/mcp
+* https://www.npmjs.com/org/agentkbase
+
+After publish, the README npm badge and site install snippet point at the live package.

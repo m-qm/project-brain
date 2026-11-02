@@ -12,6 +12,15 @@ export {
   type SetupResult,
 } from "./setup.js";
 export { validateBrainDir } from "./validate-disk.js";
+export {
+  BrainPathError,
+  listBrainFiles,
+  normalizeBrainRel,
+  readBrainFile,
+  searchBrainFiles,
+  type BrainSearchHit,
+  type BrainSearchResult,
+} from "./brain-files.js";
 export { buildBriefFromDir } from "./brief-from-dir.js";
 export { validatePublicHttpUrl } from "./url-security.js";
 export {
@@ -21,4 +30,8 @@ export {
 } from "./extract-from-html.js";
 export { fetchPublicWebsiteHtml } from "./fetch-public-html.js";
 export { extractBrainFromWebsiteUrl } from "./extract-from-url.js";
+export type { ExtractScanMode, ExtractUrlOptions } from "./extract-bounds.js";
+export type { ExtractScanLogEntry } from "./extract-scan-log.js";
+export { suggestGapFills, type GapFillResult, type GapSuggestion } from "./gap-fill-suggest.js";
+export { loadBrainInputFromDir } from "./load-brain-input-from-dir.js";
 export { EMPTY_BRAIN_INPUT } from "./defaults.js";

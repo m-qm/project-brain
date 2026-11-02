@@ -1,0 +1,40 @@
+{
+  "name": "@agentkbase/mcp",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for an Agent KBase brain/ directory",
+  "homepage": "https://agentkbase.com",
+  "bugs": "https://github.com/m-qm/project-brain/issues",
+  "keywords": ["agent", "cursor", "mcp", "knowledge-base", "brain"],
+  "type": "module",
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-qm/project-brain.git",
+    "directory": "packages/mcp"
+  },
+  "license": "MIT",
+  "bin": {
+    "agentkbase-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "start": "node dist/index.js",
+    "test": "pnpm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@agentkbase/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

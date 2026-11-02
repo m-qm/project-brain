@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/site";
 import { LearnDocAnalytics } from "../components/LearnDocAnalytics";
 import { SiteNav } from "../components/SiteNav";
 import { LEARN_DOCS, LEARN_SECTIONS } from "./learn-docs";
+
+export const metadata: Metadata = pageMeta(
+  "/learn",
+  "Learn Agent KBase",
+  "Short guides for Agent KBase: ground truth in git, Engram for continuity, SkillTree for skills.",
+);
 
 export default function LearnIndexPage() {
   return (

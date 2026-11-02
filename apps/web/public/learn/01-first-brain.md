@@ -34,7 +34,7 @@ pnpm brain setup \
 ### With a public site draft
 
 ```bash
-pnpm brain setup \
+brain setup \
   --url https://yourproduct.com \
   -n "My Product" \
   ~/path/to/your-repo
@@ -45,9 +45,11 @@ Review extracted facts in `brain/facts/project.md` before you trust them.
 ### After setup
 
 ```bash
-pnpm brain validate --dir ~/path/to/your-repo
-pnpm brain brief --dir ~/path/to/your-repo
+brain validate --dir ~/path/to/your-repo
+brain brief --dir ~/path/to/your-repo
 ```
+
+(From source: prefix commands with `pnpm brain` instead of `brain`.)
 
 Paste the brief into Cursor chat, or reference `@brain/` in the repo you opened.
 
@@ -56,7 +58,7 @@ Enable **Engram MCP** in Cursor once so agents use memory alongside `brain/`.
 ## Legacy: brain files only
 
 ```bash
-pnpm brain init ./my-app
+brain init ./my-app
 ```
 
 Prefer `setup` so agents load Engram rules in parallel.
@@ -70,7 +72,7 @@ Open the wizard in the browser, export a zip, unzip at your repo root. Prefer CL
 If markdown in the browser is hard to read, run:
 
 ```bash
-pnpm brain quickstart
+brain quickstart
 ```
 
 Plain text steps for the terminal (no formatting).

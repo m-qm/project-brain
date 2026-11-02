@@ -1,7 +1,10 @@
 {
   "name": "@agentkbase/core",
-  "version": "0.1.0",
-  "description": "Pack, validate, brief, and URL extract for Agent KBase",
+  "version": "0.1.1",
+  "description": "Pack, validate, brief, and URL extract for Agent KBase (@agentkbase/cli)",
+  "homepage": "https://agentkbase.com",
+  "bugs": "https://github.com/m-qm/project-brain/issues",
+  "keywords": ["agent", "cursor", "knowledge-base", "validate", "brain"],
   "type": "module",
   "files": ["dist"],
   "publishConfig": {
@@ -26,7 +29,9 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "test": "pnpm run build && node --test test/*.test.mjs"
   },
   "dependencies": {
     "@agentkbase/templates": "workspace:*",

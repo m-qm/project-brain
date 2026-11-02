@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-docs.mjs",
     "prebuild": "node scripts/copy-docs.mjs",
     "clean": "rm -rf .next",
     "dev": "next dev --port 3000",
+    "dev:clean": "pnpm run clean && next dev --port 3000",
+    "dev:resync": "node scripts/dev-resync-core.mjs",
     "prestart": "node scripts/copy-docs.mjs",
     "start": "next start",
     "build": "next build"

@@ -12,7 +12,10 @@ import {
   setupAgentKnowledgeBase,
   printSetupSummary,
   EMPTY_BRAIN_INPUT,
+  loadBrainInputFromDir,
+  suggestGapFills,
   type BrainInput,
+  type ExtractScanMode,
 } from "@agentkbase/core";
 
 const program = new Command();
@@ -21,6 +24,12 @@ program
   .name("brain")
   .description("Scaffold agent knowledge base (brain + Engram + Cursor rules)")
   .version("0.1.0");
+
+function resolveExtractMode(opts: { multipage?: boolean; deep?: boolean }): ExtractScanMode {
+  if (opts.deep) return "deep";
+  if (opts.multipage) return "multipage";
+  return "single";
+}
 
 function defaultInput(name: string, description?: string): BrainInput {
   return {
@@ -43,6 +52,8 @@ program
   .option("-n, --name <name>", "Project name")
   .option("-d, --description <text>", "Mission / one line description")
   .option("--url <url>", "Prefill from public website (calls extract engine)")
+  .option("--multipage", "With --url, scan extra same-site pages (heuristic)")
+  .option("--deep", "With --url, LLM picks extra pages (falls back to heuristic)")
   .option("--engram-project <slug>", "Engram project slug (default: slug from name)")
   .option("--no-engram", "Skip .engram/config.json and engram.mdc rule")
   .option("--force-engram", "Overwrite Engram config and rule if present")
@@ -53,6 +64,8 @@ program
         name?: string;
         description?: string;
         url?: string;
+        multipage?: boolean;
+        deep?: boolean;
         engramProject?: string;
         engram?: boolean;
         forceEngram?: boolean;
@@ -62,7 +75,9 @@ program
       let input = defaultInput(opts.name ?? "my-project", opts.description);
 
       if (opts.url?.trim()) {
-        const extract = await extractBrainFromWebsiteUrl(opts.url.trim());
+        const extract = await extractBrainFromWebsiteUrl(opts.url.trim(), {
+          mode: resolveExtractMode(opts),
+        });
         input = mergeExtractIntoBrain(input, extract, "replace") as BrainInput;
         for (const w of extract.warnings) console.log(`NOTE: ${w}`);
       }
@@ -130,14 +145,18 @@ program
   .description("Extract suggested brain fields from a public website")
   .argument("<url>", "https:// marketing or docs page")
   .option("--json", "Print full extract JSON")
+  .option("--multipage", "Scan extra same-site pages (heuristic)")
+  .option("--deep", "LLM picks extra pages (requires API key; falls back to heuristic)")
   .option("--init <dir>", "Write full agent KB (brain setup) using extracted fields")
   .option("--no-engram", "With --init, skip Engram files")
   .action(
     async (
       url: string,
-      opts: { json?: boolean; init?: string; engram?: boolean },
+      opts: { json?: boolean; multipage?: boolean; deep?: boolean; init?: string; engram?: boolean },
     ) => {
-      const extract = await extractBrainFromWebsiteUrl(url);
+      const extract = await extractBrainFromWebsiteUrl(url, {
+        mode: resolveExtractMode(opts),
+      });
       if (opts.init) {
         const input = mergeExtractIntoBrain(EMPTY_BRAIN_INPUT, extract, "replace") as BrainInput;
         const target = resolve(opts.init);
@@ -153,6 +172,27 @@ program
       for (const w of extract.warnings) console.log(`\nNOTE: ${w}`);
     },
   );
+
+program
+  .command("fill-gaps")
+  .description("Suggest draft answers for open questions (does not write brain/ until you edit)")
+  .option("--dir <path>", "Load draft from brain/ on disk", ".")
+  .option("--json", "Print GapFillResult JSON")
+  .action(async (opts: { dir: string; json?: boolean }) => {
+    const input = await loadBrainInputFromDir(resolve(opts.dir));
+    const result = await suggestGapFills(input);
+    if (opts.json) {
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      for (const s of result.suggestions) {
+        console.log(`Q: ${s.question}`);
+        console.log(`A (${s.source}): ${s.draftAnswer}`);
+        console.log("");
+      }
+      for (const w of result.warnings) console.log(`NOTE: ${w}`);
+    }
+    console.log("\nEdit brain/open-questions.md or re-run wizard, then: brain validate --dir .");
+  });
 
 program
   .command("quickstart")

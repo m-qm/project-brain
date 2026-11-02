@@ -3,6 +3,8 @@ import type { PageSignals } from "./extract-page-signals.js";
 
 const EXCERPT_MAX = 4500;
 
+export type ExtractLlmProvider = "anthropic" | "openai";
+
 function buildExcerpt(signals: PageSignals): string {
   const parts = [
     `URL: ${signals.sourceUrl}`,
@@ -20,15 +22,9 @@ function buildExcerpt(signals: PageSignals): string {
   return parts.filter(Boolean).join("\n\n").slice(0, EXCERPT_MAX);
 }
 
-export async function enrichExtractWithOpenAI(
-  signals: PageSignals,
-  heuristic: Partial<BrainInput>,
-): Promise<Partial<BrainInput> | null> {
-  const key = process.env.OPENAI_API_KEY?.trim();
-  if (!key) return null;
-
+function buildExtractPrompt(signals: PageSignals, heuristic: Partial<BrainInput>): string {
   const lang = signals.lang === "es" ? "Spanish" : "English";
-  const prompt = `You analyze a public marketing website for an "agent knowledge base" (brain/) used by AI coding agents.
+  return `You analyze a public marketing website for an "agent knowledge base" (brain/) used by AI coding agents.
 Write in ${lang} for user-facing fields.
 
 Return ONLY valid JSON with these keys:
@@ -48,6 +44,74 @@ ${buildExcerpt(signals)}
 
 Heuristic draft (improve, do not copy meta blindly):
 ${JSON.stringify(heuristic, null, 0)}`;
+}
+
+function parseBrainJson(content: string): Partial<BrainInput> | null {
+  const stripped = content
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+  try {
+    const parsed = JSON.parse(stripped) as Partial<BrainInput>;
+    if (!parsed.projectName || !parsed.projectDescription) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+export function hasExtractLlmKey(): boolean {
+  return Boolean(
+    process.env.ANTHROPIC_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim(),
+  );
+}
+
+export async function enrichExtractWithAnthropic(
+  signals: PageSignals,
+  heuristic: Partial<BrainInput>,
+): Promise<Partial<BrainInput> | null> {
+  const key = process.env.ANTHROPIC_API_KEY?.trim();
+  if (!key) return null;
+
+  const prompt = buildExtractPrompt(signals, heuristic);
+  const model = process.env.ANTHROPIC_EXTRACT_MODEL?.trim() ?? "claude-3-5-haiku-latest";
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 4096,
+      temperature: 0.2,
+      system:
+        "You output strict JSON only, no markdown fences. You synthesize business positioning for agent context.",
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  if (!res.ok) return null;
+
+  const data = (await res.json()) as {
+    content?: { type: string; text?: string }[];
+  };
+  const text = data.content?.find((b) => b.type === "text")?.text;
+  if (!text) return null;
+  return parseBrainJson(text);
+}
+
+export async function enrichExtractWithOpenAI(
+  signals: PageSignals,
+  heuristic: Partial<BrainInput>,
+): Promise<Partial<BrainInput> | null> {
+  const key = process.env.OPENAI_API_KEY?.trim();
+  if (!key) return null;
+
+  const prompt = buildExtractPrompt(signals, heuristic);
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -76,12 +140,19 @@ ${JSON.stringify(heuristic, null, 0)}`;
   };
   const content = data.choices?.[0]?.message?.content;
   if (!content) return null;
+  return parseBrainJson(content);
+}
 
-  try {
-    const parsed = JSON.parse(content) as Partial<BrainInput>;
-    if (!parsed.projectName || !parsed.projectDescription) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
+/** Anthropic first (if key set), then OpenAI fallback. */
+export async function enrichExtractWithLlm(
+  signals: PageSignals,
+  heuristic: Partial<BrainInput>,
+): Promise<{ suggestion: Partial<BrainInput>; provider: ExtractLlmProvider } | null> {
+  const anthropic = await enrichExtractWithAnthropic(signals, heuristic);
+  if (anthropic) return { suggestion: anthropic, provider: "anthropic" };
+
+  const openai = await enrichExtractWithOpenAI(signals, heuristic);
+  if (openai) return { suggestion: openai, provider: "openai" };
+
+  return null;
 }

@@ -4,28 +4,51 @@
 
 Open source **agent knowledge base** for Cursor: curated facts in git (`brain/`), optional Engram, CLI + web wizard at [agentkbase.com](https://agentkbase.com).
 
-*Repo name:* `project-brain` on GitHub. Not affiliated with [projectbrain.tools](https://www.projectbrain.tools/).
+[![npm version](https://img.shields.io/npm/v/@agentkbase/cli.svg)](https://www.npmjs.com/package/@agentkbase/cli)
+[![GitHub](https://img.shields.io/github/stars/m-qm/project-brain?style=social)](https://github.com/m-qm/project-brain)
 
-Generate a **knowledge base in git** (`brain/`) plus **Engram config and Cursor rules** so agents consult both in parallel:
+*GitHub repo:* [`m-qm/project-brain`](https://github.com/m-qm/project-brain). Not affiliated with [projectbrain.tools](https://www.projectbrain.tools/).
 
-```bash
-pnpm brain setup -n "My Product" --url https://yoursite.com
-```
-
-Import skills from [SkillTree](https://skilltree.ai) or Cursor skills. Same pack from CLI or web wizard.
-
-## Quick start (CLI)
-
-**From npm** (after publish):
+## Install (npm)
 
 ```bash
 npm install -g @agentkbase/cli
+```
+
+Try without a global install:
+
+```bash
+npx @agentkbase/cli quickstart
+```
+
+| Package | npm | Role |
+|---------|-----|------|
+| `@agentkbase/cli` | [package](https://www.npmjs.com/package/@agentkbase/cli) | `brain` CLI (`setup`, `validate`, `brief`, `extract-url`) |
+| `@agentkbase/core` | [package](https://www.npmjs.com/package/@agentkbase/core) | pack, validate, brief, zip, URL extract (used by CLI, MCP, and web) |
+| `@agentkbase/mcp` | [package](https://www.npmjs.com/package/@agentkbase/mcp) | read-only MCP (`brain_brief`, `brain_validate`, `brain_read`) |
+| `@agentkbase/templates` | [package](https://www.npmjs.com/package/@agentkbase/templates) | embedded markdown templates (dependency of core) |
+
+## Quick start (CLI)
+
+Scaffold a **knowledge base in git** (`brain/`) plus **Engram config and Cursor rules** so agents consult both in parallel:
+
+```bash
 brain setup ./my-app -n "My Product" -d "One line mission"
 brain validate --dir ./my-app
 brain brief --dir ./my-app
 ```
 
-**From source:** run these from the **repository root** (`project-brain/`), not from `packages/cli`.
+With a public site draft:
+
+```bash
+brain setup ./my-app -n "My Product" --url https://yoursite.com
+```
+
+Import skills from [SkillTree](https://skilltree.ai) or Cursor skills. Same pack from CLI or web wizard.
+
+## Develop from source
+
+Run from the **repository root** (`project-brain/`), not from `packages/cli`.
 
 ```bash
 pnpm install
@@ -41,7 +64,7 @@ Validate the included example:
 pnpm validate:example
 ```
 
-Or call the CLI directly:
+Or call the CLI entrypoint directly:
 
 ```bash
 node packages/cli/dist/index.js init ./my-app
@@ -62,7 +85,7 @@ If you see missing chunk errors (`951.js`) or 500 on every page: stop dev, run `
 
 Then open [http://localhost:3000](http://localhost:3000) or [https://agentkbase.com](https://agentkbase.com), use **Try wizard**, export `brain.zip`, unzip into your project.
 
-**Extract from website:** paste a public URL in step 1 of the wizard, or run `pnpm brain extract-url https://yoursite.com --init ./my-app`. See [docs/07-extract-from-website.md](docs/07-extract-from-website.md).
+**Extract from website:** paste a public URL in step 1 of the wizard, or run `brain extract-url https://yoursite.com --init ./my-app`. See [docs/07-extract-from-website.md](docs/07-extract-from-website.md).
 
 Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 
@@ -70,12 +93,15 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 
 | Path | Role |
 |------|------|
-| [packages/core](packages/core) | validate, pack, brief, zip (shared) |
-| [packages/templates](packages/templates) | markdown templates |
-| [packages/cli](packages/cli) | `brain` CLI |
+| [packages/core](packages/core) | `@agentkbase/core` — validate, pack, brief, zip |
+| [packages/templates](packages/templates) | `@agentkbase/templates` |
+| [packages/cli](packages/cli) | `@agentkbase/cli` — `brain` binary |
+| [packages/mcp](packages/mcp) | `@agentkbase/mcp` — read-only stdio MCP |
 | [apps/web](apps/web) | landing + wizard |
 | [docs](docs) | tutorials |
 | [examples/fictional-saas-brain](examples/fictional-saas-brain) | sample brain |
+
+Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 
 ## Docs
 
@@ -85,7 +111,13 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 4. [SkillTree import](docs/04-import-skills-skilltree.md)
 5. [Engram (optional)](docs/05-engram.md)
 6. [Application mode (optional)](docs/06-application-mode.md)
-7. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
+7. [Extract from website](docs/07-extract-from-website.md)
+8. [Multi-page extract](docs/08-multi-page-extract.md)
+9. [Guided gap filling](docs/09-guided-gap-filling.md)
+10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
+11. [Agent KBase MCP](docs/10-mcp.md)
+
+Monetization investigation (maintainers): [MONETIZATION.md](docs/MONETIZATION.md), [COMPANY-BRAIN-SCOPE.md](docs/COMPANY-BRAIN-SCOPE.md), fake door at `/company-brain`.
 
 ## License
 

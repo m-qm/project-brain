@@ -1,7 +1,10 @@
 {
   "name": "@agentkbase/templates",
   "version": "0.1.0",
-  "description": "Embedded markdown templates for Agent KBase brain packs",
+  "description": "Embedded markdown templates for Agent KBase brain packs (@agentkbase/core)",
+  "homepage": "https://agentkbase.com",
+  "bugs": "https://github.com/m-qm/project-brain/issues",
+  "keywords": ["agent", "cursor", "templates", "brain"],
   "type": "module",
   "files": ["dist"],
   "publishConfig": {

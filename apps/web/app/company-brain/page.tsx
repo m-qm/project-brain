@@ -1,12 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
 import { CompanyBrainWaitlist } from "./CompanyBrainWaitlist";
 
-export const metadata = {
-  title: "Company Brain Pack — Agent KBase",
-  description:
-    "Marketing, sales, operations, fulfillment, and work-logs in a validated git-native brain. Coming soon.",
-};
+export const metadata: Metadata = pageMeta(
+  "/company-brain",
+  "Company Brain Pack · Agent KBase",
+  "Marketing, sales, operations, fulfillment, and work-logs in a validated git-native brain. Coming soon.",
+);
 
 export default function CompanyBrainPage() {
   return (

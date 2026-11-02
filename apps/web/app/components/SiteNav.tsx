@@ -5,9 +5,7 @@ export function SiteNav({ ctaHref = "/wizard", ctaLabel = "Try wizard" }: { ctaH
     <header className="site-header">
       <div className="site-header-inner">
         <Link href="/" className="brand">
-          <span className="brand-mark" aria-hidden>
-            ◉
-          </span>
+          <img src="/icon.svg" alt="" width={28} height={28} className="brand-mark" />
           AGENT KBASE
         </Link>
         <nav className="nav-links" aria-label="Main">

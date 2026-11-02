@@ -5,7 +5,7 @@ const STEPS = [
   {
     n: "1",
     title: "Scaffold in minutes",
-    body: "Run `brain init` or open the web wizard. Same pack from CLI and browser.",
+    body: "Run `brain setup` (npm: `@agentkbase/cli`) or open the web wizard. Same pack from CLI and browser.",
   },
   {
     n: "2",
@@ -65,26 +65,39 @@ export function BrainStorySection() {
 
         <div className="audit-block" id="audit">
           <div className="audit-copy">
-            <p className="story-eyebrow">AUDIT MOTION</p>
+            <p className="story-eyebrow">EXTRACT FROM URL</p>
             <h2 className="story-title audit-title">
-              Point it at a business. <em>Watch the tree fill.</em>
+              Point it at a site. <em>Watch FACTS and GAPS fill.</em>
             </h2>
             <p className="story-lead">
-              Paste a public URL in the wizard. The extract engine reads headings and body copy, then
-              places draft facts on the FACTS spoke and gaps on GAPS. You review before export.
+              Step 1 of the wizard: paste a public URL. We read titles, headings, and body copy,
+              then draft mission text, fact bullets, and story beats onto the map. Open questions
+              land on GAPS as <code>[CONFIRM]</code> until you approve them.
             </p>
             <p className="story-lead muted">
-              Full stack audits and revenue sized engagements are SkillTree&apos;s audit product.
-              Agent KBase shows the same map logic for open source: scan → plan on the graph →
-              human sign off.
+              The graph is the same radial layout teams use for audits: scan the public page, plan on
+              spokes, export only after you edit. SkillTree runs paid full stack audits; Agent KBase
+              gives you the OSS map and zip for your repo.
             </p>
-            <Link className="btn secondary" href="/learn/07-extract-from-website">
-              Extract from website →
-            </Link>
+            <div className="btn-row" style={{ marginTop: "0.75rem" }}>
+              <Link className="btn secondary" href="/learn/07-extract-from-website">
+                Extract from website →
+              </Link>
+              <Link className="btn secondary" href="/company-brain">
+                Company Brain Pack →
+              </Link>
+            </div>
           </div>
           <div className="audit-visual">
-            <BrainTreeGraph />
-            <p className="audit-demo-label">Example map (Auditamia demo leaves)</p>
+            <div className="audit-url-bar" aria-hidden>
+              <span className="audit-url-label">URL</span>
+              <span className="audit-url-value">https://auditamia.com/es</span>
+              <span className="audit-url-badge">Extracted</span>
+            </div>
+            <BrainTreeGraph
+              extractDemo
+              highlightDomains={["facts", "gaps", "stories", "offers"]}
+            />
           </div>
         </div>
       </div>

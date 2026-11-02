@@ -88,7 +88,7 @@ Optional env for `/company-brain`:
 
 * `WAITLIST_WEBHOOK_URL` — POST JSON `{ email, source, product, at }` on waitlist signup
 * `WAITLIST_WEBHOOK_API_KEY` — optional; sent as `x-make-apikey` when Make webhook API key auth is enabled
-* `NEXT_PUBLIC_SETUP_CALL_URL` — Cal.com or mailto for “Book setup call (DFY)”
+* `NEXT_PUBLIC_SETUP_CALL_URL` — Calendly/Cal.com URL for “Book setup call (DFY)” (production: `https://calendly.com/mireiaquerol/15min`)
 
 ### Waitlist → Google Sheet (Make.com)
 

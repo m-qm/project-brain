@@ -10,6 +10,28 @@ export type TreeDomain = {
 
 export const DEMO_CENTER = "COMPANY BRAIN";
 
+/** Static wizard output shown in the landing “extract” section (post URL scan). */
+export const EXTRACT_DEMO_INPUT: BrainInput = {
+  projectName: "Auditamia",
+  projectMission: "Invoice workflow audits for renewal teams",
+  projectDescription:
+    "Upload invoices, get a fixed scope report and three prioritized actions within 48 hours.",
+  factBullets: [
+    "Fixed fee report, 48 hour turnaround",
+    "No live ERP access; upload only",
+    "Human review before delivery",
+  ],
+  storyTitle: "Upload to action list",
+  storyProblem: "Renewals stall when invoice data is messy",
+  storyBuilt: "Structured report with three next steps",
+  storyProof: "Process described on public site; metrics need confirmation",
+  openQuestions: [
+    "[CONFIRM] Pricing tiers beyond homepage",
+    "[CONFIRM] Export formats offered",
+    "[CONFIRM] Named customer proof",
+  ],
+};
+
 /** Eight spokes · three leaves each — same topology as SkillTree marketing maps. */
 export const DEMO_TREE: TreeDomain[] = [
   {
@@ -170,6 +192,11 @@ const CY = 400;
 const R_HUB = 118;
 const R_LEAF = 228;
 
+/** Stable SVG numbers across Node SSR and browser (avoids hydration float drift). */
+function roundSvg(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
 export function layoutBrainTree(domains: TreeDomain[]): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const nodes: GraphNode[] = [
     { id: "center", x: CX, y: CY, r: 36, kind: "center", label: "brain" },
@@ -216,7 +243,10 @@ export function layoutBrainTree(domains: TreeDomain[]): { nodes: GraphNode[]; ed
 
 function polar(cx: number, cy: number, r: number, deg: number): { x: number; y: number } {
   const rad = ((deg - 90) * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  return {
+    x: roundSvg(cx + r * Math.cos(rad)),
+    y: roundSvg(cy + r * Math.sin(rad)),
+  };
 }
 
 /** Stable “nebula” dots for the center brain cluster */
@@ -232,9 +262,9 @@ export function centerClusterDots(seed = 1): { cx: number; cy: number; r: number
     const angle = rand() * Math.PI * 2;
     const dist = rand() * 28;
     out.push({
-      cx: CX + Math.cos(angle) * dist,
-      cy: CY + Math.sin(angle) * dist,
-      r: 1.2 + rand() * 2.2,
+      cx: roundSvg(CX + Math.cos(angle) * dist),
+      cy: roundSvg(CY + Math.sin(angle) * dist),
+      r: roundSvg(1.2 + rand() * 2.2),
       fill: colors[i % colors.length],
     });
   }

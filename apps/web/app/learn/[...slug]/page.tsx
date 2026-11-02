@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Link from "next/link";
@@ -5,9 +6,22 @@ import { notFound } from "next/navigation";
 import { LearnDocAnalytics } from "../../components/LearnDocAnalytics";
 import { SiteNav } from "../../components/SiteNav";
 import { learnMarkdownToHtml } from "@/lib/learn-markdown";
+import { pageMeta } from "@/lib/site";
 import { LEARN_DOCS } from "../learn-docs";
 
 const ALLOWED = new Set(LEARN_DOCS.map((d) => d.slug));
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}): Promise<Metadata> {
+  const { slug: parts } = await params;
+  const slug = parts.join("/");
+  const doc = LEARN_DOCS.find((d) => d.slug === slug);
+  if (!doc) return {};
+  return pageMeta(`/learn/${slug}`, `${doc.title} · Agent KBase`, doc.description);
+}
 
 export default async function LearnDocPage({
   params,

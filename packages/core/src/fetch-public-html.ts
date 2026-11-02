@@ -1,16 +1,22 @@
+import { FETCH_TIMEOUT_MS, MAX_PAGE_HTML_BYTES } from "./extract-bounds.js";
 import { validatePublicHttpUrl } from "./url-security.js";
 
-const MAX_BYTES = 512_000;
-const TIMEOUT_MS = 12_000;
+export type FetchHtmlBudget = {
+  totalBytesUsed: number;
+  maxTotalBytes: number;
+};
 
-export async function fetchPublicWebsiteHtml(rawUrl: string): Promise<string> {
+export async function fetchPublicWebsiteHtml(
+  rawUrl: string,
+  budget?: FetchHtmlBudget,
+): Promise<string> {
   const check = validatePublicHttpUrl(rawUrl);
   if (!check.ok) {
     throw new Error(check.reason);
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
   try {
     const res = await fetch(check.url.toString(), {
@@ -40,9 +46,13 @@ export async function fetchPublicWebsiteHtml(rawUrl: string): Promise<string> {
       const { done, value } = await reader.read();
       if (done) break;
       total += value.byteLength;
-      if (total > MAX_BYTES) {
+      if (total > MAX_PAGE_HTML_BYTES) {
         await reader.cancel();
         throw new Error("Page too large (512KB HTML limit).");
+      }
+      if (budget && budget.totalBytesUsed + total > budget.maxTotalBytes) {
+        await reader.cancel();
+        throw new Error("Total crawl HTML budget exceeded.");
       }
       chunks.push(value);
     }
@@ -61,7 +71,11 @@ export async function fetchPublicWebsiteHtml(rawUrl: string): Promise<string> {
             return out;
           })();
 
-    return new TextDecoder("utf-8", { fatal: false }).decode(merged);
+    const html = new TextDecoder("utf-8", { fatal: false }).decode(merged);
+    if (budget) {
+      budget.totalBytesUsed += merged.byteLength;
+    }
+    return html;
   } catch (e) {
     if (e instanceof Error && e.name === "AbortError") {
       throw new Error("Fetch timed out.");

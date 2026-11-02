@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
+
+export const metadata: Metadata = pageMeta(
+  "/skilltree",
+  "SkillTree + Agent KBase",
+  "SkillTree imports how to work. Agent KBase holds what is true in a brain/ folder.",
+);
 
 export default function SkillTreePage() {
   return (

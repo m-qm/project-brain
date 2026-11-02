@@ -7,5 +7,6 @@ dist
 .env
 .env.local
 .vercel
+.cursor/skills/skilltree/
 packages/cli/my-app
 my-app

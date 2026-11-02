@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { BrainStorySection } from "./components/BrainStorySection";
 import { HeroShowcase } from "./components/HeroShowcase";
 import { SiteNav } from "./components/SiteNav";
+
+export const metadata: Metadata = pageMeta("/", SITE_TITLE, SITE_DESCRIPTION);
+
 export default function HomePage() {
   return (
     <div className="page-shell">
@@ -28,6 +33,20 @@ export default function HomePage() {
           >
             View on GitHub
           </a>
+          <a
+            className="btn secondary"
+            href="https://www.npmjs.com/package/@agentkbase/cli"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            npm
+          </a>
+        </div>
+        <div className="hero-install learn-code-block" aria-label="Install CLI">
+          <div className="learn-code-label">Install</div>
+          <pre className="learn-code">
+            <code>npm install -g @agentkbase/cli</code>
+          </pre>
         </div>
         <div className="perk-box">
           <ul>
