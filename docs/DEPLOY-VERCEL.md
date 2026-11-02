@@ -4,12 +4,12 @@
 
 * **Project name:** `agentkbase`
 * **Root Directory:** `apps/web`
-* **Install:** `cd ../.. && pnpm install`
-* **Build:** `cd ../.. && pnpm run build`
+* **Install:** `pnpm install` (runs from `apps/web`; pnpm finds the workspace root)
+* **Build:** `pnpm -w run build`
 
 Link and deploy from the **repository root** (not only `apps/web`), so `packages/core` and `packages/templates` are included.
 
-**Important:** Vercel **Root Directory** is `apps/web`. Put `vercel.json` only in [`apps/web/vercel.json`](../apps/web/vercel.json), not the repo root. Use `pnpm install` and `pnpm -w run build` (workspace root), not `cd ../..` (that can escape to `/` on Vercel).
+**Important:** Put `vercel.json` only in [`apps/web/vercel.json`](../apps/web/vercel.json), not the repo root. **Do not** set Install/Build in the Vercel dashboard to `cd ../.. && …`: with Root Directory `apps/web` or `.`, that can escape the clone and fail with `ERR_PNPM_NO_PKG_MANIFEST` in `/`. Dashboard overrides beat `vercel.json`; keep them aligned with the commands above.
 
 ```bash
 cd project-brain
