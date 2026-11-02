@@ -30,7 +30,7 @@ export async function postWaitlistWebhook(
 
 export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<boolean> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
-  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "mireiaquerol@gmail.com";
+  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@dualperspective.digital";
   const from =
     process.env.RESEND_FROM?.trim() || "Agent KBase <onboarding@resend.dev>";
 
