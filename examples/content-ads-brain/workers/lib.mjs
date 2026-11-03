@@ -129,7 +129,8 @@ export function parseArticleSlate(md) {
     const file = block.match(/\*\*file:\*\*\s+`([^`]+)`/)?.[1];
     const slug = block.match(/\*\*slug:\*\*\s+`([^`]+)`/)?.[1];
     const query = block.match(/\*\*query:\*\*\s+(.+)/)?.[1]?.trim();
-    return { id, title, file, slug, query };
+    const status = block.match(/\*\*status:\*\*\s+`([^`]+)`/)?.[1];
+    return { id, title, file, slug, query, status };
   });
 }
 

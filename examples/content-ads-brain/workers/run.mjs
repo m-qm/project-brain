@@ -62,7 +62,9 @@ async function article() {
   await readBrainBundle();
   const slate = parseArticleSlate(await readFile(join(BRAIN, "content/article-slate.md"), "utf8"));
   const used = await usedArticleIds();
-  const next = slate.find((a) => a.id && !used.has(a.id));
+  const next = slate.find(
+    (a) => a.id && !used.has(a.id) && a.status !== "published" && a.status !== "after the complaint series",
+  );
   if (!next) {
     console.log("No unused articles on the slate.");
     return;

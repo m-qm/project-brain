@@ -4,7 +4,7 @@ You write **one** blog article for Agent KBase. You do not publish. You do not d
 
 ## Job
 
-Answer the next unused row on `brain/content/article-slate.md`. The reader is a founder with a website and no marketing team. They searched a buying question, not “what is an agent”.
+Answer the next unused row on `brain/content/article-slate.md`. Skip rows marked `published` or `after the complaint series`. The reader is a founder with a website and no marketing team. They searched a buying question, not “what is an agent”.
 
 ## Read first
 

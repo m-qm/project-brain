@@ -40,6 +40,18 @@ This piece is the first run of that loop. A human said yes before it lived on th
 
 A business with a website and no marketing team. A shop, a studio, a one or two person consultancy. Not a department that already has an agency.
 
+## Five checks, one post each
+
+Each failed check is its own post. The reader stays a shop or a studio. This one is the price.
+
+1. How to title a post a shop owner would actually search.
+2. [How to stop your blog publishing prices that do not exist](/blog/stop-fake-prices).
+3. How to stop your blog claiming a ranking you cannot show.
+4. How to see where each line in a draft came from.
+5. How to stop a draft asking for your personal phone.
+
+The other four are drafts. They stay unlinked until a human approves them. The list they all use is [agentkbase.com/company-brain](/company-brain).
+
 ## Next step
 
 If the loop fits: [workers waitlist](/company-brain). The OSS brain is free. Publish without review is not in the product.
