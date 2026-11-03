@@ -2134,15 +2134,59 @@ pre.preview {
 
 .site-footer {
   border-top: 1px solid var(--line);
-  padding: 2rem 1.5rem;
-  text-align: center;
+  padding: 2rem 1.5rem 2.25rem;
   font-size: 0.8rem;
   color: var(--ink-3);
+}
+
+.site-footer-inner {
+  max-width: 52rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.site-footer-product {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.site-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.75rem;
+  line-height: 1.5;
+}
+
+.site-footer-copy {
+  color: var(--ink-2);
+  margin-right: 0.15rem;
 }
 
 .site-footer a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.legal-doc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.legal-doc-links a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
 }
 
 @media (max-width: 640px) {

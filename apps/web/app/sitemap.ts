@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { LEGAL_DOCS } from "./legal/legal-docs";
 import { LEARN_DOCS } from "./learn/learn-docs";
 
 const pages: {
@@ -26,6 +27,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/learn/${doc.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...LEGAL_DOCS.map((doc) => ({
+      url: `${SITE_URL}/legal/${doc.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.4,
     })),
   ];
 }
