@@ -13,3 +13,8 @@ my-app
 
 # Operator-only docs (monetization, waitlist runbooks, discovery); see docs/MAINTAINER.md
 docs-local/
+
+# Local HITL queue output (keep directory gitkeeps)
+examples/content-ads-brain/queue/**/*.json
+examples/content-ads-brain/insights/*.json
+examples/content-ads-brain/slides/out/

@@ -59,3 +59,4 @@ Every tool is marked read-only. Pass `dir` when the brain is not in the working 
 * Not a place to save decisions. That is Engram (`mem_save`). Team facts still land in git.
 * Not a hosted API. The files stay in the repo on the machine running the server.
 * Not website extract. Use `brain extract-url` for that.
+* Not Instagram publishing, Meta Ads, or WhatsApp send. Those connectors are a separate paid Act layer with human approval. They will not ship inside this read-only MCP. See [Content and ads workers](11-content-ads-workers.md).

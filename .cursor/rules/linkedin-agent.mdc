@@ -1,0 +1,9 @@
+---
+description: LinkedIn agent for the Agent KBase HITL content loop
+globs: examples/content-ads-brain/brain/content/linkedin/**/*.md
+alwaysApply: false
+---
+
+Follow `examples/content-ads-brain/brain/agents/linkedin.md`.
+
+Draft only from a published article. Same offer. ES first. CTA is agentkbase.com/company-brain. Never post from the worker.

@@ -26,6 +26,7 @@ const learnDocs = [
   "08-multi-page-extract.md",
   "09-guided-gap-filling.md",
   "10-mcp.md",
+  "11-content-ads-workers.md",
 ];
 
 for (const name of learnDocs) {

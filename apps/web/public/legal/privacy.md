@@ -12,7 +12,7 @@ This policy covers the **website and hosted wizard**, not code you run locally o
 
 ## What we collect
 
-* **Waitlist and contact:** If you submit the Company Brain waitlist or email us, we receive the address you provide and basic metadata (timestamp, source page). Notifications are sent via [Resend](https://resend.com) to the site operator.
+* **Waitlist and contact:** If you submit the content and ads workers waitlist or email us, we receive the address you provide and basic metadata (timestamp, source page). Notifications are sent via [Resend](https://resend.com) to the site operator.
 * **Analytics:** We use [Vercel Web Analytics](https://vercel.com/docs/analytics) on this site for aggregated page views and custom events (for example wizard export or waitlist submit). The default setup does not use advertising cookies.
 * **Server logs:** Hosting providers may log IP addresses, user agents, and request paths for security and debugging.
 

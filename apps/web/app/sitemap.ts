@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { BLOG_POSTS } from "./blog/blog-docs";
 import { LEGAL_DOCS } from "./legal/legal-docs";
 import { LEARN_DOCS } from "./learn/learn-docs";
 
@@ -10,6 +11,7 @@ const pages: {
 }[] = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/learn", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
   { path: "/wizard", priority: 0.8, changeFrequency: "monthly" },
   { path: "/skilltree", priority: 0.7, changeFrequency: "monthly" },
   { path: "/company-brain", priority: 0.7, changeFrequency: "weekly" },
@@ -22,6 +24,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: page.path === "/" ? SITE_URL : `${SITE_URL}${page.path}`,
       changeFrequency: page.changeFrequency,
       priority: page.priority,
+    })),
+    ...BLOG_POSTS.map((post) => ({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...LEARN_DOCS.map((doc) => ({
       url: `${SITE_URL}/learn/${doc.slug}`,

@@ -41,7 +41,7 @@ async function resendSend(
 
 function ownerNotifyText(payload: WaitlistPayload): string {
   return [
-    "New Company Brain waitlist signup",
+    "New content and ads workers waitlist signup",
     "",
     `Submitter email (form field): ${payload.email}`,
     `Reply-To on this message is set to that address.`,
@@ -54,9 +54,9 @@ function ownerNotifyText(payload: WaitlistPayload): string {
 
 function subscriberConfirmText(payload: WaitlistPayload): string {
   return [
-    "Thanks for joining the Company Brain Pack waitlist on Agent KBase.",
+    "Thanks for joining the content and ads workers waitlist on Agent KBase.",
     "",
-    "We will email you when the Pack launches. No need to reply to this message.",
+    "We will email you when the workers launch. No need to reply to this message.",
     "",
     "If you did not sign up, ignore this email.",
   ].join("\n");
@@ -64,7 +64,7 @@ function subscriberConfirmText(payload: WaitlistPayload): string {
 
 export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<WaitlistSendResult> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
-  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "mireiaquerol@gmail.com";
+  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@agentkbase.com";
   const from =
     process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
 
@@ -91,7 +91,7 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       resendKey,
       from,
       [payload.email],
-      "You're on the Company Brain waitlist",
+      "You're on the Agent KBase workers waitlist",
       subscriberConfirmText(payload),
     );
     if (confirm.ok) {

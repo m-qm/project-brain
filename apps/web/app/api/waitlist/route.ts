@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   const payload: WaitlistPayload = {
     email,
     source,
-    product: "company-brain-pack",
+    product: "content-ads-workers",
     at: new Date().toISOString(),
   };
 

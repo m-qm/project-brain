@@ -78,6 +78,13 @@ export const LEARN_DOCS: LearnDoc[] = [
     minutes: 10,
   },
   {
+    slug: "11-content-ads-workers",
+    title: "Content and ads workers",
+    description: "Paid Act layer: WhatsApp HITL, Instagram after approve, ads from winners. MCP stays read-only.",
+    section: "Integrate",
+    minutes: 8,
+  },
+  {
     slug: "advanced/eval-and-routing",
     title: "Eval and routing",
     description: "Validation gates and routing patterns for agent tasks.",

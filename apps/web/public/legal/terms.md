@@ -16,7 +16,7 @@ The wizard and CLI are provided for building **agent knowledge bases** in your r
 
 ## Waitlist and pre-launch offers
 
-Company Brain Pack and related offers may be described before general availability. Waitlist signup **does not** create a contract to sell at a particular price. Scope, pricing, or timing may change until **paid checkout or a written agreement** with a named seller exists (which may include a future registered business).
+Content and ads workers, Act connectors, and related offers may be described before general availability. Waitlist signup **does not** create a contract to sell at a particular price. Scope, pricing, or timing may change until **paid checkout or a written agreement** with a named seller exists (which may include a future registered business).
 
 ## Open source software
 

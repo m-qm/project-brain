@@ -795,6 +795,17 @@ a:hover {
   margin-bottom: 1rem;
 }
 
+.company-brain-checks-lead {
+  margin: 0 0 1rem;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.company-brain-checks li + li {
+  margin-top: 0.7rem;
+}
+
 .company-brain-card-title {
   margin: 0 0 0.75rem;
   font-size: 1.05rem;

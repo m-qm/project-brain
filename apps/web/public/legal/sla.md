@@ -1,6 +1,6 @@
 # Service level
 
-**Scope:** Free **agentkbase.com** website, documentation, and web wizard. Paid Company Brain Pack, done-for-you delivery, or private hosting are covered by separate agreements when offered.
+**Scope:** Free **agentkbase.com** website, documentation, and web wizard. Paid content and ads workers, Act connectors, done-for-you delivery, or private hosting are covered by separate agreements when offered.
 
 ## Target availability
 

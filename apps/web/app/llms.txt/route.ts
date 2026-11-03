@@ -1,3 +1,4 @@
+import { BLOG_POSTS } from "../blog/blog-docs";
 import { LEARN_DOCS } from "../learn/learn-docs";
 import { SITE_URL } from "@/lib/site";
 
@@ -19,19 +20,23 @@ export function GET() {
     "",
     "The CLI (`npm install -g @agentkbase/cli`) and the web wizard export the same validated pack: facts, stories, and AGENTS.md. Validation runs before export. A public website URL can seed a draft; review it before export. SkillTree imports skills (how to work). Engram is a separate cross-session memory layer.",
     "",
-    "Company Brain Pack is a paid add-on, still coming soon. It adds department facts for marketing, sales, operations, fulfillment, and work-logs on top of the free wizard.",
+    "Content workers are a paid add-on, still coming soon. The OSS brain stays read-only. First loop: blog after a human approves, then a LinkedIn draft from that article. WhatsApp approval is the same gate. Done-for-you is the first motion.",
     "",
     section("Start", [
       `- [Home](${SITE_URL}/): product overview and install`,
       `- [Wizard](${SITE_URL}/wizard): build and export a brain in the browser`,
       `- [Learn](${SITE_URL}/learn): short guides for small teams`,
+      `- [Blog](${SITE_URL}/blog): HITL articles; nothing live skipped the five checks`,
+      ...BLOG_POSTS.map(
+        (post) => `- [${post.title}](${SITE_URL}/blog/${post.slug}): ${post.description}`,
+      ),
     ]),
     "",
     section("Guides", guides),
     "",
     section("Product", [
       `- [SkillTree + Agent KBase](${SITE_URL}/skilltree): pair SkillTree skills with a brain/ folder`,
-      `- [Company Brain Pack](${SITE_URL}/company-brain): multi-department brain, waitlist`,
+      `- [Content and ads workers](${SITE_URL}/company-brain): HITL workers waitlist, done-for-you`,
     ]),
     "",
     section("Optional", [

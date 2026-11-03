@@ -100,6 +100,7 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 | [apps/web](apps/web) | landing + wizard |
 | [docs](docs) | OSS tutorials (+ [MAINTAINER.md](docs/MAINTAINER.md) for gitignored `docs-local/`) |
 | [examples/fictional-saas-brain](examples/fictional-saas-brain) | sample brain |
+| [examples/content-ads-brain](examples/content-ads-brain) | sample HITL content + ads loop (no publish from OSS) |
 
 Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 
@@ -116,6 +117,7 @@ Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 9. [Guided gap filling](docs/09-guided-gap-filling.md)
 10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
 11. [Agent KBase MCP](docs/10-mcp.md)
+12. [Content and ads workers](docs/11-content-ads-workers.md)
 
 On the site: [agentkbase.com/learn](https://agentkbase.com/learn). Maintainer-only notes: [docs/MAINTAINER.md](docs/MAINTAINER.md).
 

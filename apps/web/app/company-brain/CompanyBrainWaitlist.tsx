@@ -48,7 +48,7 @@ export function CompanyBrainWaitlist({ source }: Props) {
       setMessage(
         data.subscriberNotified
           ? "You're on the list. Check your inbox for a short confirmation."
-          : "You're on the list. Launch updates will come from Agent KBase when the Pack is ready (no confirmation email yet).",
+          : "You're on the list. Launch updates will come from Agent KBase when the workers are ready (no confirmation email yet).",
       );
       setEmail("");
     } catch {
@@ -89,7 +89,7 @@ export function CompanyBrainWaitlist({ source }: Props) {
         href={SETUP_CALL_URL}
         onClick={() => track("company_brain_setup_call", { source })}
       >
-        Book setup call (DFY)
+        Book a working session
       </a>
     </div>
   );
