@@ -11,11 +11,7 @@ Waitlist notifications are **outbound from Resend**. They never go through Porkb
 
 ## Where notifications go today
 
-1. App tries **from** `notifications@agentkbase.com` **to** `mireiaquerol@gmail.com` → fails until Resend shows domain **Verified**.
-2. Fallback **from** `onboarding@resend.dev` **to** `hello@dualperspective.digital` (Resend only allows this inbox on the current API key).
-3. Optional bridge env `WAITLIST_RESEND_BRIDGE_INBOX` = same as step 2.
-
-You **did** receive mail at **hello@** (Resend id in logs). That path works. Gmail does not receive until step 1 works.
+Only **from** `notifications@agentkbase.com` **to** `WAITLIST_NOTIFY_EMAIL` (`mireiaquerol@gmail.com`). No `hello@dualperspective.digital` in the app. Works only when Resend shows `agentkbase.com` **Verified** (same account as `RESEND_API_KEY`).
 
 ## Do not add Resend “Enable receiving” MX unless you want `@agentkbase.com` inboxes
 

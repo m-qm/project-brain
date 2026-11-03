@@ -45,7 +45,16 @@ export async function POST(req: Request) {
 
   const result = await sendWaitlistEmail(payload);
   if (!result.ok) {
-    return Response.json({ error: "Could not save your signup. Try again or email hello@agentkbase.com." }, { status: 502 });
+    const domainPending =
+      result.detail?.includes("not verified") || result.detail?.includes("validation_error");
+    return Response.json(
+      {
+        error: domainPending
+          ? "Waitlist mail is not live yet (domain verification). Email hello@agentkbase.com and we will add you."
+          : "Could not save your signup. Try again or email hello@agentkbase.com.",
+      },
+      { status: domainPending ? 503 : 502 },
+    );
   }
 
   console.info("[waitlist] ok", payload.email, result.channel ?? "domain");

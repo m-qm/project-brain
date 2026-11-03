@@ -8,7 +8,7 @@ export type WaitlistPayload = {
 export type WaitlistSendResult = {
   ok: boolean;
   detail?: string;
-  channel?: "domain" | "fallback";
+  channel?: "domain";
   ownerNotified?: boolean;
   subscriberNotified?: boolean;
 };
@@ -67,17 +67,13 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
   const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "mireiaquerol@gmail.com";
   const from =
     process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
-  const fallbackTo =
-    process.env.WAITLIST_RESEND_FALLBACK_TO?.trim() || "mireiaquerol@gmail.com";
-  const fallbackFrom =
-    process.env.WAITLIST_RESEND_FALLBACK_FROM?.trim() || "Agent KBase <onboarding@resend.dev>";
 
   if (!resendKey) {
     return { ok: false, detail: "RESEND_API_KEY not configured" };
   }
 
   try {
-    const primary = await resendSend(
+    const owner = await resendSend(
       resendKey,
       from,
       [notifyTo],
@@ -85,72 +81,31 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       ownerNotifyText(payload),
       payload.email,
     );
-    if (primary.ok) {
-      let subscriberNotified = false;
-      const confirm = await resendSend(
-        resendKey,
-        from,
-        [payload.email],
-        "You're on the Company Brain waitlist",
-        subscriberConfirmText(payload),
-      );
-      if (confirm.ok) {
-        subscriberNotified = true;
-      } else {
-        console.error("[waitlist] confirmation email failed", confirm.status, confirm.body.slice(0, 300));
-      }
-      return {
-        ok: true,
-        channel: "domain",
-        ownerNotified: true,
-        subscriberNotified,
-      };
-    }
-    console.error("[waitlist] resend primary failed", primary.status, primary.body.slice(0, 500));
-
-    const useFallback = process.env.WAITLIST_RESEND_FALLBACK !== "false";
-    if (!useFallback) {
-      return { ok: false, detail: primary.body.slice(0, 200) };
+    if (!owner.ok) {
+      console.error("[waitlist] resend notify failed", owner.status, owner.body.slice(0, 500));
+      return { ok: false, detail: owner.body.slice(0, 200) };
     }
 
-    let fallback = await resendSend(
+    let subscriberNotified = false;
+    const confirm = await resendSend(
       resendKey,
-      fallbackFrom,
-      [fallbackTo],
-      `Waitlist: ${payload.email}`,
-      ownerNotifyText(payload),
-      payload.email,
+      from,
+      [payload.email],
+      "You're on the Company Brain waitlist",
+      subscriberConfirmText(payload),
     );
-    const bridgeInbox = process.env.WAITLIST_RESEND_BRIDGE_INBOX?.trim();
-    if (
-      !fallback.ok &&
-      bridgeInbox &&
-      bridgeInbox.toLowerCase() !== fallbackTo.toLowerCase() &&
-      fallback.body.includes("only send testing emails")
-    ) {
-      fallback = await resendSend(
-        resendKey,
-        fallbackFrom,
-        [bridgeInbox],
-        `Waitlist (forward to ${fallbackTo}): ${payload.email}`,
-        ownerNotifyText(payload),
-        payload.email,
-      );
-      if (fallback.ok) {
-        console.warn("[waitlist] bridge inbox until agentkbase.com verified; forward to", fallbackTo);
-      }
+    if (confirm.ok) {
+      subscriberNotified = true;
+    } else {
+      console.error("[waitlist] confirmation email failed", confirm.status, confirm.body.slice(0, 300));
     }
-    if (fallback.ok) {
-      console.warn("[waitlist] stored signup", payload.email, "via fallback until agentkbase.com verified");
-      return {
-        ok: true,
-        channel: "fallback",
-        ownerNotified: true,
-        subscriberNotified: false,
-      };
-    }
-    console.error("[waitlist] resend fallback failed", fallback.status, fallback.body.slice(0, 500));
-    return { ok: false, detail: fallback.body.slice(0, 200) };
+
+    return {
+      ok: true,
+      channel: "domain",
+      ownerNotified: true,
+      subscriberNotified,
+    };
   } catch (err) {
     const message = err instanceof Error ? err.message : "resend fetch failed";
     console.error("[waitlist] resend error", message);
