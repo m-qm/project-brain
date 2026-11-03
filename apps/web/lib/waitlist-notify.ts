@@ -66,7 +66,7 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
   const from =
     process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
   const fallbackTo =
-    process.env.WAITLIST_RESEND_FALLBACK_TO?.trim() || "hello@dualperspective.digital";
+    process.env.WAITLIST_RESEND_FALLBACK_TO?.trim() || "mireiaquerol@gmail.com";
   const fallbackFrom =
     process.env.WAITLIST_RESEND_FALLBACK_FROM?.trim() || "Agent KBase <onboarding@resend.dev>";
 

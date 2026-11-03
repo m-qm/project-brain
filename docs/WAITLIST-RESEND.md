@@ -14,7 +14,7 @@ Redeploy after changing env vars.
 
 **Same Resend account:** `agentkbase.com` in [Domains](https://resend.com/domains) and `RESEND_API_KEY` must belong to the **same** Resend team. A key from another project will always return “domain not verified” even when DNS is correct.
 
-**Until `agentkbase.com` is Verified:** the API uses a Resend test sender (`onboarding@resend.dev`) and delivers to `WAITLIST_RESEND_FALLBACK_TO` (default `hello@dualperspective.digital`). Set `WAITLIST_RESEND_FALLBACK=false` to disable after the domain is verified.
+**Until `agentkbase.com` is Verified:** Resend only allows the test sender (`onboarding@resend.dev`) to reach the account’s allowed inbox. Set **`WAITLIST_RESEND_FALLBACK_TO=mireiaquerol@gmail.com`** only after the domain is verified, or keep a forward from any legacy inbox to Gmail. Production target: **`WAITLIST_NOTIFY_EMAIL=mireiaquerol@gmail.com`** with **`RESEND_FROM`** on `@agentkbase.com` once Verified.
 
 | Variable | Purpose |
 |----------|---------|
