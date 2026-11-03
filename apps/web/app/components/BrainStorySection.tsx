@@ -1,61 +1,38 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { BrainTreeGraph } from "./BrainTreeGraph";
 
-const STEPS = [
-  {
-    n: "1",
-    title: "Scaffold in minutes",
-    body: "Run `brain setup` (npm: `@agentkbase/cli`) or open the web wizard. Same pack from CLI and browser.",
-  },
-  {
-    n: "2",
-    title: "Ground the business",
-    body: "Step through Project, Facts, Story, and Gaps. Paste a public URL to draft from the landing page, then edit like an interview transcript.",
-  },
-  {
-    n: "3",
-    title: "Your second brain is built",
-    body: "Validation passes → export `brain.zip`. Facts, stories, AGENTS.md, and open questions become the node at the center of the tree.",
-  },
-  {
-    n: "4",
-    title: "Agents plug into the brain",
-    body: "Cursor loads `brain/` before tasks. SkillTree skills sit on the SKILLS spoke: how to work, while Agent KBase holds what is true.",
-  },
-] as const;
+export async function BrainStorySection() {
+  const t = await getTranslations("story");
+  const steps = [
+    { n: "1", title: t("step1Title"), body: t("step1Body") },
+    { n: "2", title: t("step2Title"), body: t("step2Body") },
+    { n: "3", title: t("step3Title"), body: t("step3Body") },
+    { n: "4", title: t("step4Title"), body: t("step4Body") },
+  ];
 
-export function BrainStorySection() {
   return (
     <section className="story-section" id="how-it-works">
       <div className="container">
         <div className="story-grid">
           <div className="story-copy">
-            <p className="story-eyebrow">STORY</p>
-            <h2 className="story-title">
-              It grounds your business, then <em>the tree knows it.</em>
-            </h2>
-            <p className="story-lead">
-              SkillTree interviews and skills are one layer. Agent KBase is the company knowledge
-              base those agents read: offers, constraints, voice, and what must stay{" "}
-              <code>[CONFIRM]</code>.
-            </p>
-            <p className="story-lead">
-              That is the difference between an AI org that shares ground truth and a folder of
-              generic prompts.
-            </p>
+            <p className="story-eyebrow">{t("eyebrow")}</p>
+            <h2 className="story-title">{t.rich("title", { em: (chunks) => <em>{chunks}</em> })}</h2>
+            <p className="story-lead">{t("lead1")}</p>
+            <p className="story-lead">{t("lead2")}</p>
             <ol className="story-steps">
-              {STEPS.map((s) => (
-                <li key={s.n}>
-                  <span className="story-step-num">{s.n}</span>
+              {steps.map((step) => (
+                <li key={step.n}>
+                  <span className="story-step-num">{step.n}</span>
                   <div>
-                    <h3>{s.title}</h3>
-                    <p>{s.body}</p>
+                    <h3>{step.title}</h3>
+                    <p>{step.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
             <Link className="btn" href="/wizard">
-              Start the wizard →
+              {t("start")}
             </Link>
           </div>
           <div className="story-visual">
@@ -65,26 +42,18 @@ export function BrainStorySection() {
 
         <div className="audit-block" id="audit">
           <div className="audit-copy">
-            <p className="story-eyebrow">EXTRACT FROM URL</p>
+            <p className="story-eyebrow">{t("extractEyebrow")}</p>
             <h2 className="story-title audit-title">
-              Point it at a site. <em>Watch FACTS and GAPS fill.</em>
+              {t.rich("extractTitle", { em: (chunks) => <em>{chunks}</em> })}
             </h2>
-            <p className="story-lead">
-              Step 1 of the wizard: paste a public URL. We read titles, headings, and body copy,
-              then draft mission text, fact bullets, and story beats onto the map. Open questions
-              land on GAPS as <code>[CONFIRM]</code> until you approve them.
-            </p>
-            <p className="story-lead muted">
-              The graph is the same radial layout teams use for audits: scan the public page, plan on
-              spokes, export only after you edit. SkillTree runs paid full stack audits; Agent KBase
-              gives you the OSS map and zip for your repo.
-            </p>
+            <p className="story-lead">{t("extractLead")}</p>
+            <p className="story-lead muted">{t("extractMuted")}</p>
             <div className="btn-row" style={{ marginTop: "0.75rem" }}>
               <Link className="btn secondary" href="/learn/07-extract-from-website">
-                Extract from website →
+                {t("extractGuide")}
               </Link>
               <Link className="btn secondary" href="/company-brain">
-                The knowledge layer →
+                {t("knowledge")}
               </Link>
             </div>
           </div>
@@ -92,12 +61,9 @@ export function BrainStorySection() {
             <div className="audit-url-bar" aria-hidden>
               <span className="audit-url-label">URL</span>
               <span className="audit-url-value">https://auditamia.com/es</span>
-              <span className="audit-url-badge">Extracted</span>
+              <span className="audit-url-badge">{t("extracted")}</span>
             </div>
-            <BrainTreeGraph
-              extractDemo
-              highlightDomains={["facts", "gaps", "stories", "offers"]}
-            />
+            <BrainTreeGraph extractDemo highlightDomains={["facts", "gaps", "stories", "offers"]} />
           </div>
         </div>
       </div>

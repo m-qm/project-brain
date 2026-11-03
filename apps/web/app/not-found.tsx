@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function NotFound() {
+export default function RootNotFound() {
   return (
     <div className="page-shell">
       <main className="page-main container-narrow" style={{ textAlign: "center", paddingTop: "4rem" }}>

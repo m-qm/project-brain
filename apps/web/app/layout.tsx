@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { getLocale } from "next-intl/server";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, WEBSITE_JSON_LD } from "@/lib/site";
-import { SiteFooter } from "./components/SiteFooter";
 import "./globals.css";
 
 /**
@@ -31,18 +31,19 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className="light">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
         />
         {children}
-        <SiteFooter />
         <Analytics />
       </body>
     </html>

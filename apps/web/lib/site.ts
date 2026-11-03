@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { AppLocale } from "@/i18n/routing";
 
 /** Canonical origin. www.agentkbase.com redirects here. */
 export const SITE_URL = "https://agentkbase.com";
@@ -16,18 +17,35 @@ export const WEBSITE_JSON_LD =
 
 export const WEBSITE_JSON_LD_HASH = "sha256-1/JvkOb/8eCRiGiH4MLG3DjSd9qzNkcxIvJuqyqsDqU=";
 
-export function pageMeta(path: string, title: string, description: string): Metadata {
-  const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+export function localizedUrl(path: string, locale: AppLocale): string {
+  const suffix = path === "/" ? "" : path;
+  if (locale === "es") return `${SITE_URL}/es${suffix}`;
+  return suffix ? `${SITE_URL}${suffix}` : SITE_URL;
+}
+
+export function pageMeta(
+  path: string,
+  title: string,
+  description: string,
+  locale: AppLocale = "en",
+): Metadata {
+  const en = localizedUrl(path, "en");
+  const es = localizedUrl(path, "es");
+  const url = locale === "es" ? es : en;
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: { en, es, "x-default": en },
+    },
     openGraph: {
       title,
       description,
       url,
       siteName: SITE_NAME,
       type: "website",
+      locale: locale === "es" ? "es_ES" : "en_US",
     },
   };
 }

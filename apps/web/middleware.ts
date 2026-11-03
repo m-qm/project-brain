@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { WEBSITE_JSON_LD_HASH } from "@/lib/site";
+import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
+import { routing } from "./i18n/routing";
+import { WEBSITE_JSON_LD_HASH } from "./lib/site";
+
+const handleI18n = createMiddleware(routing);
 
 function contentSecurityPolicy(nonce: string): string {
   const isDev = process.env.NODE_ENV !== "production";
@@ -29,6 +32,11 @@ function contentSecurityPolicy(nonce: string): string {
   ].join("; ");
 }
 
+function skipLocale(pathname: string): boolean {
+  if (pathname.startsWith("/api")) return true;
+  return /\.[a-zA-Z0-9]+$/.test(pathname);
+}
+
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
   if (host === "www.agentkbase.com") {
@@ -44,7 +52,10 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("content-security-policy", csp);
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  const response = skipLocale(request.nextUrl.pathname)
+    ? NextResponse.next({ request: { headers: requestHeaders } })
+    : handleI18n(new NextRequest(request, { headers: requestHeaders }));
+
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }

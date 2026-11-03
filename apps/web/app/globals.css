@@ -97,6 +97,8 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
   font-weight: 800;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
@@ -128,6 +130,47 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.locale-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.locale-switch a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.locale-switch a[aria-current="true"] {
+  color: var(--ink);
+}
+
+.nav-links .locale-switch {
+  display: none;
+}
+
+.nav-toggle,
+a.nav-menu-cta {
+  display: none;
+}
+
+.nav-toggle {
+  margin-left: auto;
+  padding: 0.45rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
 }
 
 /* Hero */
@@ -1193,7 +1236,8 @@ a:hover {
 
 /* Inner pages */
 .page-main {
-  padding: 2.5rem 0 4rem;
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
 }
 
 .page-title {
@@ -1270,6 +1314,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
+  white-space: nowrap;
   padding: 0.75rem 1.35rem;
   border-radius: var(--radius-pill);
   border: none;
@@ -2201,8 +2246,45 @@ pre.preview {
 }
 
 @media (max-width: 640px) {
+  .site-header-inner {
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
   .nav-links {
     display: none;
+  }
+
+  .nav-links.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    padding: 0.35rem 1.5rem 1.1rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-links.is-open .locale-switch {
+    display: inline-flex;
+  }
+
+  .nav-links.is-open a.nav-menu-cta {
+    display: inline-flex;
+    margin-top: 0.25rem;
   }
 
   .hero-title {

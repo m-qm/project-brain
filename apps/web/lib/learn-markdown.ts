@@ -50,14 +50,18 @@ function readTable(lines: string[], start: number): TableParse | null {
 
 function renderMentalModelTable(rows: string[][]): string {
   const [header, ...body] = rows;
+  const headA = header?.[0]?.toLowerCase() ?? "";
+  const headB = header?.[1]?.toLowerCase() ?? "";
   const isLayerTable =
     header?.length === 2 &&
-    header[0]?.toLowerCase() === "layer" &&
-    header[1]?.toLowerCase() === "where";
+    (headA === "layer" || headA === "capa") &&
+    (headB === "where" || headB === "dónde" || headB === "donde");
 
   if (!isLayerTable) {
     return renderGenericTable(rows);
   }
+
+  const title = headA === "capa" ? "Modelo mental" : "Mental model";
 
   const items = body
     .map(
@@ -71,7 +75,7 @@ function renderMentalModelTable(rows: string[][]): string {
 
   return (
     `<div class="learn-mental-model" role="region" aria-label="Agent knowledge layers">` +
-    `<p class="learn-mental-model-title">Mental model</p>` +
+    `<p class="learn-mental-model-title">${title}</p>` +
     `<ul class="learn-mental-model-stack">${items}</ul>` +
     `</div>`
   );

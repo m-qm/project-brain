@@ -1,5 +1,5 @@
-import { BLOG_POSTS } from "../blog/blog-docs";
-import { LEARN_DOCS } from "../learn/learn-docs";
+import { BLOG_POSTS } from "../[locale]/blog/blog-docs";
+import { LEARN_DOCS } from "../[locale]/learn/learn-docs";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";

@@ -1,6 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import {
   EXTRACT_DEMO_INPUT,
   centerClusterDots,
@@ -30,6 +32,7 @@ export function BrainTreeGraph({
   centerLabel: centerLabelProp,
   domains: domainsProp,
 }: BrainTreeGraphProps) {
+  const t = useTranslations("story");
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   // Never read localStorage in initial state: SSR and first client paint must match.
   const [liveTree, setLiveTree] = useState(() => {
@@ -73,7 +76,7 @@ export function BrainTreeGraph({
     .join(" ");
 
   return (
-    <figure className={graphClass} aria-label="Brain radial map">
+    <figure className={graphClass} aria-label={t("mapLabel")}>
       <svg
         viewBox="0 0 800 800"
         role="img"
@@ -171,18 +174,16 @@ export function BrainTreeGraph({
         })}
       </svg>
       {live && liveReady && liveTree.isLive && (
-        <figcaption className="brain-tree-caption live">Nodes synced from your wizard draft</figcaption>
+        <figcaption className="brain-tree-caption live">{t("synced")}</figcaption>
       )}
       {!live && extractDemo && (
         <figcaption className="brain-tree-caption extract">
-          Sample after URL extract · FACTS and GAPS highlighted ·{" "}
-          <a href="/wizard">Try your URL</a>
+          {t("sample")} <Link href="/wizard">{t("tryUrl")}</Link>
         </figcaption>
       )}
       {!live && !extractDemo && (
         <figcaption className="brain-tree-caption">
-          Demo topology · hover a spoke ·{" "}
-          <a href="/wizard">Wizard</a> fills FACTS, STORIES, and GAPS
+          {t("demo")} <Link href="/wizard">{t("demoLink")}</Link> {t("demoRest")}
         </figcaption>
       )}
     </figure>

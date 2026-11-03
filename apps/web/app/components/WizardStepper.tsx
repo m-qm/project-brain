@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 type WizardStepperProps = {
   steps: readonly string[];
   current: number;
@@ -7,14 +9,15 @@ type WizardStepperProps = {
 };
 
 export function WizardStepper({ steps, current, onStepChange }: WizardStepperProps) {
+  const t = useTranslations("wizard");
   const total = steps.length;
   const progress = total <= 1 ? 100 : (current / (total - 1)) * 100;
 
   return (
-    <nav className="wizard-stepper" aria-label="Wizard progress">
+    <nav className="wizard-stepper" aria-label={t("progress")}>
       <div className="wizard-stepper-meta">
         <span className="wizard-stepper-phase">
-          Step {current + 1} of {total}
+          {t("stepProgress", { current: current + 1, total })}
         </span>
         <span className="wizard-stepper-current">{steps[current]}</span>
       </div>
@@ -40,7 +43,7 @@ export function WizardStepper({ steps, current, onStepChange }: WizardStepperPro
                   type="button"
                   className="wizard-step-button"
                   onClick={() => onStepChange(i)}
-                  title={`Go to ${label}`}
+                  title={t("goTo", { label })}
                 >
                   <span className="wizard-step-marker">
                     {state === "done" ? (

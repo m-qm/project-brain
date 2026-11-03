@@ -1,15 +1,19 @@
-export function HeroShowcase() {
+import { getTranslations } from "next-intl/server";
+
+export async function HeroShowcase() {
+  const t = await getTranslations("showcase");
+
   return (
     <div className="showcase-wrap">
       <div className="showcase">
         <div className="showcase-dots" aria-hidden />
         <div className="showcase-chrome">
-          <span className="showcase-tab active">FACTS</span>
-          <span className="showcase-tab">STORIES</span>
-          <span className="showcase-tab">VALIDATE</span>
+          <span className="showcase-tab active">{t("facts")}</span>
+          <span className="showcase-tab">{t("stories")}</span>
+          <span className="showcase-tab">{t("validate")}</span>
         </div>
         <div className="showcase-body">
-          <div className="showcase-search">Search ground truth</div>
+          <div className="showcase-search">{t("search")}</div>
           <div className="showcase-grid">
             <div className="showcase-node">
               brain/facts
@@ -24,7 +28,7 @@ export function HeroShowcase() {
               <strong>AGENTS.md</strong>
             </div>
             <div className="showcase-node">
-              open questions
+              {t("openQuestions")}
               <strong>[CONFIRM]</strong>
             </div>
           </div>

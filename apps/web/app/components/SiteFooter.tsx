@@ -1,43 +1,54 @@
-import Link from "next/link";
-import { FOOTER_COPYRIGHT, FOOTER_LEGAL_LINKS } from "@/lib/site-footer";
+"use client";
 
-const PRODUCT_LINKS = (
-  <>
-    <Link href="https://agentkbase.com">agentkbase.com</Link>
-    {" · "}
-    Agent KBase · open source · pairs with{" "}
-    <a href="https://skilltree.ai" target="_blank" rel="noopener noreferrer">
-      SkillTree
-    </a>
-    {" · "}
-    <Link href="https://www.npmjs.com/package/@agentkbase/cli">npm</Link>
-    {" · "}
-    <Link href="https://github.com/m-qm/project-brain">GitHub</Link>
-  </>
-);
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { FOOTER_LEGAL_LINKS } from "@/lib/site-footer";
+
+const LABEL_KEYS = {
+  "/legal/privacy": "privacy",
+  "/legal/terms": "terms",
+  "/legal/trust": "trust",
+  "/legal/sla": "sla",
+  "/legal/acknowledgements": "acknowledgements",
+  "https://www.vercel-status.com/": "status",
+} as const;
 
 export function SiteFooter() {
+  const t = useTranslations("footer");
   const year = new Date().getFullYear();
 
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
-        <p className="site-footer-product">{PRODUCT_LINKS}</p>
-        <nav className="site-footer-legal" aria-label="Legal and trust">
+        <p className="site-footer-product">
+          <Link href="/">agentkbase.com</Link>
+          {" · "}
+          Agent KBase · {t("product")}{" "}
+          <a href="https://skilltree.ai" target="_blank" rel="noopener noreferrer">
+            SkillTree
+          </a>
+          {" · "}
+          <a href="https://www.npmjs.com/package/@agentkbase/cli">npm</a>
+          {" · "}
+          <a href="https://github.com/m-qm/project-brain">GitHub</a>
+        </p>
+        <nav className="site-footer-legal" aria-label={t("legal")}>
           <span className="site-footer-copy">
-            © {year} {FOOTER_COPYRIGHT}
+            © {year} {t("copyright")}
           </span>
-          {FOOTER_LEGAL_LINKS.map((link) =>
-            link.external ? (
+          {FOOTER_LEGAL_LINKS.map((link) => {
+            const key = LABEL_KEYS[link.href as keyof typeof LABEL_KEYS];
+            const label = key ? t(key) : link.label;
+            return link.external ? (
               <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
-                {link.label}
+                {label}
               </a>
             ) : (
               <Link key={link.href} href={link.href}>
-                {link.label}
+                {label}
               </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
       </div>
     </footer>
