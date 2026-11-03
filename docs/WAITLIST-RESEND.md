@@ -21,6 +21,7 @@ Redeploy after changing env vars.
 | `WAITLIST_RESEND_FALLBACK_TO` | Inbox for fallback notifications (optional) |
 | `WAITLIST_RESEND_FALLBACK_FROM` | Default `Agent KBase <onboarding@resend.dev>` |
 | `WAITLIST_RESEND_FALLBACK` | Set `false` once `@agentkbase.com` sends work |
+| `WAITLIST_RESEND_BRIDGE_INBOX` | If Gmail fails on test sender, one delivery to this inbox (e.g. hello@dualperspective.digital); forward to Gmail in Porkbun until domain Verified |
 
 ## Verify agentkbase.com on Resend
 

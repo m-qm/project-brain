@@ -69,7 +69,8 @@ See plan; winners for v1: **A + B**. Fallback if discovery fails: **F** (SkillTr
 
 * URL: `/company-brain` on agentkbase.com
 * Events: `company_brain_view`, `company_brain_waitlist`, `company_brain_setup_call`
-* Waitlist: `POST /api/waitlist` → optional `WAITLIST_WEBHOOK_URL`
+* Waitlist: `POST /api/waitlist` → Resend ([WAITLIST-RESEND.md](./WAITLIST-RESEND.md)); notify **mireiaquerol@gmail.com**
+* Kickoff: [DISCOVERY-KICKOFF.md](./DISCOVERY-KICKOFF.md) · Log: [discovery-log.md](./discovery-log.md)
 
 ## Related docs
 

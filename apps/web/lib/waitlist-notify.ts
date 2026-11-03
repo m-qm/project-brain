@@ -111,7 +111,7 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       return { ok: false, detail: primary.body.slice(0, 200) };
     }
 
-    const fallback = await resendSend(
+    let fallback = await resendSend(
       resendKey,
       fallbackFrom,
       [fallbackTo],
@@ -119,8 +119,27 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       ownerNotifyText(payload),
       payload.email,
     );
+    const bridgeInbox = process.env.WAITLIST_RESEND_BRIDGE_INBOX?.trim();
+    if (
+      !fallback.ok &&
+      bridgeInbox &&
+      bridgeInbox.toLowerCase() !== fallbackTo.toLowerCase() &&
+      fallback.body.includes("only send testing emails")
+    ) {
+      fallback = await resendSend(
+        resendKey,
+        fallbackFrom,
+        [bridgeInbox],
+        `Waitlist (forward to ${fallbackTo}): ${payload.email}`,
+        ownerNotifyText(payload),
+        payload.email,
+      );
+      if (fallback.ok) {
+        console.warn("[waitlist] bridge inbox until agentkbase.com verified; forward to", fallbackTo);
+      }
+    }
     if (fallback.ok) {
-      console.warn("[waitlist] used Resend fallback inbox until agentkbase.com is verified");
+      console.warn("[waitlist] used Resend fallback until agentkbase.com is verified");
       return {
         ok: true,
         channel: "fallback",
