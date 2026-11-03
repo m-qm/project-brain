@@ -23,6 +23,8 @@ Redeploy after changing env vars.
 | `WAITLIST_RESEND_FALLBACK` | Set `false` once `@agentkbase.com` sends work |
 | `WAITLIST_RESEND_BRIDGE_INBOX` | If Gmail fails on test sender, one delivery to this inbox (e.g. hello@dualperspective.digital); forward to Gmail in Porkbun until domain Verified |
 
+Porkbun MX on `agentkbase.com` does **not** deliver waitlist mail. See [WAITLIST-EMAIL-TROUBLESHOOTING.md](./WAITLIST-EMAIL-TROUBLESHOOTING.md).
+
 ## Verify agentkbase.com on Resend
 
 Required so you can send **from** `@agentkbase.com` **to** Gmail (not only Resend’s test inbox).
