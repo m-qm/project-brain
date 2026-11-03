@@ -2,6 +2,15 @@ import { sendWaitlistEmail, type WaitlistPayload } from "../../../lib/waitlist-n
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Placeholder / example addresses that should not be stored. */
+const BLOCKED_EMAILS = new Set([
+  "you@company.com",
+  "email@example.com",
+  "name@company.com",
+  "test@test.com",
+  "user@example.com",
+]);
+
 export async function POST(req: Request) {
   let body: { email?: string; source?: string };
   try {
@@ -13,6 +22,12 @@ export async function POST(req: Request) {
   const email = body.email?.trim().toLowerCase() ?? "";
   if (!EMAIL_RE.test(email)) {
     return Response.json({ error: "Valid email required." }, { status: 400 });
+  }
+  if (BLOCKED_EMAILS.has(email) || email.endsWith("@example.com")) {
+    return Response.json(
+      { error: "Use your real work email, not the placeholder in the form." },
+      { status: 400 },
+    );
   }
 
   const source = body.source?.trim().slice(0, 64) || "company-brain";
@@ -33,5 +48,9 @@ export async function POST(req: Request) {
     return Response.json({ error: "Could not save your signup. Try again or email hello@agentkbase.com." }, { status: 502 });
   }
 
-  return Response.json({ ok: true, stored: true });
+  return Response.json({
+    ok: true,
+    stored: true,
+    subscriberNotified: result.subscriberNotified === true,
+  });
 }

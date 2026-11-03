@@ -29,15 +29,27 @@ export function CompanyBrainWaitlist({ source }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source }),
       });
-      const data = (await res.json()) as { error?: string; stored?: boolean };
+      const data = (await res.json()) as {
+        error?: string;
+        stored?: boolean;
+        subscriberNotified?: boolean;
+      };
       if (!res.ok) {
         setStatus("error");
         setMessage(data.error ?? "Something went wrong.");
         return;
       }
-      track("company_brain_waitlist", { source, stored: data.stored ? "resend" : "none" });
+      track("company_brain_waitlist", {
+        source,
+        stored: data.stored ? "resend" : "none",
+        confirmation: data.subscriberNotified ? "yes" : "no",
+      });
       setStatus("ok");
-      setMessage("You are on the list. We will email when the Pack launches.");
+      setMessage(
+        data.subscriberNotified
+          ? "You're on the list. Check your inbox for a short confirmation."
+          : "You're on the list. Launch updates will come from Agent KBase when the Pack is ready (no confirmation email yet).",
+      );
       setEmail("");
     } catch {
       setStatus("error");
@@ -57,7 +69,7 @@ export function CompanyBrainWaitlist({ source }: Props) {
             type="email"
             autoComplete="email"
             required
-            placeholder="you@company.com"
+            placeholder="your@work.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === "loading"}

@@ -5,21 +5,22 @@ export type WaitlistPayload = {
   at: string;
 };
 
+export type WaitlistSendResult = {
+  ok: boolean;
+  detail?: string;
+  channel?: "domain" | "fallback";
+  ownerNotified?: boolean;
+  subscriberNotified?: boolean;
+};
+
 async function resendSend(
   apiKey: string,
   from: string,
   to: string[],
-  payload: WaitlistPayload,
+  subject: string,
+  text: string,
+  replyTo?: string,
 ): Promise<{ ok: boolean; status: number; body: string }> {
-  const text = [
-    "New Company Brain waitlist signup",
-    "",
-    `Email: ${payload.email}`,
-    `Source: ${payload.source}`,
-    `Product: ${payload.product}`,
-    `At: ${payload.at}`,
-  ].join("\n");
-
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -29,18 +30,37 @@ async function resendSend(
     body: JSON.stringify({
       from,
       to,
-      subject: `Waitlist: ${payload.email}`,
+      subject,
       text,
-      reply_to: payload.email,
+      ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
   const body = await res.text();
   return { ok: res.ok, status: res.status, body };
 }
 
-export async function sendWaitlistEmail(
-  payload: WaitlistPayload,
-): Promise<{ ok: boolean; detail?: string; channel?: "domain" | "fallback" }> {
+function ownerNotifyText(payload: WaitlistPayload): string {
+  return [
+    "New Company Brain waitlist signup",
+    "",
+    `Email: ${payload.email}`,
+    `Source: ${payload.source}`,
+    `Product: ${payload.product}`,
+    `At: ${payload.at}`,
+  ].join("\n");
+}
+
+function subscriberConfirmText(payload: WaitlistPayload): string {
+  return [
+    "Thanks for joining the Company Brain Pack waitlist on Agent KBase.",
+    "",
+    "We will email you when the Pack launches. No need to reply to this message.",
+    "",
+    "If you did not sign up, ignore this email.",
+  ].join("\n");
+}
+
+export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<WaitlistSendResult> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
   const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "mireiaquerol@gmail.com";
   const from =
@@ -55,9 +75,34 @@ export async function sendWaitlistEmail(
   }
 
   try {
-    const primary = await resendSend(resendKey, from, [notifyTo], payload);
+    const primary = await resendSend(
+      resendKey,
+      from,
+      [notifyTo],
+      `Waitlist: ${payload.email}`,
+      ownerNotifyText(payload),
+      payload.email,
+    );
     if (primary.ok) {
-      return { ok: true, channel: "domain" };
+      let subscriberNotified = false;
+      const confirm = await resendSend(
+        resendKey,
+        from,
+        [payload.email],
+        "You're on the Company Brain waitlist",
+        subscriberConfirmText(payload),
+      );
+      if (confirm.ok) {
+        subscriberNotified = true;
+      } else {
+        console.error("[waitlist] confirmation email failed", confirm.status, confirm.body.slice(0, 300));
+      }
+      return {
+        ok: true,
+        channel: "domain",
+        ownerNotified: true,
+        subscriberNotified,
+      };
     }
     console.error("[waitlist] resend primary failed", primary.status, primary.body.slice(0, 500));
 
@@ -66,10 +111,22 @@ export async function sendWaitlistEmail(
       return { ok: false, detail: primary.body.slice(0, 200) };
     }
 
-    const fallback = await resendSend(resendKey, fallbackFrom, [fallbackTo], payload);
+    const fallback = await resendSend(
+      resendKey,
+      fallbackFrom,
+      [fallbackTo],
+      `Waitlist: ${payload.email}`,
+      ownerNotifyText(payload),
+      payload.email,
+    );
     if (fallback.ok) {
       console.warn("[waitlist] used Resend fallback inbox until agentkbase.com is verified");
-      return { ok: true, channel: "fallback" };
+      return {
+        ok: true,
+        channel: "fallback",
+        ownerNotified: true,
+        subscriberNotified: false,
+      };
     }
     console.error("[waitlist] resend fallback failed", fallback.status, fallback.body.slice(0, 500));
     return { ok: false, detail: fallback.body.slice(0, 200) };
