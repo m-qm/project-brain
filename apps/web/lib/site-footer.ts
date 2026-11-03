@@ -15,5 +15,6 @@ export const FOOTER_LEGAL_LINKS: FooterLink[] = [
   { href: "/legal/acknowledgements", label: "Acknowledgements" },
 ];
 
-export const FOOTER_OPERATOR = "Agent KBase";
+/** Project name only — not a registered company (see /legal/privacy). */
+export const FOOTER_COPYRIGHT = "Agent KBase project";
 export const FOOTER_CONTACT = "hello@agentkbase.com";

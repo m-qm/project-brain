@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FOOTER_LEGAL_LINKS, FOOTER_OPERATOR } from "@/lib/site-footer";
+import { FOOTER_COPYRIGHT, FOOTER_LEGAL_LINKS } from "@/lib/site-footer";
 
 const PRODUCT_LINKS = (
   <>
@@ -25,7 +25,7 @@ export function SiteFooter() {
         <p className="site-footer-product">{PRODUCT_LINKS}</p>
         <nav className="site-footer-legal" aria-label="Legal and trust">
           <span className="site-footer-copy">
-            © {year} {FOOTER_OPERATOR}
+            © {year} {FOOTER_COPYRIGHT}
           </span>
           {FOOTER_LEGAL_LINKS.map((link) =>
             link.external ? (

@@ -2,7 +2,13 @@
 
 **Last updated:** November 2026
 
-Agent KBase (`agentkbase.com`) is operated for the open source project at [github.com/m-qm/project-brain](https://github.com/m-qm/project-brain). This policy covers the **website and hosted wizard**, not code you run locally or brains you store in your own git repos.
+## Site operator
+
+**agentkbase.com** is run by the **individual maintainer** of the Agent KBase open source project ([github.com/m-qm/project-brain](https://github.com/m-qm/project-brain)). There is **no separate registered legal entity** named on this site yet. For privacy requests and contact: **hello@agentkbase.com**.
+
+If paid products launch under a company name later, this page and checkout terms will be updated with the legal name, address, and data controller details.
+
+This policy covers the **website and hosted wizard**, not code you run locally or brains you store in your own git repos.
 
 ## What we collect
 

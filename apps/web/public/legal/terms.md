@@ -4,6 +4,10 @@
 
 These terms apply to **agentkbase.com**, the web wizard, waitlist, and related pages. Open source software in the repository is additionally licensed under the terms in that repository (see Acknowledgements).
 
+## Site operator
+
+The site is operated by the **individual maintainer** of the Agent KBase open source project (**hello@agentkbase.com**). No incorporated legal entity is identified here yet. References to “we” or “operator” mean that maintainer in their capacity running this website and waitlist, not a company unless stated at checkout.
+
 ## Using the site
 
 You agree to use the site lawfully and not to abuse endpoints (including automated scraping of LLM routes, waitlist spam, or attempts to bypass rate limits).
@@ -12,7 +16,7 @@ The wizard and CLI are provided for building **agent knowledge bases** in your r
 
 ## Waitlist and pre-launch offers
 
-Company Brain Pack and related offers may be described before general availability. Waitlist signup **does not** create a contract to sell at a particular price. We may change scope, pricing, or timing until a paid checkout or signed statement of work exists.
+Company Brain Pack and related offers may be described before general availability. Waitlist signup **does not** create a contract to sell at a particular price. Scope, pricing, or timing may change until **paid checkout or a written agreement** with a named seller exists (which may include a future registered business).
 
 ## Open source software
 
@@ -24,15 +28,15 @@ The free hosted wizard and documentation are provided on a **best-effort** basis
 
 ## Intellectual property
 
-Agent KBase name, site design, and documentation are owned by the project operators unless otherwise noted. Trademarks of third parties (Cursor, SkillTree, Vercel, etc.) belong to their owners.
+Agent KBase name, site design, and documentation are maintained for the open source project; software copyright follows the repository LICENSE. Trademarks of third parties (Cursor, SkillTree, Vercel, etc.) belong to their owners.
 
 ## Limitation of liability
 
-To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from use of the site or exported brain content, including agent actions in your environment.
+To the maximum extent permitted by law, the site operator is not liable for indirect, incidental, or consequential damages arising from use of the site or exported brain content, including agent actions in your environment.
 
-## Governing law
+## Applicable law
 
-These terms are governed by the laws of Spain, without regard to conflict rules, unless mandatory consumer protection in your country requires otherwise.
+Where **mandatory** consumer or data protection rules apply in your country, those rules apply to the extent required. Otherwise, disputes should be raised in good faith via **hello@agentkbase.com** before other action.
 
 ## Contact
 

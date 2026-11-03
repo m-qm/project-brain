@@ -2,6 +2,8 @@
 
 How we think about security and data on **agentkbase.com**.
 
+**Operator:** individual maintainer of the open source project; no registered company on this site yet ([Privacy](/legal/privacy)).
+
 ## Security contact
 
 Report vulnerabilities or abuse:
