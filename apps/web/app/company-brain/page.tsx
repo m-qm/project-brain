@@ -6,8 +6,8 @@ import { CompanyBrainWaitlist } from "./CompanyBrainWaitlist";
 
 export const metadata: Metadata = pageMeta(
   "/company-brain",
-  "Check what you sell · Agent KBase",
-  "Paste your studio site. Correct the draft. If it fits, we turn it into an article and a LinkedIn post you approve before anything goes live.",
+  "The Knowledge Layer Every Agent Reads · Agent KBase",
+  "Paste your studio site. Correct the draft. Every agent that speaks for the business reads that same base. An article or a LinkedIn post comes after you approve it.",
 );
 
 export default function CompanyBrainPage() {
@@ -17,12 +17,13 @@ export default function CompanyBrainPage() {
       <main className="page-main container-narrow">
         <p className="story-eyebrow">STUDIO OR CONSULTANCY</p>
         <h1 className="page-title">
-          See if the draft understands <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>what you sell</em>
+          The knowledge layer <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>every agent reads</em>
         </h1>
         <p className="page-lead">
-          Paste your site. Cross out what you do not sell. If the draft fits, we turn it into an
-          article and a LinkedIn post. You approve both. Nothing goes live before that. We do not
-          promise rankings, new clients, or hours saved.
+          Paste your site. Correct the draft until you recognise what you sell, who it is for, and
+          what must not be said. From then on, every agent that speaks for the business reads that
+          same base. A price, a client, or a claim that is not there is cut, or marked for you to
+          confirm. Nothing goes live until you say yes. An article or a LinkedIn post comes after.
         </p>
 
         <div className="card company-brain-card" id="guide">
@@ -32,8 +33,8 @@ export default function CompanyBrainPage() {
             <li>Paste the public URL in the wizard and extract a draft.</li>
             <li>Cross out any service, price, or deadline you do not sell.</li>
             <li>Write who you serve, and what you will not claim.</li>
-            <li>Ask something a client would ask. The answer has to come from that base.</li>
-            <li>If you would keep the draft, we write one article and one LinkedIn post for you to approve.</li>
+            <li>Ask something a client would ask. Every agent has to answer from that base.</li>
+            <li>If you trust the draft, an article or a LinkedIn post can come next. You approve it first.</li>
           </ol>
           <p className="field-hint">
             A line is valid when it is in your files, or marked for you to confirm, or cut.{" "}
@@ -90,8 +91,8 @@ export default function CompanyBrainPage() {
               <p className="company-brain-tier-name">Done-for-you</p>
               <p className="company-brain-tier-price">Quoted retainer</p>
               <p className="company-brain-tier-desc">
-                We install a brain from your public site, run the two workers, you approve. First
-                motion. Setup call, then a written agreement.
+                We install the base from your public site. You correct it. You approve anything an
+                agent would publish. Setup call, then a written agreement.
               </p>
             </div>
             <div className="company-brain-tier">

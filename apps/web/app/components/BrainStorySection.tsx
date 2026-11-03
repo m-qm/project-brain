@@ -84,7 +84,7 @@ export function BrainStorySection() {
                 Extract from website →
               </Link>
               <Link className="btn secondary" href="/company-brain">
-                Content and ads workers →
+                The knowledge layer →
               </Link>
             </div>
           </div>

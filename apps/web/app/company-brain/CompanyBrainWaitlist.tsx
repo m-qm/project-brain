@@ -48,7 +48,7 @@ export function CompanyBrainWaitlist({ source }: Props) {
       setMessage(
         data.subscriberNotified
           ? "You're on the list. Check your inbox for a short confirmation."
-          : "You're on the list. Launch updates will come from Agent KBase when the workers are ready (no confirmation email yet).",
+          : "You're on the list. Launch updates will come from Agent KBase when the knowledge layer is ready (no confirmation email yet).",
       );
       setEmail("");
     } catch {

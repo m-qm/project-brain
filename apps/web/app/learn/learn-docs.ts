@@ -9,9 +9,9 @@ export type LearnDoc = {
 export const LEARN_DOCS: LearnDoc[] = [
   {
     slug: "12-what-you-sell",
-    title: "Paste your site. Check what you sell.",
+    title: "The knowledge layer every agent reads",
     description:
-      "Five steps for a studio or small consultancy: a draft from your URL, then an article and a LinkedIn post you approve.",
+      "Five steps for a studio or small consultancy: a draft from your URL that every agent must read before anything goes live.",
     section: "Start",
     minutes: 12,
   },

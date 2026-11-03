@@ -11,7 +11,7 @@ export function SiteNav({ ctaHref = "/wizard", ctaLabel = "Try wizard" }: { ctaH
         <nav className="nav-links" aria-label="Main">
           <Link href="/learn">Learn</Link>
           <Link href="/blog">Blog</Link>
-          <Link href="/company-brain">Workers</Link>
+          <Link href="/company-brain">Knowledge</Link>
           <Link href="/skilltree">SkillTree</Link>
           <Link href="/tree">Brain map</Link>
           <Link href="/wizard">Wizard</Link>

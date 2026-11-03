@@ -41,7 +41,7 @@ async function resendSend(
 
 function ownerNotifyText(payload: WaitlistPayload): string {
   return [
-    "New content and ads workers waitlist signup",
+    "New knowledge layer waitlist signup",
     "",
     `Submitter email (form field): ${payload.email}`,
     `Reply-To on this message is set to that address.`,
@@ -54,9 +54,9 @@ function ownerNotifyText(payload: WaitlistPayload): string {
 
 function subscriberConfirmText(payload: WaitlistPayload): string {
   return [
-    "Thanks for joining the content and ads workers waitlist on Agent KBase.",
+    "Thanks for joining the Agent KBase knowledge layer waitlist.",
     "",
-    "We will email you when the workers launch. No need to reply to this message.",
+    "We will email you when the base is ready for your studio. No need to reply to this message.",
     "",
     "If you did not sign up, ignore this email.",
   ].join("\n");
@@ -91,7 +91,7 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       resendKey,
       from,
       [payload.email],
-      "You're on the Agent KBase workers waitlist",
+      "You're on the Agent KBase knowledge layer waitlist",
       subscriberConfirmText(payload),
     );
     if (confirm.ok) {

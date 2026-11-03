@@ -5,17 +5,16 @@ export const SITE_URL = "https://agentkbase.com";
 
 export const SITE_NAME = "Agent KBase";
 
-export const SITE_TITLE =
-  "Agent KBase (agentkbase) · Git-native brain for Cursor agents";
+export const SITE_TITLE = "Agent KBase · The Knowledge Layer Every Agent Reads";
 
 export const SITE_DESCRIPTION =
-  "agentkbase.com is a git-native knowledge base for Cursor agents. Skills say what the agent can do. Agent KBase holds curated facts in brain/ for your repo.";
+  "Agent KBase is the knowledge layer for a studio or a small consultancy. Paste your site, correct the draft, and every agent reads the same base.";
 
 /** Exact script body. The CSP hash must match these bytes. */
 export const WEBSITE_JSON_LD =
-  '{"@context":"https://schema.org","@type":"WebSite","name":"Agent KBase","alternateName":["agentkbase","AgentKBase"],"url":"https://agentkbase.com","description":"agentkbase.com is a git-native knowledge base for Cursor agents. Skills say what the agent can do. Agent KBase holds curated facts in brain/ for your repo."}';
+  '{"@context":"https://schema.org","@type":"WebSite","name":"Agent KBase","alternateName":["agentkbase","AgentKBase"],"url":"https://agentkbase.com","description":"Agent KBase is the knowledge layer for a studio or a small consultancy. Paste your site, correct the draft, and every agent reads the same base."}';
 
-export const WEBSITE_JSON_LD_HASH = "sha256-xwi1ipjI3d/7AwsAIIk8AzaMSD6jOUOJSZlbnu59jsw=";
+export const WEBSITE_JSON_LD_HASH = "sha256-1/JvkOb/8eCRiGiH4MLG3DjSd9qzNkcxIvJuqyqsDqU=";
 
 export function pageMeta(path: string, title: string, description: string): Metadata {
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;

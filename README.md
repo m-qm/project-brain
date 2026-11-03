@@ -126,7 +126,7 @@ Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
 11. [Agent KBase MCP](docs/10-mcp.md)
 12. [Content and ads workers](docs/11-content-ads-workers.md)
-13. [Paste your site. Check what you sell.](docs/12-what-you-sell.md)
+13. [The knowledge layer every agent reads](docs/12-what-you-sell.md)
 
 On the site: [agentkbase.com/learn](https://agentkbase.com/learn). Maintainer-only notes: [docs/MAINTAINER.md](docs/MAINTAINER.md).
 

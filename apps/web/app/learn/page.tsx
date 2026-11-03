@@ -23,8 +23,8 @@ export default function LearnIndexPage() {
             Learn <em>Agent KBase</em>
           </h1>
           <p className="learn-lead">
-            A studio starts by checking what the draft says you sell. Builders install the
-            brain in git.
+            The knowledge layer every agent reads. A studio starts from the public site.
+            Builders install the same base in git.
           </p>
           <div className="learn-hero-actions">
             <Link className="btn" href="/learn/12-what-you-sell">

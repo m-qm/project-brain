@@ -41,11 +41,11 @@ export default function SkillTreePage() {
         <div className="card company-brain-card" style={{ marginTop: "1rem" }}>
           <h2 className="company-brain-card-title">After a SkillTree audit</h2>
           <p className="field-hint" style={{ marginBottom: "1rem" }}>
-            Turn findings into a git brain the content and ads workers must not contradict. Join the
+            Turn the findings into one base every agent for that business must read. Join the
             waitlist or book a done-for-you setup.
           </p>
           <Link className="btn" href="/company-brain">
-            Content and ads workers →
+            The knowledge layer →
           </Link>
         </div>
       </main>

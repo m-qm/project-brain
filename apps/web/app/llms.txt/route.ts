@@ -16,11 +16,11 @@ export function GET() {
   const body = [
     "# Agent KBase",
     "",
-    "> Open-source, git-native knowledge base for Cursor agents. Skills say what an agent can do. Agent KBase holds curated facts, stories, and open questions in a brain/ folder the agent can load before a task.",
+    "> Agent KBase is the knowledge layer for a studio or a small consultancy. Paste the public site, correct the draft, and every agent that speaks for the business reads the same base.",
     "",
     "The CLI (`npm install -g @agentkbase/cli`) and the web wizard export the same validated pack: facts, stories, and AGENTS.md. Validation runs before export. A public website URL can seed a draft; review it before export. SkillTree imports skills (how to work). Engram is a separate cross-session memory layer.",
     "",
-    "Content workers are a paid add-on, still coming soon. The OSS brain stays read-only. First loop: blog after a human approves, then a LinkedIn draft from that article. WhatsApp approval is the same gate. Done-for-you is the first motion.",
+    "The first result is a base the owner trusts. An article or a LinkedIn post comes after, and only with a yes. The OSS brain stays read-only. Done-for-you installs that base from the public site.",
     "",
     section("Start", [
       `- [Home](${SITE_URL}/): product overview and install`,
@@ -36,7 +36,7 @@ export function GET() {
     "",
     section("Product", [
       `- [SkillTree + Agent KBase](${SITE_URL}/skilltree): pair SkillTree skills with a brain/ folder`,
-      `- [Content and ads workers](${SITE_URL}/company-brain): HITL workers waitlist, done-for-you`,
+      `- [The knowledge layer](${SITE_URL}/company-brain): one base every agent reads; waitlist and done-for-you`,
     ]),
     "",
     section("Optional", [

@@ -166,8 +166,8 @@ export default function WizardPage() {
           fields pass validation.
         </p>
         <p className="company-brain-banner">
-          Need workers that post only after you approve, grounded in this brain?{" "}
-          <Link href="/company-brain">Content and ads workers</Link> (waitlist + done-for-you).
+          Every agent that speaks for the business should read this base.{" "}
+          <Link href="/company-brain">The knowledge layer</Link> (waitlist + done-for-you).
         </p>
         <WizardStepper steps={STEPS} current={step} onStepChange={setStep} />
 

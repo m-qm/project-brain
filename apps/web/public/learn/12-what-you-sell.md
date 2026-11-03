@@ -1,4 +1,4 @@
-# Paste your site. Check what you sell.
+# The knowledge layer every agent reads
 
 For a studio or a one or two person consultancy whose website already describes the services. Shops, with prices and packs on the page, are a later test.
 
@@ -33,12 +33,12 @@ Use a question a real client sends. “What do you do, and what does it cost?”
 
 The answer is valid only when every claim is in the base you just edited, or you are looking at a `[CONFIRM]` you still have to answer. If the reply adds a client, a ranking, or a price that is not there, the base is not ready.
 
-## 5. Two pieces, after you say yes
+## 5. Every agent reads that base
 
-If you can say “this describes my business”, the paid step is one article and one LinkedIn post from that same base. You review both. Nothing is published before your yes.
+If you can say “this describes my business”, that file is the base. The agent that answers a client, the one that writes an article, and the one that drafts a LinkedIn post all read it. A piece for the site or for LinkedIn comes after, and only with your yes.
 
-The checks for that review are on [Content and ads workers](/company-brain). We do not promise new clients, Google rankings, or hours saved.
+The checks for anything that would go live are on [the knowledge layer](/company-brain). We do not promise new clients, Google rankings, or hours saved.
 
 ## What this guide does not open
 
-One question: what you sell. Marketing, sales, and operations stay out until this pass is something you would correct and keep. A transversal base is the later shape of the same files, not a second product.
+One question first: what you sell. Marketing, sales, and operations are not a second product. Transversal means every agent reads this same base, not that every department is in scope on day one.
