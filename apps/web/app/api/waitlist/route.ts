@@ -48,6 +48,8 @@ export async function POST(req: Request) {
     return Response.json({ error: "Could not save your signup. Try again or email hello@agentkbase.com." }, { status: 502 });
   }
 
+  console.info("[waitlist] ok", payload.email, result.channel ?? "domain");
+
   return Response.json({
     ok: true,
     stored: true,

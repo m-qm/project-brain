@@ -43,7 +43,9 @@ function ownerNotifyText(payload: WaitlistPayload): string {
   return [
     "New Company Brain waitlist signup",
     "",
-    `Email: ${payload.email}`,
+    `Submitter email (form field): ${payload.email}`,
+    `Reply-To on this message is set to that address.`,
+    "",
     `Source: ${payload.source}`,
     `Product: ${payload.product}`,
     `At: ${payload.at}`,
@@ -139,7 +141,7 @@ export async function sendWaitlistEmail(payload: WaitlistPayload): Promise<Waitl
       }
     }
     if (fallback.ok) {
-      console.warn("[waitlist] used Resend fallback until agentkbase.com is verified");
+      console.warn("[waitlist] stored signup", payload.email, "via fallback until agentkbase.com verified");
       return {
         ok: true,
         channel: "fallback",
