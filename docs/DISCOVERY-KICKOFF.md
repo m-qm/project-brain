@@ -4,7 +4,7 @@ Goal: **5 calls** in 14 days. Log each call in [discovery-log.md](./discovery-lo
 
 ## Before you outreach
 
-1. **Waitlist:** Resend → `agentkbase.com` **Verified** (same account as `RESEND_API_KEY` on Vercel). Notifications go only to **mireiaquerol@gmail.com**.
+1. **Waitlist:** Resend → `agentkbase.com` **Verified** (same account as `RESEND_API_KEY` on Vercel). Notifications go only to **mireiaquerol@gmail.com** ([WAITLIST-RESEND.md](./WAITLIST-RESEND.md)). If the form shows a domain verification error, fix DNS before outreach that depends on waitlist capture.
 2. **Analytics:** [Vercel → agentkbase → Analytics](https://vercel.com/mqms-projects/agentkbase/analytics). Filter last 7 days. Note counts for `company_brain_view`, `company_brain_waitlist`, `company_brain_setup_call`, `wizard_export`.
 3. **Calendly:** 15 min link on `/company-brain` (`NEXT_PUBLIC_SETUP_CALL_URL`).
 

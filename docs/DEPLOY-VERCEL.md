@@ -84,9 +84,11 @@ Custom events: `wizard_export`, `wizard_extract`, `learn_doc` (props: `slug`, op
 
 Company Brain fake door: `company_brain_view`, `company_brain_waitlist`, `company_brain_setup_call` (props: `source`, optional `stored`).
 
-Waitlist (Resend only): see [WAITLIST-RESEND.md](./WAITLIST-RESEND.md).
+Waitlist (Resend only, no webhooks): see [WAITLIST-RESEND.md](./WAITLIST-RESEND.md) and [WAITLIST-EMAIL-TROUBLESHOOTING.md](./WAITLIST-EMAIL-TROUBLESHOOTING.md).
 
-* `RESEND_API_KEY`, `RESEND_FROM`, `WAITLIST_NOTIFY_EMAIL`
+* `RESEND_API_KEY`, `RESEND_FROM`, `WAITLIST_NOTIFY_EMAIL` — requires `agentkbase.com` **Verified** in the same Resend account
 * `NEXT_PUBLIC_SETUP_CALL_URL` — Calendly for “Book setup call (DFY)” (`https://calendly.com/mireiaquerol/15min`)
+
+Do not set legacy `WAITLIST_WEBHOOK_URL` or bridge inbox vars; they are unused.
 
 Speed Insights is a separate paid add on; enable only if you want Core Web Vitals in the dashboard.
