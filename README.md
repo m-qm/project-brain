@@ -30,6 +30,14 @@ npx @agentkbase/cli quickstart
 
 ## Quick start (CLI)
 
+A studio or consultancy starts from the public site. Cross out anything the draft invented before an agent reads it. Guide: [Paste your site](docs/12-what-you-sell.md).
+
+```bash
+brain setup ./my-studio -n "Studio name" --url https://your-studio.com
+brain validate --dir ./my-studio
+brain brief --dir ./my-studio
+```
+
 Scaffold a **knowledge base in git** (`brain/`) plus **Engram config and Cursor rules** so agents consult both in parallel:
 
 ```bash
@@ -118,6 +126,7 @@ Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
 11. [Agent KBase MCP](docs/10-mcp.md)
 12. [Content and ads workers](docs/11-content-ads-workers.md)
+13. [Paste your site. Check what you sell.](docs/12-what-you-sell.md)
 
 On the site: [agentkbase.com/learn](https://agentkbase.com/learn). Maintainer-only notes: [docs/MAINTAINER.md](docs/MAINTAINER.md).
 

@@ -1,27 +1,38 @@
+export function reviewAfterExtractText(): string {
+  return `
+Review the draft before you use it
+===================================
+  1. Cross out any service, price, or deadline you do not sell.
+  2. Write who you serve, and what you will not claim.
+  3. Ask what a client would ask. The answer has to be in brain/ or marked [CONFIRM].
+  4. Nothing goes live until you say yes.
+
+Guide: https://agentkbase.com/learn/12-what-you-sell
+`.trim();
+}
+
 export function quickstartText(): string {
   return `
 Agent KBase — quick start
 ===========================
 
-From npm (recommended):
+Studio or consultancy (start here):
 
   npm install -g @agentkbase/cli
-  brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
+  brain setup ./my-studio -n "Studio name" --url https://your-studio.com
 
-From source (project-brain repo on GitHub):
+${reviewAfterExtractText()}
+
+Then:
+
+  brain validate --dir ./my-studio
+  brain brief --dir ./my-studio
+
+Builders, from a repo checkout:
 
   pnpm install
   pnpm run build:packages
-  pnpm brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
-
-With a public website draft:
-
-  pnpm brain setup --url https://yoursite.com -n "My Product" ~/path/to/your-repo
-
-Check the output:
-
-  pnpm brain validate --dir ~/path/to/your-repo
-  pnpm brain brief --dir ~/path/to/your-repo
+  pnpm brain setup ./my-app -n "My Product" -d "One line mission"
 
 What you get in the target repo:
   brain/              facts, stories, AGENTS.md
@@ -30,6 +41,6 @@ What you get in the target repo:
 
 Open the target repo in Cursor. Enable Engram MCP in settings if you use it.
 
-Docs: https://agentkbase.com/learn  (or pnpm dev → localhost:3000/learn)
+Install guide: https://agentkbase.com/learn/01-first-brain
 `.trimStart();
 }

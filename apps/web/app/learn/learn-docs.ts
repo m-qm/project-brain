@@ -8,6 +8,14 @@ export type LearnDoc = {
 
 export const LEARN_DOCS: LearnDoc[] = [
   {
+    slug: "12-what-you-sell",
+    title: "Paste your site. Check what you sell.",
+    description:
+      "Five steps for a studio or small consultancy: a draft from your URL, then an article and a LinkedIn post you approve.",
+    section: "Start",
+    minutes: 12,
+  },
+  {
     slug: "01-first-brain",
     title: "First brain in 15 minutes",
     description: "Setup CLI, validate, and export your first agent knowledge base.",

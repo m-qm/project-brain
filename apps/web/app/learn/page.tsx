@@ -23,12 +23,15 @@ export default function LearnIndexPage() {
             Learn <em>Agent KBase</em>
           </h1>
           <p className="learn-lead">
-            Short guides for vibecoders and small teams. Ground truth in git, Engram for
-            continuity, SkillTree for skills.
+            A studio starts by checking what the draft says you sell. Builders install the
+            brain in git.
           </p>
           <div className="learn-hero-actions">
-            <Link className="btn" href="/learn/01-first-brain">
-              Start here →
+            <Link className="btn" href="/learn/12-what-you-sell">
+              For a studio →
+            </Link>
+            <Link className="btn secondary" href="/learn/01-first-brain">
+              Install the brain
             </Link>
             <Link className="btn secondary" href="/wizard">
               Open wizard

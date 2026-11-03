@@ -62,4 +62,4 @@ Creates `brain/` without Engram or Cursor rules. Prefer `setup`.
 brain quickstart
 ```
 
-Plain-text steps when you are not in the browser. Same content as [learn on agentkbase.com](https://agentkbase.com/learn/01-first-brain).
+Plain-text steps when you are not in the browser. The studio path is [Paste your site](12-what-you-sell.md). This page is the install.

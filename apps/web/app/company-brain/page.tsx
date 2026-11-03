@@ -6,8 +6,8 @@ import { CompanyBrainWaitlist } from "./CompanyBrainWaitlist";
 
 export const metadata: Metadata = pageMeta(
   "/company-brain",
-  "Content and ads workers · Agent KBase",
-  "Five one-minute checks before anything goes live. Then a human approves. Waitlist for the operated loop.",
+  "Check what you sell · Agent KBase",
+  "Paste your studio site. Correct the draft. If it fits, we turn it into an article and a LinkedIn post you approve before anything goes live.",
 );
 
 export default function CompanyBrainPage() {
@@ -15,15 +15,33 @@ export default function CompanyBrainPage() {
     <div className="page-shell">
       <SiteNav ctaHref="/wizard" ctaLabel="Free wizard" />
       <main className="page-main container-narrow">
-        <p className="story-eyebrow">COMING SOON · PAID WORKERS</p>
+        <p className="story-eyebrow">STUDIO OR CONSULTANCY</p>
         <h1 className="page-title">
-          Content and ads <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>workers</em>
+          See if the draft understands <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>what you sell</em>
         </h1>
         <p className="page-lead">
-          Skills tell the agent what it can do. The brain holds what is true. The paid layer lets two
-          workers act: one writes the article, one drafts LinkedIn, only after a human approves. We do
-          not promise rankings. We do not ask for invoices or passwords.
+          Paste your site. Cross out what you do not sell. If the draft fits, we turn it into an
+          article and a LinkedIn post. You approve both. Nothing goes live before that. We do not
+          promise rankings, new clients, or hours saved.
         </p>
+
+        <div className="card company-brain-card" id="guide">
+          <p className="story-eyebrow">FIVE STEPS</p>
+          <h2 className="company-brain-card-title">From your URL to a base you recognise</h2>
+          <ol className="company-brain-list company-brain-checks">
+            <li>Paste the public URL in the wizard and extract a draft.</li>
+            <li>Cross out any service, price, or deadline you do not sell.</li>
+            <li>Write who you serve, and what you will not claim.</li>
+            <li>Ask something a client would ask. The answer has to come from that base.</li>
+            <li>If you would keep the draft, we write one article and one LinkedIn post for you to approve.</li>
+          </ol>
+          <p className="field-hint">
+            A line is valid when it is in your files, or marked for you to confirm, or cut.{" "}
+            <Link href="/learn/12-what-you-sell">Read the guide</Link>
+            {" · "}
+            <Link href="/wizard">Open the wizard</Link>.
+          </p>
+        </div>
 
         <div className="card company-brain-card" id="revision">
           <p className="story-eyebrow">ONE MINUTE · FIVE CHECKS</p>
@@ -90,6 +108,8 @@ export default function CompanyBrainPage() {
 
         <p className="field-hint" style={{ marginTop: "1.5rem" }}>
           Free today:{" "}
+          <Link href="/learn/12-what-you-sell">the five-step guide</Link>
+          {", "}
           <Link href="/wizard">wizard</Link>
           {", "}
           <Link href="/learn/11-content-ads-workers">how workers read the brain</Link>

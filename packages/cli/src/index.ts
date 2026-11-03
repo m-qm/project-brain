@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { quickstartText } from "./quickstart-text.js";
+import { quickstartText, reviewAfterExtractText } from "./quickstart-text.js";
 import {
   writeBrainToDisk,
   validateBrainDir,
@@ -22,7 +22,7 @@ const program = new Command();
 
 program
   .name("brain")
-  .description("Scaffold agent knowledge base (brain + Engram + Cursor rules)")
+  .description("Draft a knowledge base from a public site, then check it before an agent uses it")
   .version("0.1.0");
 
 function resolveExtractMode(opts: { multipage?: boolean; deep?: boolean }): ExtractScanMode {
@@ -88,6 +88,7 @@ program
         engramProject: opts.engramProject,
       });
       console.log(printSetupSummary(result));
+      if (opts.url?.trim()) console.log(`\n${reviewAfterExtractText()}`);
     },
   );
 
@@ -162,7 +163,12 @@ program
         const target = resolve(opts.init);
         const result = await setupAgentKnowledgeBase(target, input, { engram: opts.engram });
         console.log(printSetupSummary(result));
+        console.log(`\n${reviewAfterExtractText()}`);
         return;
+      }
+      if (!opts.json) {
+        console.log(reviewAfterExtractText());
+        console.log("");
       }
       if (opts.json) {
         console.log(JSON.stringify(extract, null, 2));
@@ -208,8 +214,9 @@ program
     const repoRoot = resolve(
       fileURLToPath(new URL("../../../docs/01-first-brain.md", import.meta.url)),
     );
-    console.log(repoRoot);
-    console.log("\nOpen docs/01-first-brain.md or https://agentkbase.com/learn/01-first-brain");
+    console.log("Studio: https://agentkbase.com/learn/12-what-you-sell");
+    console.log(`Install: ${repoRoot}`);
+    console.log("https://agentkbase.com/learn/01-first-brain");
   });
 
 program.parse();
