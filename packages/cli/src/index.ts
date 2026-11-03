@@ -23,7 +23,7 @@ const program = new Command();
 program
   .name("brain")
   .description("Draft a knowledge base from a public site, then check it before an agent uses it")
-  .version("0.1.0");
+  .version("0.1.1");
 
 function resolveExtractMode(opts: { multipage?: boolean; deep?: boolean }): ExtractScanMode {
   if (opts.deep) return "deep";
