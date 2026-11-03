@@ -15,6 +15,13 @@ export const LEARN_DOCS: LearnDoc[] = [
     minutes: 15,
   },
   {
+    slug: "07-extract-from-website",
+    title: "Extract from website",
+    description: "Draft facts from a public URL, then review before export.",
+    section: "Start",
+    minutes: 10,
+  },
+  {
     slug: "02-facts-vs-stories",
     title: "Facts vs stories",
     description: "What belongs in ground truth vs narrative for agents.",
@@ -50,10 +57,24 @@ export const LEARN_DOCS: LearnDoc[] = [
     minutes: 8,
   },
   {
-    slug: "07-extract-from-website",
-    title: "Extract from website",
-    description: "Draft facts from a public URL, then review before export.",
-    section: "Start",
+    slug: "08-multi-page-extract",
+    title: "Multi-page extract",
+    description: "Scan related pages on the same site for richer drafts.",
+    section: "Integrate",
+    minutes: 8,
+  },
+  {
+    slug: "09-guided-gap-filling",
+    title: "Guided gap filling",
+    description: "Suggest draft answers for open questions; you approve before export.",
+    section: "Integrate",
+    minutes: 8,
+  },
+  {
+    slug: "10-mcp",
+    title: "Agent KBase MCP",
+    description: "Read-only MCP tools for brief, validate, and search brain/.",
+    section: "Integrate",
     minutes: 10,
   },
   {

@@ -22,7 +22,7 @@ JSON includes `scanMode`, `pagesFetched[]`, and `warnings`.
 
 ## Limits
 
-* Same registrable host only; public http/https ([url security](../packages/core/src/url-security.ts)).
+* Same registrable host only; public http/https (see `url-security` in `@agentkbase/core`).
 * Per page 512KB HTML; ~1.2MB total crawl budget.
 * Serial fetch in v1 (slower but safer on Vercel).
 

@@ -39,4 +39,4 @@ for (const [rel, content] of Object.entries(files)) {
   console.log("wrote:", rel);
 }
 
-console.log("\nNext: fill facts, run brain validate when --company exists. See docs/COMPANY-BRAIN-SCOPE.md");
+console.log("\nNext: fill facts, run brain validate when --company exists. See https://agentkbase.com/company-brain");

@@ -10,3 +10,6 @@ dist
 .cursor/skills/skilltree/
 packages/cli/my-app
 my-app
+
+# Operator-only docs (monetization, waitlist runbooks, discovery); see docs/MAINTAINER.md
+docs-local/

@@ -98,7 +98,7 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 | [packages/cli](packages/cli) | `@agentkbase/cli` — `brain` binary |
 | [packages/mcp](packages/mcp) | `@agentkbase/mcp` — read-only stdio MCP |
 | [apps/web](apps/web) | landing + wizard |
-| [docs](docs) | tutorials |
+| [docs](docs) | OSS tutorials (+ [MAINTAINER.md](docs/MAINTAINER.md) for gitignored `docs-local/`) |
 | [examples/fictional-saas-brain](examples/fictional-saas-brain) | sample brain |
 
 Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
@@ -117,7 +117,7 @@ Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
 11. [Agent KBase MCP](docs/10-mcp.md)
 
-Monetization investigation (maintainers): [MONETIZATION.md](docs/MONETIZATION.md), [COMPANY-BRAIN-SCOPE.md](docs/COMPANY-BRAIN-SCOPE.md), fake door at `/company-brain`.
+On the site: [agentkbase.com/learn](https://agentkbase.com/learn). Maintainer-only notes: [docs/MAINTAINER.md](docs/MAINTAINER.md).
 
 ## License
 
