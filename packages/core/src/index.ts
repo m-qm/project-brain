@@ -13,6 +13,15 @@ export {
 } from "./setup.js";
 export { validateBrainDir } from "./validate-disk.js";
 export {
+  evalDraft,
+  evalLinkedInCaption,
+  inventedPrices,
+  type DraftEvalIssue,
+  type DraftEvalResult,
+  type EvalCheck,
+} from "./eval-draft.js";
+export { evalDraftAgainstDir, loadFactTextFromDir } from "./eval-from-dir.js";
+export {
   BrainPathError,
   listBrainFiles,
   normalizeBrainRel,
