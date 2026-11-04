@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { quickstartText, reviewAfterExtractText } from "./quickstart-text.js";
 import {
   writeBrainToDisk,
   validateBrainDir,
+  evalDraftAgainstDir,
   buildBriefFromDir,
   extractBrainFromWebsiteUrl,
   mergeExtractIntoBrain,
+  type EvalCheck,
   setupAgentKnowledgeBase,
   printSetupSummary,
   EMPTY_BRAIN_INPUT,
@@ -133,6 +137,34 @@ program
   });
 
 program
+  .command("eval")
+  .description("Check a draft against brain/facts (prices first). Does not write or publish.")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--file <path>", "Draft file to check")
+  .option("--text <text>", "Draft text to check")
+  .option("--article <path>", "Published article; treat --file/--text as a LinkedIn caption")
+  .option("--all", "Run all five review checks, not only invented prices")
+  .action(
+    async (opts: { dir: string; file?: string; text?: string; article?: string; all?: boolean }) => {
+      const draft = opts.text ?? (opts.file ? await readFile(resolve(opts.file), "utf8") : "");
+      if (!draft.trim()) {
+        console.error("Pass --file or --text with a draft.");
+        process.exitCode = 1;
+        return;
+      }
+      const article = opts.article ? await readFile(resolve(opts.article), "utf8") : undefined;
+      const checks: EvalCheck = opts.all ? "all" : "offer";
+      const result = await evalDraftAgainstDir(resolve(opts.dir), {
+        draft,
+        checks,
+        article,
+      });
+      console.log(JSON.stringify({ dir: result.dir, ok: result.ok, issues: result.issues }, null, 2));
+      if (!result.ok) process.exitCode = 1;
+    },
+  );
+
+program
   .command("brief")
   .description("Print a token-bounded context pack for agents")
   .option("--dir <path>", "Brain root directory", ".")
@@ -211,12 +243,10 @@ program
   .command("guide")
   .description("Print path to getting started doc")
   .action(() => {
-    const repoRoot = resolve(
-      fileURLToPath(new URL("../../../docs/01-first-brain.md", import.meta.url)),
-    );
+    const localGuide = fileURLToPath(new URL("../../../docs/01-first-brain.md", import.meta.url));
     console.log("Studio: https://agentkbase.com/learn/12-what-you-sell");
-    console.log(`Install: ${repoRoot}`);
     console.log("https://agentkbase.com/learn/01-first-brain");
+    if (existsSync(localGuide)) console.log(`Local: ${localGuide}`);
   });
 
 program.parse();

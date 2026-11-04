@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,6 +10,7 @@ mkdirSync(out, { recursive: true });
 
 function copyDir(rel) {
   const src = join(docsRoot, rel);
+  if (!existsSync(src)) return;
   const dest = join(out, rel);
   mkdirSync(dirname(dest), { recursive: true });
   cpSync(src, dest);

@@ -11,8 +11,11 @@ dist
 packages/cli/my-app
 my-app
 
-# Operator-only notes (waitlist runbooks). See docs/MAINTAINER.md
+# Operator-only notes (waitlist runbooks).
 docs-local/
+
+# Tutorials stay on agentkbase.com/learn. This folder is a local editing copy.
+docs/
 
 # Offer, not the open core: configured brain, workers, prompts, review rules.
 # Files stay on disk. They are not part of the public repo.

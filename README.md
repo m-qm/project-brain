@@ -30,7 +30,7 @@ npx @agentkbase/cli quickstart
 
 ## Quick start (CLI)
 
-A studio or consultancy starts from the public site. Cross out anything the draft invented before an agent reads it. Guide: [Paste your site](docs/12-what-you-sell.md).
+A studio or consultancy starts from the public site. Cross out anything the draft invented before an agent reads it. Guide: [Paste your site](https://agentkbase.com/learn/12-what-you-sell).
 
 ```bash
 brain setup ./my-studio -n "Studio name" --url https://your-studio.com
@@ -60,7 +60,7 @@ Run from the **repository root** (`project-brain/`), not from `packages/cli`.
 
 ```bash
 pnpm install
-pnpm build          # templates → core → cli → web (see docs/BUILD.md if dev acts weird)
+pnpm build          # templates → core → cli → web
 pnpm brain setup ./my-app -n "My Product" -d "One line mission"
 pnpm brain validate --dir ./my-app
 pnpm brain brief --dir ./my-app
@@ -89,13 +89,11 @@ Do not append extra words to that command (some shells pass them to Next.js and 
 
 `pnpm dev` rebuilds `templates`, `core`, and `cli` first so the wizard matches the latest code.
 
-If you see missing chunk errors (`951.js`) or 500 on every page: stop dev, run `pnpm clean`, then `pnpm dev` again. Details: [docs/BUILD.md](docs/BUILD.md).
+If you see missing chunk errors (`951.js`) or 500 on every page: stop dev, run `pnpm clean`, then `pnpm dev` again.
 
 Then open [http://localhost:3000](http://localhost:3000) or [https://agentkbase.com](https://agentkbase.com), use **Try wizard**, export `brain.zip`, unzip into your project.
 
-**Extract from website:** paste a public URL in step 1 of the wizard, or run `brain extract-url https://yoursite.com --init ./my-app`. See [docs/07-extract-from-website.md](docs/07-extract-from-website.md).
-
-Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
+**Extract from website:** paste a public URL in step 1 of the wizard, or run `brain extract-url https://yoursite.com --init ./my-app`. See [Extract from a website](https://agentkbase.com/learn/07-extract-from-website).
 
 ## Monorepo
 
@@ -106,28 +104,11 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 | [packages/cli](packages/cli) | `@agentkbase/cli` — `brain` binary |
 | [packages/mcp](packages/mcp) | `@agentkbase/mcp` — read-only stdio MCP |
 | [apps/web](apps/web) | landing + wizard |
-| [docs](docs) | OSS tutorials (+ [MAINTAINER.md](docs/MAINTAINER.md) for gitignored `docs-local/`) |
 | [examples/fictional-saas-brain](examples/fictional-saas-brain) | sample brain |
-
-Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 
 ## Docs
 
-1. [First brain in 15 minutes](docs/01-first-brain.md)
-2. [Facts vs stories](docs/02-facts-vs-stories.md)
-3. [Open questions](docs/03-open-questions.md)
-4. [SkillTree import](docs/04-import-skills-skilltree.md)
-5. [Engram (optional)](docs/05-engram.md)
-6. [Application mode (optional)](docs/06-application-mode.md)
-7. [Extract from website](docs/07-extract-from-website.md)
-8. [Multi-page extract](docs/08-multi-page-extract.md)
-9. [Guided gap filling](docs/09-guided-gap-filling.md)
-10. [Eval and routing patterns (advanced)](docs/advanced/eval-and-routing.md)
-11. [Agent KBase MCP](docs/10-mcp.md)
-12. [Content and ads workers](docs/11-content-ads-workers.md)
-13. [The knowledge layer every agent reads](docs/12-what-you-sell.md)
-
-On the site: [agentkbase.com/learn](https://agentkbase.com/learn). Maintainer-only notes: [docs/MAINTAINER.md](docs/MAINTAINER.md).
+The guides are on [agentkbase.com/learn](https://agentkbase.com/learn). The `docs/` folder is local only and is not in this repository.
 
 ## License
 
