@@ -5,6 +5,7 @@ import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import {
   brainBrief,
+  brainEval,
   brainList,
   brainOpenQuestions,
   brainRead,
@@ -97,6 +98,33 @@ server.registerTool(
     annotations: readOnly,
   },
   async ({ dir, query }) => brainSearch({ dir, query }),
+);
+
+server.registerTool(
+  "brain_eval",
+  {
+    title: "Eval draft against facts",
+    description:
+      "Check draft text against brain/facts. Default check is invented prices. Does not write brain/ and does not publish. Returns JSON `{ dir, ok, issues }`. Read-only. Same checks as `brain eval`.",
+    inputSchema: {
+      dir: dirField,
+      draft: z.string().optional().describe("Draft text to check."),
+      path: z
+        .string()
+        .optional()
+        .describe("Optional file under brain/ to check instead of draft text."),
+      article: z
+        .string()
+        .optional()
+        .describe("Published article text. When set, draft is treated as a LinkedIn caption."),
+      checks: z
+        .string()
+        .optional()
+        .describe("offer (default), proof, title, sources, cta, or all."),
+    },
+    annotations: readOnly,
+  },
+  async ({ dir, draft, path, article, checks }) => brainEval({ dir, draft, path, article, checks }),
 );
 
 server.registerTool(

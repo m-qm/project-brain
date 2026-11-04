@@ -16,11 +16,19 @@ Instagram and Meta Ads are later formats of the same approved piece. Video is no
 
 Quality is the product: sources, `[CONFIRM]` gaps, human review, no scaled sludge. Reach and rankings are not a deliverable.
 
+Check a draft against facts without publishing:
+
+```bash
+brain eval --dir . --file draft.md
+```
+
+`brain_eval` on the read-only MCP is the same check. It does not write `brain/`.
+
 ## Open core
 
 | Layer | Price | Does |
 | --- | --- | --- |
-| OSS brain + MCP | Free | Facts, stories, `[CONFIRM]`, brief, validate |
+| OSS brain + MCP | Free | Facts, stories, `[CONFIRM]`, brief, validate, eval |
 | Act connectors | Paid | WhatsApp HITL, blog publish, LinkedIn draft |
 | Done-for-you | Quoted | We operate the loop on your brand |
 

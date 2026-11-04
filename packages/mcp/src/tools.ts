@@ -1,10 +1,12 @@
 import {
   buildBriefFromDir,
+  evalDraftAgainstDir,
   listBrainFiles,
   loadBrainInputFromDir,
   readBrainFile,
   searchBrainFiles,
   validateBrainDir,
+  type EvalCheck,
 } from "@agentkbase/core";
 import { resolveBrainDir } from "./resolve-root.js";
 
@@ -66,6 +68,38 @@ export async function brainSearch(args: { dir?: string; query: string }): Promis
     const root = await resolveBrainDir(args.dir);
     const result = await searchBrainFiles(root, args.query);
     return ok(JSON.stringify({ dir: root, query: args.query, ...result }, null, 2));
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+export async function brainEval(args: {
+  dir?: string;
+  draft?: string;
+  path?: string;
+  article?: string;
+  checks?: string;
+}): Promise<ToolTextResult> {
+  try {
+    const root = await resolveBrainDir(args.dir);
+    const draft = args.draft?.trim()
+      ? args.draft
+      : args.path
+        ? await readBrainFile(root, args.path)
+        : "";
+    if (!draft.trim()) {
+      return fail(new Error("Pass draft text or a path under brain/."));
+    }
+    const allowed: EvalCheck[] = ["offer", "proof", "title", "sources", "cta", "all"];
+    const checks = allowed.includes(args.checks as EvalCheck)
+      ? (args.checks as EvalCheck)
+      : "offer";
+    const result = await evalDraftAgainstDir(root, {
+      draft,
+      checks,
+      article: args.article,
+    });
+    return ok(JSON.stringify({ dir: result.dir, ok: result.ok, issues: result.issues }, null, 2));
   } catch (err) {
     return fail(err);
   }

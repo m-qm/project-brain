@@ -17,3 +17,12 @@ Prefer code for tool choice; add model tie breaks only with eval proof and a lat
 ## Wizard as eval gate
 
 The web wizard blocks export until required fields pass `validateBrainInputStrict`. Same idea: no ship without checks.
+
+## Content loop golden set
+
+The checker is in `@agentkbase/core` (`evalDraft`). Product surfaces:
+
+* `brain eval --dir . --file draft.md` (or `--text`)
+* MCP `brain_eval` (read-only; same JSON as the CLI)
+
+Default check is invented prices against `brain/facts/`. `--all` runs the five public review checks. Neither command writes `brain/` or publishes.

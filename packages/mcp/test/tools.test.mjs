@@ -54,6 +54,7 @@ test("stdio server answers brain_brief and brain_validate", async () => {
     const names = listed.tools.map((tool) => tool.name).sort();
     assert.deepEqual(names, [
       "brain_brief",
+      "brain_eval",
       "brain_list",
       "brain_open_questions",
       "brain_read",

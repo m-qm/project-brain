@@ -45,6 +45,7 @@ From a checkout of this repository, before the package is published:
 |------|---------|
 | `brain_brief` | Same text as `brain brief` |
 | `brain_validate` | JSON `{ dir, ok, issues }`, same checks as `brain validate` |
+| `brain_eval` | JSON `{ dir, ok, issues }`. Draft vs `brain/facts`. Default: invented prices. Does not write or publish. Same as `brain eval` |
 | `brain_list` | Markdown paths under `brain/` |
 | `brain_read` | One file. The real path must stay inside `brain/` |
 | `brain_search` | Case-insensitive hits with path and line (50 max) |
