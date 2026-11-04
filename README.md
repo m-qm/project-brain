@@ -108,7 +108,6 @@ Deploy: see [docs/DEPLOY-VERCEL.md](docs/DEPLOY-VERCEL.md).
 | [apps/web](apps/web) | landing + wizard |
 | [docs](docs) | OSS tutorials (+ [MAINTAINER.md](docs/MAINTAINER.md) for gitignored `docs-local/`) |
 | [examples/fictional-saas-brain](examples/fictional-saas-brain) | sample brain |
-| [examples/content-ads-brain](examples/content-ads-brain) | sample HITL content + ads loop (no publish from OSS) |
 
 Maintainers: [docs/PUBLISH-NPM.md](docs/PUBLISH-NPM.md).
 

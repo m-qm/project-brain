@@ -2,8 +2,10 @@
 
 User-facing tutorials live in this `docs/` folder and on [agentkbase.com/learn](https://agentkbase.com/learn).
 
-**Operator-only material** (monetization, discovery, waitlist runbooks, Act pack scope, dogfood checklist) belongs in **`docs-local/`** at the repo root. That directory is **gitignored** and is not published with the OSS repo. Start with `docs-local/ACT-PACK.md` and `docs-local/DOGFOOD.md`.
+**Operator-only material** (waitlist runbooks) belongs in **`docs-local/`**. That directory is **gitignored**. Competitive research and discovery notes are not kept.
 
-If you clone fresh and need those files, restore them from your backup or private copy.
+The configured content loop stays local and gitignored: `examples/content-ads-brain/` (brain, workers, prompts, review rules) and `scripts/company-brain-skeleton.mjs`. The public sample is `examples/fictional-saas-brain/`.
+
+If you clone fresh, those files are not in git. Restore them from your own copy.
 
 Public deploy ops that every contributor may need: [BUILD.md](./BUILD.md), [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md), [PUBLISH-NPM.md](./PUBLISH-NPM.md).

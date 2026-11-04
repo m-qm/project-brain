@@ -40,6 +40,6 @@ npm install -g @agentkbase/cli
 brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
 ```
 
-Bucle de ejemplo (reglas de una marca ficticia, calendario de 14 días, cinco posts bilingües): [`examples/content-ads-brain`](https://github.com/m-qm/project-brain/tree/main/examples/content-ads-brain).
+El bucle configurado para un negocio (workers, prompts y reglas de revisión) no está en este repositorio público. Se queda con el encargo. Lo que puedes ejecutar hoy es la CLI y el asistente.
 
 Workers de pago: [lista de espera y hecho para ti](https://agentkbase.com/company-brain).

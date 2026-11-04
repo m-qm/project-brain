@@ -40,6 +40,6 @@ npm install -g @agentkbase/cli
 brain setup -n "My Product" -d "One line mission" ~/path/to/your-repo
 ```
 
-Sample loop (fictional brand rules, 14 day calendar, five bilingual posts): [`examples/content-ads-brain`](https://github.com/m-qm/project-brain/tree/main/examples/content-ads-brain).
+The configured loop for a business (workers, prompts, and review rules) is not in this public repo. It stays with the engagement. What you can run today is the CLI and the wizard.
 
 Paid workers: [waitlist and done-for-you](https://agentkbase.com/company-brain).

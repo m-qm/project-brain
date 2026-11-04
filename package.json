@@ -12,8 +12,7 @@
     "clean": "rm -rf apps/web/.next packages/templates/dist packages/core/dist packages/cli/dist",
     "brain": "node ./packages/cli/dist/index.js",
     "brain:extract": "sh -c 'set -a; [ -f apps/web/.env.local ] && . apps/web/.env.local; set +a; node ./packages/cli/dist/index.js extract-url \"$@\"' sh",
-    "validate:example": "node ./packages/cli/dist/index.js validate --dir ./examples/fictional-saas-brain",
-    "skeleton:company-brain": "node ./scripts/company-brain-skeleton.mjs"
+    "validate:example": "node ./packages/cli/dist/index.js validate --dir ./examples/fictional-saas-brain"
   },
   "engines": {
     "node": ">=20"

@@ -11,10 +11,15 @@ dist
 packages/cli/my-app
 my-app
 
-# Operator-only docs (monetization, waitlist runbooks, discovery); see docs/MAINTAINER.md
+# Operator-only notes (waitlist runbooks). See docs/MAINTAINER.md
 docs-local/
 
-# Local HITL queue output (keep directory gitkeeps)
-examples/content-ads-brain/queue/**/*.json
-examples/content-ads-brain/insights/*.json
-examples/content-ads-brain/slides/out/
+# Offer, not the open core: configured brain, workers, prompts, review rules.
+# Files stay on disk. They are not part of the public repo.
+examples/content-ads-brain/
+scripts/company-brain-skeleton.mjs
+
+# Local agent state. .agents holds a SkillTree token.
+.agents/
+.codex/
+.engram/
