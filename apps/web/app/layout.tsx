@@ -5,8 +5,8 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, WEBSITE_JSON_LD } fr
 import "./globals.css";
 
 /**
- * System fonts only (see globals.css). next/font Google downloads break dev compiles
- * when offline or flaky network ("Cannot read properties of null" during /wizard compile).
+ * Self-hosted Inter and Newsreader (see globals.css). next/font Google downloads
+ * break dev compiles when offline or the network is flaky.
  */
 export const metadata: Metadata = {
   title: { default: SITE_TITLE, template: "%s · Agent KBase" },
