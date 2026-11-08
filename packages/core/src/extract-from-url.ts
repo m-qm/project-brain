@@ -11,7 +11,7 @@ import {
 } from "./extract-bounds.js";
 import { discoverSameOriginLinks } from "./discover-same-origin-links.js";
 import { planDeepExtractUrls } from "./extract-deep-plan.js";
-import { parsePageSignals } from "./extract-page-signals.js";
+import { parsePageSignals, type PageSignals } from "./extract-page-signals.js";
 import { mergePageSignals } from "./merge-page-signals.js";
 import {
   logDiscover,
@@ -29,11 +29,12 @@ import { validatePublicHttpUrl } from "./url-security.js";
 function appendEnrichLog(
   extract: WebsiteExtract,
   llm: Awaited<ReturnType<typeof enrichExtractWithLlm>>,
+  signals: PageSignals,
 ): WebsiteExtract {
   const scanLog = [...extract.scanLog, logHeuristicSynth()];
   if (llm) {
     scanLog.push(logLlmEnrich(llm.provider));
-    return { ...applyLlmSuggestion(extract, llm.suggestion, llm.provider), scanLog };
+    return { ...applyLlmSuggestion(extract, llm.suggestion, llm.provider, signals), scanLog };
   }
   scanLog.push(logLlmEnrich(null));
   return { ...extract, scanLog };
@@ -81,7 +82,7 @@ export async function extractBrainFromWebsiteUrl(
     const signals = parsePageSignals(html, trimmed);
     const heuristic = synthesizeBrainFromPage(signals);
     const llm = allowServerLlm ? await enrichExtractWithLlm(signals, heuristic) : null;
-    return appendEnrichLog(extract, llm);
+    return appendEnrichLog(extract, llm, signals);
   }
 
   const seedCheck = validatePublicHttpUrl(trimmed);
@@ -169,5 +170,5 @@ export async function extractBrainFromWebsiteUrl(
 
   const heuristic = synthesizeBrainFromPage(merged);
   const llm = allowServerLlm ? await enrichExtractWithLlm(merged, heuristic) : null;
-  return appendEnrichLog(extract, llm);
+  return appendEnrichLog(extract, llm, merged);
 }
