@@ -32,7 +32,7 @@ A business with a website and no marketing team. A shop, a studio, or a one or t
 
 Each check gets its own post. The reader stays a shop or a studio. This one is the price.
 
-1. How to title a post a shop owner would actually search.
+1. [How to title a post a shop owner would actually search](/blog/title-a-shop-owner-would-search).
 2. [How to stop your blog publishing prices that do not exist](/blog/stop-fake-prices).
 3. [How to stop your blog claiming a ranking you cannot show](/blog/ranking-you-cannot-show).
 4. How to see where each line in a draft came from.

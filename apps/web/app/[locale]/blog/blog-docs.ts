@@ -21,6 +21,13 @@ export const BLOG_POSTS: BlogPost[] = [
       "If an AI writes your shop or studio blog, the expensive line is a ranking, a visit count, or a client name you cannot show.",
     date: "2026-11-08",
   },
+  {
+    slug: "title-a-shop-owner-would-search",
+    title: "How to title a post a shop owner would actually search",
+    description:
+      "The title is what a shop or studio owner types before they open the post. A headline full of builder words gets scrolled past.",
+    date: "2026-11-08",
+  },
 ];
 
 const BLOG_ES: Record<string, { title: string; description: string }> = {
@@ -33,6 +40,11 @@ const BLOG_ES: Record<string, { title: string; description: string }> = {
     title: "Cómo evitar que tu blog afirme un ranking que no puedes mostrar",
     description:
       "Si una IA escribe el blog de tu tienda o estudio, la línea cara es un ranking, unas visitas o un cliente que no puedes mostrar.",
+  },
+  "title-a-shop-owner-would-search": {
+    title: "Cómo titular un post que el dueño de una tienda buscaría de verdad",
+    description:
+      "El título es lo que escribe el dueño de una tienda o un estudio antes de abrir el post. Un titular lleno de palabras de quien programa se queda sin abrir.",
   },
 };
 

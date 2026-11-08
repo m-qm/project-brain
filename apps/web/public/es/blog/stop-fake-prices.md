@@ -32,7 +32,7 @@ Para un negocio con web y sin equipo de marketing. Una tienda, un estudio o una 
 
 Cada comprobación tiene su post. Quien lee sigue siendo una tienda o un estudio. Este es el del precio.
 
-1. Cómo titular un post que el dueño de una tienda buscaría de verdad.
+1. [Cómo titular un post que el dueño de una tienda buscaría de verdad](/blog/title-a-shop-owner-would-search).
 2. [Cómo evitar que tu blog publique precios que no existen](/blog/stop-fake-prices).
 3. [Cómo evitar que tu blog afirme un ranking que no puedes mostrar](/blog/ranking-you-cannot-show).
 4. Cómo ver de dónde salió cada línea de un borrador.
