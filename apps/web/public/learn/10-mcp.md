@@ -55,28 +55,6 @@ From a checkout of this repository, before the package is published:
 
 Every tool is marked read-only. Pass `dir` when the brain is not in the working directory.
 
-## Tracing
-
-Tracing is off until the MCP process has both `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY`. The same variables trace `brain eval`, `brain brief`, and `brain validate`.
-
-```json
-{
-  "mcpServers": {
-    "agentkbase": {
-      "command": "npx",
-      "args": ["-y", "@agentkbase/mcp"],
-      "env": {
-        "LANGFUSE_PUBLIC_KEY": "pk-lf-...",
-        "LANGFUSE_SECRET_KEY": "sk-lf-...",
-        "LANGFUSE_BASE_URL": "https://cloud.langfuse.com"
-      }
-    }
-  }
-}
-```
-
-Spans record the tool, pass or fail, issue codes, and paths. They do not include fact or draft text unless `LANGFUSE_TRACE_CONTENT=1`. Details: [Eval and routing](advanced/eval-and-routing.md).
-
 ## What this is not
 
 * Not a place to save decisions. That is Engram (`mem_save`). Team facts still land in git.
