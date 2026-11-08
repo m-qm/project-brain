@@ -7,3 +7,5 @@ alwaysApply: false
 Follow `examples/content-ads-brain/brain/agents/article.md`.
 
 Buyer title. No invented offer or proof. Sources at the bottom. Queue as pending. Do not publish. Do not write the LinkedIn draft until the article is published.
+
+Plain speech from `brain/facts/brand-guardrails.md`. One idea per sentence. Say what happened. A claim followed by its cancellation is out: “a realistic example, not a result of ours”, “the risk is not X, it is Y”, “nobody searches that, they search this”.

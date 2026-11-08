@@ -1,14 +1,14 @@
 # How to title a post a shop owner would actually search
 
-The title is what someone types before they open your post. A headline full of builder words gets scrolled past by the person who pays you.
+The title is the sentence a shop or studio owner types before they open the post.
 
 ## What happened in one draft
 
-The draft was titled “What RAG means for your content stack”. Nobody who runs the studio searches that on a Tuesday. The same draft, titled around a missed week or a price the site never listed, is a post they would open.
+One draft carried this headline: “What RAG means for your content stack”. On a Tuesday that owner types a different sentence: a week with an empty blog, or a price the page still marks as on request. That second title is the post they open.
 
 ## Before you publish
 
-Read the title on its own. It has to be a problem a shop or studio owner would type. When the title only makes sense to someone who builds agents, rewrite it.
+Read the title on its own. Leave it as the problem they would type: an empty week, a price still on request, a post that went out with the wrong offer.
 
 This post is that one check. The other four are on the same list: [agentkbase.com/company-brain](/company-brain).
 
@@ -27,6 +27,6 @@ If the loop fits, join the [waitlist](/company-brain). The open-source brain is 
 ## Sources
 
 * `brain/facts/project.md` — the reader is a shop or studio with a site and no marketing team.
-* `brain/facts/brand-guardrails.md` — titles speak to that owner.
+* `brain/facts/brand-guardrails.md` — titles speak to that owner, in plain speech.
 * `brain/content/review-checklist.md` — check 1, the buyer’s problem.
 * [agentkbase.com/company-brain](/company-brain) — the five checks.
