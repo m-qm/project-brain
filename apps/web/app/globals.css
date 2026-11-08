@@ -698,7 +698,15 @@ a.nav-menu-cta {
   line-height: 1.5;
 }
 
+.story-visual,
+.audit-visual,
+.tree-page-canvas {
+  width: 100%;
+  min-width: 0;
+}
+
 .brain-tree-graph {
+  width: 100%;
   margin: 0;
   background: var(--bg);
   border: 1px solid var(--line);
@@ -713,8 +721,7 @@ a.nav-menu-cta {
 .brain-tree-gl {
   position: relative;
   width: 100%;
-  height: min(72vw, 520px);
-  min-height: 360px;
+  aspect-ratio: 1;
   border-radius: calc(var(--radius-lg) - 4px);
   overflow: hidden;
 }
