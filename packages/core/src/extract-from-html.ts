@@ -1,6 +1,6 @@
 import type { BrainInput } from "./types.js";
 import { parsePageSignals, type PageSignals } from "./extract-page-signals.js";
-import { synthesizeBrainFromPage } from "./synthesize-from-page.js";
+import { scrubLegacyInvoiceMission, synthesizeBrainFromPage } from "./synthesize-from-page.js";
 import type { ExtractScanMode } from "./extract-bounds.js";
 import type { ExtractScanLogEntry } from "./extract-scan-log.js";
 import { hasExtractLlmKey, type ExtractLlmProvider } from "./extract-with-llm.js";
@@ -98,11 +98,30 @@ export function applyLlmSuggestion(
   base: WebsiteExtract,
   llm: Partial<BrainInput>,
   provider: ExtractLlmProvider,
+  signals?: PageSignals,
 ): WebsiteExtract {
   const vendor = provider === "anthropic" ? "Anthropic" : "OpenAI";
+  const brand =
+    llm.projectName?.trim() || base.suggested.projectName?.trim() || "Project";
+  const mission =
+    signals && llm.projectMission
+      ? scrubLegacyInvoiceMission(llm.projectMission, brand, signals)
+      : llm.projectMission;
+  const description =
+    signals && llm.projectDescription
+      ? scrubLegacyInvoiceMission(llm.projectDescription, brand, signals)
+      : llm.projectDescription;
+  const suggested =
+    mission !== llm.projectMission || description !== llm.projectDescription
+      ? {
+          ...llm,
+          ...(mission ? { projectMission: mission } : {}),
+          ...(description ? { projectDescription: description ?? mission } : {}),
+        }
+      : llm;
   return {
     ...base,
-    suggested: llm,
+    suggested,
     method: provider,
     warnings: [
       ...stripMissingKeyWarnings(base.warnings),

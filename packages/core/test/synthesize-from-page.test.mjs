@@ -24,7 +24,7 @@ test("mission follows meta description, not invoice template", () => {
   assert.doesNotMatch(out.projectMission, /from invoices and an optional member export/i);
 });
 
-test("invoice workflow sites still get spend-report mission shape", () => {
+test("invoice workflow sites use page copy, not a generic boilerplate mission", () => {
   const out = synthesizeBrainFromPage({
     lang: "en",
     sourceUrl: "https://example.com",
@@ -40,4 +40,19 @@ test("invoice workflow sites still get spend-report mission shape", () => {
   });
   assert.match(out.projectMission, /control AI tool spend before renewals/i);
   assert.match(out.projectMission, /invoice/i);
+});
+
+test("Spanish pages without invoice-audit copy avoid Hatchpad mission boilerplate", () => {
+  const out = synthesizeBrainFromPage({
+    lang: "es",
+    sourceUrl: "https://www.google.com/intl/es/",
+    title: "Google",
+    h1: [],
+    h2: [],
+    h3: [],
+    paragraphs: [],
+    listItems: [],
+  });
+  assert.doesNotMatch(out.projectMission, /controlar el gasto en herramientas de ia/i);
+  assert.doesNotMatch(out.projectMission, /facturas y export opcional/i);
 });
