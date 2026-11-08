@@ -1,6 +1,6 @@
 {
   "name": "@agentkbase/core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Pack, validate, brief, and URL extract for Agent KBase (@agentkbase/cli)",
   "homepage": "https://agentkbase.com",
   "bugs": "https://github.com/m-qm/project-brain/issues",
