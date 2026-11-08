@@ -4,6 +4,7 @@ import { renderTemplate } from "@agentkbase/templates";
 import type { BrainInput } from "./types.js";
 import { slugify } from "./slug.js";
 import { writeBrainToDisk } from "./disk.js";
+import { ROOT_AGENTS_PATH } from "./pack.js";
 
 export type SetupOptions = {
   /** Write `.engram/config.json` and Engram Cursor rule */
@@ -38,8 +39,22 @@ export async function setupAgentKnowledgeBase(
   const wrote: string[] = [];
   const skipped: string[] = [];
 
+  const agentsPath = join(targetDir, ROOT_AGENTS_PATH);
+  let agentsBefore: string | null = null;
+  if (await exists(agentsPath)) {
+    agentsBefore = await readFile(agentsPath, "utf8");
+  }
+
   await writeBrainToDisk(targetDir, input);
-  wrote.push("brain/", "README.md", ".cursor/rules/project-brain.mdc");
+  wrote.push("brain/", "README.md");
+
+  const agentsAfter = await readFile(agentsPath, "utf8");
+  if (agentsBefore !== agentsAfter) {
+    wrote.push(ROOT_AGENTS_PATH);
+  } else {
+    skipped.push("AGENTS.md (already present)");
+  }
+  wrote.push(".cursor/rules/project-brain.mdc");
 
   if (!engram) {
     return { targetDir, wrote, skipped };
@@ -83,13 +98,8 @@ export async function setupAgentKnowledgeBase(
 
 export function printSetupSummary(result: SetupResult): string {
   const lines = [
-    `Agent knowledge base ready: ${result.targetDir}`,
-    "",
-    "Parallel layers for Cursor agents:",
-    "  • brain/           — git truth (facts, stories, AGENTS.md)",
-    "  • Agent KBase MCP  — read-only brain_brief / brain_validate (optional)",
-    "  • Engram MCP       — session memory (mem_context, mem_save)",
-    "  • .cursor/rules    — when to load each",
+    "Agent KBase is the knowledge layer every agent reads.",
+    `Ready: ${result.targetDir}`,
     "",
     "Wrote:",
     ...result.wrote.map((p) => `  • ${p}`),
@@ -100,23 +110,22 @@ export function printSetupSummary(result: SetupResult): string {
   lines.push(
     "",
     "Next:",
-    "  1. Enable Engram MCP in Cursor (if not already)",
-    "  2. Optional Agent KBase MCP — merge this into .cursor/mcp.json (do not replace other servers):",
+    "  1. Ask the agent a client question, then run brain eval on the answer.",
+    "  2. Cross out any service, price, or deadline you do not sell.",
+    "  3. Write who you serve, and what you will not claim.",
+    "  4. Nothing goes live until you say yes.",
     "",
-    "     {",
-    '       "mcpServers": {',
-    '         "agentkbase": {',
-    '           "command": "npx",',
-    '           "args": ["-y", "@agentkbase/mcp"]',
-    "         }",
-    "       }",
-    "     }",
+    "Then:",
     "",
-    "  3. brain validate --dir .",
-    "  4. brain brief --dir .   # paste into chat or @ brain/",
+    "  brain validate --dir .",
+    "  brain brief --dir .",
+    "",
+    "Engram (optional, later):",
+    "  Enable the Engram MCP in Cursor if you want session memory across chats.",
+    "  The project slug lives in .engram/config.json.",
     "",
     "  Optional Langfuse traces: set LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY",
-    "  on the CLI or MCP process (LANGFUSE_BASE_URL for a self-hosted instance).",
+    "  on the CLI (LANGFUSE_BASE_URL for a self-hosted instance).",
     "  Spans record the tool, pass/fail, issue codes, and paths. Fact and draft",
     "  text stays local unless LANGFUSE_TRACE_CONTENT=1.",
   );

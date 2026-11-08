@@ -23,6 +23,33 @@ function missionLine(input: BrainInput): string {
   return (input.projectMission?.trim() || input.projectDescription.trim()).trim();
 }
 
+/** Repo-root file. Distinct from `brain/AGENTS.md`. */
+export const ROOT_AGENTS_PATH = "AGENTS.md";
+
+/** Marks the block setup appends once. An agent does not parse it. */
+export const ROOT_AGENTS_BLOCK_START = "<!-- agentkbase:agents:start -->";
+export const ROOT_AGENTS_BLOCK_END = "<!-- agentkbase:agents:end -->";
+
+/**
+ * Short root instructions. Fixed text: a draft's prices and names must not leak in.
+ * The same string is the whole file in a fresh zip, and the block appended when
+ * a root AGENTS.md already exists.
+ */
+export function rootAgentsMd(): string {
+  return [
+    ROOT_AGENTS_BLOCK_START,
+    "# Agent instructions",
+    "",
+    "**Mission:** Read `brain/facts/project.md` and `brain/open-questions.md`.",
+    "",
+    "* Do not invent a price, a client, or a metric.",
+    "* Stop on `[CONFIRM]`.",
+    "* Run `brain eval` before a public draft.",
+    ROOT_AGENTS_BLOCK_END,
+    "",
+  ].join("\n");
+}
+
 export function buildPackFiles(input: BrainInput): PackFile[] {
   const projectSlug = slugify(input.projectName);
   const projectMission = missionLine(input);
@@ -56,6 +83,7 @@ ${input.storyProof.trim() || "(fill in)"}
 
   return [
     { path: "README.md", content: renderTemplate("README.md", vars) },
+    { path: ROOT_AGENTS_PATH, content: rootAgentsMd() },
     { path: "brain/AGENTS.md", content: renderTemplate("AGENTS.md", vars) },
     { path: "brain/facts/project.md", content: renderTemplate("facts/project.md", vars) },
     { path: "brain/facts/README.md", content: renderTemplate("facts/README.md", vars) },
