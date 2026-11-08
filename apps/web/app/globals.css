@@ -489,6 +489,54 @@ a.nav-menu-cta {
   padding: 1rem;
 }
 
+.brain-tree-graph--gl {
+  padding: 0.5rem;
+}
+
+.brain-tree-gl {
+  width: 100%;
+  height: min(72vw, 520px);
+  min-height: 360px;
+  border-radius: calc(var(--radius-lg) - 4px);
+  overflow: hidden;
+}
+
+.brain-tree-gl--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-2);
+}
+
+.brain-tree-gl-shimmer {
+  width: 48%;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(22, 22, 24, 0.08),
+    transparent
+  );
+  animation: brain-gl-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes brain-gl-shimmer {
+  0% {
+    transform: translateX(-40%);
+  }
+  100% {
+    transform: translateX(40%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brain-tree-gl-shimmer {
+    animation: none;
+    opacity: 0.35;
+  }
+}
+
 .brain-tree-svg {
   width: 100%;
   height: auto;

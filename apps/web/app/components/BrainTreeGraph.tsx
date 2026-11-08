@@ -1,27 +1,39 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import {
   EXTRACT_DEMO_INPUT,
-  centerClusterDots,
   layoutBrainTree,
   treeFromWizard,
   type TreeDomain,
 } from "@/lib/brain-tree-data";
 import { loadWizardState } from "@/lib/wizard-state";
+import { BrainTreeGraphSvg } from "./BrainTreeGraphSvg";
 
-type BrainTreeGraphProps = {
-  /** When true, merge nodes from wizard localStorage */
+const BrainTreeGraphGL = dynamic(
+  () => import("./BrainTreeGraphGL").then((m) => m.BrainTreeGraphGL),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="brain-tree-gl brain-tree-gl--loading" aria-hidden>
+        <span className="brain-tree-gl-shimmer" />
+      </div>
+    ),
+  },
+);
+
+export type BrainTreeGraphProps = {
   live?: boolean;
-  /** Landing extract section: filled FACTS / GAPS from a sample URL scan */
   extractDemo?: boolean;
-  /** Spoke ids to emphasize (e.g. facts, gaps) */
   highlightDomains?: string[];
   className?: string;
   centerLabel?: string;
   domains?: TreeDomain[];
+  /** Force SVG (e.g. reduced motion). */
+  preferSvg?: boolean;
 };
 
 export function BrainTreeGraph({
@@ -31,15 +43,26 @@ export function BrainTreeGraph({
   className = "",
   centerLabel: centerLabelProp,
   domains: domainsProp,
+  preferSvg = false,
 }: BrainTreeGraphProps) {
   const t = useTranslations("story");
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
-  // Never read localStorage in initial state: SSR and first client paint must match.
+  const [useSvg, setUseSvg] = useState(preferSvg);
+
   const [liveTree, setLiveTree] = useState(() => {
     if (extractDemo) return treeFromWizard(EXTRACT_DEMO_INPUT);
     return treeFromWizard(null);
   });
   const [liveReady, setLiveReady] = useState(!live);
+
+  useEffect(() => {
+    if (preferSvg) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setUseSvg(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [preferSvg]);
 
   useEffect(() => {
     if (!live) return;
@@ -62,14 +85,11 @@ export function BrainTreeGraph({
   const centerLabel = centerLabelProp ?? liveTree.center;
   const domains = domainsProp ?? liveTree.domains;
   const { nodes, edges } = useMemo(() => layoutBrainTree(domains), [domains]);
-  const dots = useMemo(() => centerClusterDots(42), []);
 
-  const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
-
-  const highlightSet = new Set(highlightDomains);
   const graphClass = [
     "brain-tree-graph",
     extractDemo ? "brain-tree-graph--extract" : "",
+    useSvg ? "brain-tree-graph--svg" : "brain-tree-graph--gl",
     className,
   ]
     .filter(Boolean)
@@ -77,102 +97,27 @@ export function BrainTreeGraph({
 
   return (
     <figure className={graphClass} aria-label={t("mapLabel")}>
-      <svg
-        viewBox="0 0 800 800"
-        role="img"
-        className="brain-tree-svg"
-        aria-busy={live && !liveReady}
-      >
-        <title>Radial map: company brain at center, domains and leaves on spokes</title>
-        {edges.map((e) => {
-          const a = nodeById.get(e.from);
-          const b = nodeById.get(e.to);
-          if (!a || !b) return null;
-          const edgeDomain = b.domainId ?? a.domainId;
-          const emphasized =
-            extractDemo && edgeDomain && highlightSet.has(edgeDomain);
-          const dim =
-            activeDomain &&
-            a.domainId !== activeDomain &&
-            b.domainId !== activeDomain &&
-            e.from !== "center";
-          return (
-            <line
-              key={`${e.from}-${e.to}`}
-              x1={a.x}
-              y1={a.y}
-              x2={b.x}
-              y2={b.y}
-              className={
-                emphasized ? "brain-tree-edge brain-tree-edge--hot" : "brain-tree-edge"
-              }
-              style={{ opacity: dim ? 0.12 : emphasized ? 1 : 0.55 }}
-            />
-          );
-        })}
-
-        <g className="brain-tree-center-cluster" aria-hidden>
-          {dots.map((d, i) => (
-            <circle key={i} cx={d.cx} cy={d.cy} r={d.r} fill={d.fill} opacity={0.85} />
-          ))}
-        </g>
-
-        {nodes.map((node) => {
-          if (node.kind === "center") {
-            return (
-              <g key={node.id}>
-                <circle cx={node.x} cy={node.y} r={node.r} className="brain-tree-center-ring" />
-                <text x={node.x} y={node.y + 4} textAnchor="middle" className="brain-tree-center-text">
-                  {centerLabel.split("\n").map((line, i) => (
-                    <tspan key={i} x={node.x} dy={i === 0 ? 0 : 14}>
-                      {line}
-                    </tspan>
-                  ))}
-                </text>
-              </g>
-            );
-          }
-
-          const dim = activeDomain && node.domainId !== activeDomain;
-          const isHub = node.kind === "hub";
-          const hot =
-            extractDemo && node.domainId && highlightSet.has(node.domainId);
-
-          return (
-            <g
-              key={node.id}
-              style={{ opacity: dim ? 0.2 : hot ? 1 : extractDemo ? 0.45 : 1 }}
-              onMouseEnter={() => node.domainId && setActiveDomain(node.domainId)}
-              onMouseLeave={() => setActiveDomain(null)}
-            >
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={node.r}
-                className={
-                  isHub
-                    ? hot
-                      ? "brain-tree-hub brain-tree-hub--hot"
-                      : "brain-tree-hub"
-                    : hot
-                      ? "brain-tree-leaf brain-tree-leaf--hot"
-                      : "brain-tree-leaf"
-                }
-              />
-              {node.label && (
-                <text
-                  x={node.x}
-                  y={node.y + (isHub ? -18 : 20)}
-                  textAnchor="middle"
-                  className={isHub ? "brain-tree-hub-label" : "brain-tree-leaf-label"}
-                >
-                  {node.label}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
+      {useSvg ? (
+        <BrainTreeGraphSvg
+          nodes={nodes}
+          edges={edges}
+          centerLabel={centerLabel}
+          extractDemo={extractDemo}
+          highlightDomains={highlightDomains}
+          activeDomain={activeDomain}
+          onActiveDomain={setActiveDomain}
+          live={live}
+          liveReady={liveReady}
+        />
+      ) : (
+        <BrainTreeGraphGL
+          layoutNodes={nodes}
+          layoutEdges={edges}
+          centerLabel={centerLabel}
+          extractDemo={extractDemo}
+          highlightDomains={highlightDomains}
+        />
+      )}
       {live && liveReady && liveTree.isLive && (
         <figcaption className="brain-tree-caption live">{t("synced")}</figcaption>
       )}

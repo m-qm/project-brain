@@ -13,7 +13,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  transpilePackages: ["@agentkbase/core", "@agentkbase/templates", "next-intl"],
+  transpilePackages: ["@agentkbase/core", "@agentkbase/templates", "next-intl", "reagraph"],
   outputFileTracingRoot: join(__dirname, "../.."),
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
