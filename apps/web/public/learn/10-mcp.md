@@ -2,26 +2,13 @@
 
 `@agentkbase/mcp` is a local, read-only [MCP](https://modelcontextprotocol.io) server. It exposes the same brief and validation as the `brain` CLI, plus list, read, and search over `brain/`.
 
-Git stays the write path. The server does not create, edit, or delete facts.
+Git stays the write path. The server does not create, edit, or delete facts, and it does not write `brain/`.
 
-## Install in Cursor
+`@agentkbase/mcp` is not on the npm registry. Run it from a checkout of this repository after `pnpm run build:packages`.
+
+## Run it from a checkout
 
 Merge this into `.cursor/mcp.json`. Leave any servers you already have in place.
-
-```json
-{
-  "mcpServers": {
-    "agentkbase": {
-      "command": "npx",
-      "args": ["-y", "@agentkbase/mcp"]
-    }
-  }
-}
-```
-
-Cursor starts the process with your repo as the working directory. The server uses that directory when it contains `brain/AGENTS.md`. Otherwise it checks `BRAIN_DIR`, then walks up to 8 parent directories.
-
-From a checkout of this repository, before the package is published:
 
 ```json
 {
@@ -37,7 +24,9 @@ From a checkout of this repository, before the package is published:
 }
 ```
 
-`brain setup` prints the `npx` snippet. It does not write `.cursor/mcp.json` for you.
+`args` is relative to the checkout. Use an absolute path when Cursor's working directory is a different repo. Cursor starts the process with your repo as the working directory. The server uses that directory when it contains `brain/AGENTS.md`. Otherwise it checks `BRAIN_DIR`, then walks up to 8 parent directories.
+
+`brain setup` does not write `.cursor/mcp.json`.
 
 ## Tools
 
@@ -63,9 +52,10 @@ Tracing is off until the MCP process has both `LANGFUSE_PUBLIC_KEY` and `LANGFUS
 {
   "mcpServers": {
     "agentkbase": {
-      "command": "npx",
-      "args": ["-y", "@agentkbase/mcp"],
+      "command": "node",
+      "args": ["packages/mcp/dist/index.js"],
       "env": {
+        "BRAIN_DIR": "examples/fictional-saas-brain",
         "LANGFUSE_PUBLIC_KEY": "pk-lf-...",
         "LANGFUSE_SECRET_KEY": "sk-lf-...",
         "LANGFUSE_BASE_URL": "https://cloud.langfuse.com"
