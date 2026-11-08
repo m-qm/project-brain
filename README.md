@@ -26,6 +26,8 @@ npx @agentkbase/cli quickstart
 | `@agentkbase/cli` | [package](https://www.npmjs.com/package/@agentkbase/cli) | `brain` CLI (`setup`, `validate`, `brief`, `extract-url`) |
 | `@agentkbase/core` | [package](https://www.npmjs.com/package/@agentkbase/core) | pack, validate, brief, zip, URL extract (used by CLI, MCP, and web) |
 | `@agentkbase/mcp` | [package](https://www.npmjs.com/package/@agentkbase/mcp) | read-only MCP (`brain_brief`, `brain_validate`, `brain_read`) |
+
+Optional Langfuse traces: set `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` on the CLI or MCP process. Spans record the call, pass or fail, issue codes, and paths. Fact and draft text stays local unless `LANGFUSE_TRACE_CONTENT=1`. See [Eval and routing](https://agentkbase.com/learn/advanced/eval-and-routing).
 | `@agentkbase/templates` | [package](https://www.npmjs.com/package/@agentkbase/templates) | embedded markdown templates (dependency of core) |
 
 ## Quick start (CLI)

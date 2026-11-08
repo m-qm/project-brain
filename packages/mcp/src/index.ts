@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
+import { observeTool } from "@agentkbase/core/observe";
 import {
   brainBrief,
   brainEval,
@@ -41,7 +42,7 @@ server.registerTool(
     inputSchema: { dir: dirField },
     annotations: readOnly,
   },
-  async ({ dir }) => brainBrief({ dir }),
+  async (args, extra) => observeTool("brain_brief", args, extra._meta, () => brainBrief(args)),
 );
 
 server.registerTool(
@@ -53,7 +54,7 @@ server.registerTool(
     inputSchema: { dir: dirField },
     annotations: readOnly,
   },
-  async ({ dir }) => brainValidate({ dir }),
+  async (args, extra) => observeTool("brain_validate", args, extra._meta, () => brainValidate(args)),
 );
 
 server.registerTool(
@@ -65,7 +66,7 @@ server.registerTool(
     inputSchema: { dir: dirField },
     annotations: readOnly,
   },
-  async ({ dir }) => brainList({ dir }),
+  async (args, extra) => observeTool("brain_list", args, extra._meta, () => brainList(args)),
 );
 
 server.registerTool(
@@ -82,7 +83,7 @@ server.registerTool(
     },
     annotations: readOnly,
   },
-  async ({ dir, path }) => brainRead({ dir, path }),
+  async (args, extra) => observeTool("brain_read", args, extra._meta, () => brainRead(args)),
 );
 
 server.registerTool(
@@ -97,7 +98,7 @@ server.registerTool(
     },
     annotations: readOnly,
   },
-  async ({ dir, query }) => brainSearch({ dir, query }),
+  async (args, extra) => observeTool("brain_search", args, extra._meta, () => brainSearch(args)),
 );
 
 server.registerTool(
@@ -124,7 +125,8 @@ server.registerTool(
     },
     annotations: readOnly,
   },
-  async ({ dir, draft, path, article, checks }) => brainEval({ dir, draft, path, article, checks }),
+  async (args, extra) =>
+    observeTool("brain_eval", args, extra._meta, () => brainEval(args)),
 );
 
 server.registerTool(
@@ -136,7 +138,8 @@ server.registerTool(
     inputSchema: { dir: dirField },
     annotations: readOnly,
   },
-  async ({ dir }) => brainOpenQuestions({ dir }),
+  async (args, extra) =>
+    observeTool("brain_open_questions", args, extra._meta, () => brainOpenQuestions(args)),
 );
 
 const transport = new StdioServerTransport();

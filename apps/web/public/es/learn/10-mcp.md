@@ -54,6 +54,28 @@ Desde un checkout de este repositorio, antes de que el paquete esté publicado:
 
 Cada herramienta está marcada como solo lectura. Pasa `dir` cuando el brain no está en el directorio de trabajo.
 
+## Trazas
+
+Las trazas están apagadas hasta que el proceso MCP tiene `LANGFUSE_PUBLIC_KEY` y `LANGFUSE_SECRET_KEY`. Las mismas variables trazan `brain eval`, `brain brief` y `brain validate`.
+
+```json
+{
+  "mcpServers": {
+    "agentkbase": {
+      "command": "npx",
+      "args": ["-y", "@agentkbase/mcp"],
+      "env": {
+        "LANGFUSE_PUBLIC_KEY": "pk-lf-...",
+        "LANGFUSE_SECRET_KEY": "sk-lf-...",
+        "LANGFUSE_BASE_URL": "https://cloud.langfuse.com"
+      }
+    }
+  }
+}
+```
+
+Los spans guardan la herramienta, si pasó o falló, los códigos de issue y las rutas. No incluyen el texto de hechos ni borradores salvo con `LANGFUSE_TRACE_CONTENT=1`. Detalle: [Evaluación y enrutado](advanced/eval-and-routing.md).
+
 ## Lo que esto no es
 
 * No es un sitio para guardar decisiones. Eso es Engram (`mem_save`). Los hechos del equipo siguen en git.

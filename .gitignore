@@ -23,6 +23,7 @@ examples/content-ads-brain/
 scripts/company-brain-skeleton.mjs
 
 # Local agent state. .agents holds a SkillTree token.
+.agentkbase/
 .agents/
 .codex/
 .engram/

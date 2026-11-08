@@ -4,9 +4,17 @@
   "description": "Pack, validate, brief, and URL extract for Agent KBase (@agentkbase/cli)",
   "homepage": "https://agentkbase.com",
   "bugs": "https://github.com/m-qm/project-brain/issues",
-  "keywords": ["agent", "cursor", "knowledge-base", "validate", "brain"],
+  "keywords": [
+    "agent",
+    "cursor",
+    "knowledge-base",
+    "validate",
+    "brain"
+  ],
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -26,6 +34,10 @@
     "./browser": {
       "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js"
+    },
+    "./observe": {
+      "types": "./dist/observe.d.ts",
+      "import": "./dist/observe.js"
     }
   },
   "scripts": {
@@ -35,6 +47,14 @@
   },
   "dependencies": {
     "@agentkbase/templates": "workspace:*",
+    "@langfuse/otel": "6.1.1",
+    "@langfuse/tracing": "6.1.1",
+    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/core": "2.12.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.223.0",
+    "@opentelemetry/otlp-exporter-base": "0.223.0",
+    "@opentelemetry/sdk-trace-base": "2.12.0",
+    "@opentelemetry/sdk-trace-node": "2.12.0",
     "jszip": "^3.10.1"
   },
   "devDependencies": {

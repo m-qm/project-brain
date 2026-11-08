@@ -41,10 +41,15 @@ test("brain_read rejects a path outside brain/", async () => {
 });
 
 test("stdio server answers brain_brief and brain_validate", async () => {
+  const env = { ...process.env };
+  delete env.LANGFUSE_PUBLIC_KEY;
+  delete env.LANGFUSE_SECRET_KEY;
+  delete env.LANGFUSE_TRACE_CONTENT;
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [serverPath],
     cwd: example,
+    env,
     stderr: "pipe",
   });
   const client = new Client({ name: "agentkbase-test", version: "0.0.0" });

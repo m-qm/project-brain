@@ -114,6 +114,11 @@ export function printSetupSummary(result: SetupResult): string {
     "",
     "  3. brain validate --dir .",
     "  4. brain brief --dir .   # paste into chat or @ brain/",
+    "",
+    "  Optional Langfuse traces: set LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY",
+    "  on the CLI or MCP process (LANGFUSE_BASE_URL for a self-hosted instance).",
+    "  Spans record the tool, pass/fail, issue codes, and paths. Fact and draft",
+    "  text stays local unless LANGFUSE_TRACE_CONTENT=1.",
   );
   return lines.join("\n");
 }

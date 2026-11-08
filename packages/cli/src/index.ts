@@ -9,6 +9,12 @@ import {
   writeBrainToDisk,
   validateBrainDir,
   evalDraftAgainstDir,
+  askFromDir,
+  buildBehaviorSet,
+  checkBehaviorSet,
+  decideQueueItem,
+  enqueueDraft,
+  listQueue,
   buildBriefFromDir,
   extractBrainFromWebsiteUrl,
   mergeExtractIntoBrain,
@@ -21,6 +27,7 @@ import {
   type BrainInput,
   type ExtractScanMode,
 } from "@agentkbase/core";
+import { observeCommand, summarizeToolInput, summarizeToolPayload } from "@agentkbase/core/observe";
 
 const program = new Command();
 
@@ -33,6 +40,14 @@ function resolveExtractMode(opts: { multipage?: boolean; deep?: boolean }): Extr
   if (opts.deep) return "deep";
   if (opts.multipage) return "multipage";
   return "single";
+}
+
+function traceHost(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return "invalid-url";
+  }
 }
 
 function defaultInput(name: string, description?: string): BrainInput {
@@ -79,9 +94,20 @@ program
       let input = defaultInput(opts.name ?? "my-project", opts.description);
 
       if (opts.url?.trim()) {
-        const extract = await extractBrainFromWebsiteUrl(opts.url.trim(), {
-          mode: resolveExtractMode(opts),
-        });
+        const url = opts.url.trim();
+        const mode = resolveExtractMode(opts);
+        const extract = await observeCommand(
+          "brain_extract_url",
+          { host: traceHost(url), mode },
+          () => extractBrainFromWebsiteUrl(url, { mode }),
+          (value) => ({
+            ok: true,
+            method: value.method,
+            scanMode: value.scanMode,
+            pageCount: value.pagesFetched.length,
+            warningCount: value.warnings.length,
+          }),
+        );
         input = mergeExtractIntoBrain(input, extract, "replace") as BrainInput;
         for (const w of extract.warnings) console.log(`NOTE: ${w}`);
       }
@@ -122,7 +148,16 @@ program
   .option("--dir <path>", "Brain root directory", ".")
   .action(async (opts: { dir: string }) => {
     const target = resolve(opts.dir);
-    const result = await validateBrainDir(target);
+    const result = await observeCommand(
+      "brain_validate",
+      {},
+      () => validateBrainDir(target),
+      (value) => ({
+        ok: value.ok,
+        issueCount: value.issues.length,
+        levels: value.issues.slice(0, 8).map((issue) => issue.level),
+      }),
+    );
     for (const issue of result.issues) {
       const prefix = issue.level === "error" ? "ERROR" : "WARN";
       console.log(`${prefix}: ${issue.message}`);
@@ -154,22 +189,187 @@ program
       }
       const article = opts.article ? await readFile(resolve(opts.article), "utf8") : undefined;
       const checks: EvalCheck = opts.all ? "all" : "offer";
-      const result = await evalDraftAgainstDir(resolve(opts.dir), {
-        draft,
-        checks,
-        article,
-      });
+      const result = await observeCommand(
+        "brain_eval",
+        summarizeToolInput({ draft, checks, article }),
+        () => evalDraftAgainstDir(resolve(opts.dir), { draft, checks, article }),
+        (value) => ({
+          ok: value.ok,
+          issueCount: value.issues.length,
+          issueCodes: value.issues.map((issue) => issue.code),
+        }),
+      );
       console.log(JSON.stringify({ dir: result.dir, ok: result.ok, issues: result.issues }, null, 2));
       if (!result.ok) process.exitCode = 1;
     },
   );
 
 program
+  .command("ask")
+  .description("Plan a question against brain/. Prints evidence and gaps. Does not write or call a model.")
+  .argument("[question]", "Question a client would ask")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--text <text>", "Question text, instead of the argument")
+  .action(async (question: string | undefined, opts: { dir: string; text?: string }) => {
+    const text = (opts.text ?? question ?? "").trim();
+    if (!text) {
+      console.error("Pass a question or --text.");
+      process.exitCode = 1;
+      return;
+    }
+    const result = await observeCommand(
+      "brain_ask",
+      { query: text },
+      () => askFromDir(resolve(opts.dir), text),
+      (value) => ({
+        ok: value.decision === "pass",
+        route: value.plan.route,
+        decision: value.decision,
+        loops: value.loops,
+        draft: value.draft.status,
+        gapCodes: value.gaps.map((gap) => gap.code),
+        paths: value.reads,
+      }),
+    );
+    console.log(JSON.stringify(result, null, 2));
+    if (result.decision !== "pass") process.exitCode = 1;
+  });
+
+program
+  .command("dataset")
+  .description("Print the worker behavior set as JSONL. Eval studios never appear in train.")
+  .action(async () => {
+    const rows = await observeCommand(
+      "brain_dataset",
+      {},
+      async () => {
+        const built = buildBehaviorSet();
+        const problems = checkBehaviorSet(built);
+        if (problems.length > 0) throw new Error(problems.join("\n"));
+        return built;
+      },
+      (value) => ({
+        ok: true,
+        rows: value.length,
+        train: value.filter((row) => row.split === "train").length,
+        eval: value.filter((row) => row.split === "eval").length,
+      }),
+    );
+    for (const row of rows) console.log(JSON.stringify(row));
+  });
+
+function queuePaths(dir: string, queue?: string): { brainRoot: string; queueDir: string } {
+  const brainRoot = resolve(dir);
+  return {
+    brainRoot,
+    queueDir: queue ? resolve(queue) : join(brainRoot, ".agentkbase", "queue"),
+  };
+}
+
+const queue = program.command("queue").description("Local approval queue. Writes outside brain/ and does not publish.");
+
+queue
+  .command("add")
+  .description("Ask brain/ and queue one ready draft. A held question is not stored.")
+  .argument("[question]", "Question a client would ask")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--text <text>", "Question text, instead of the argument")
+  .option("--queue <path>", "Queue directory, outside brain/")
+  .action(async (question: string | undefined, opts: { dir: string; text?: string; queue?: string }) => {
+    const text = (opts.text ?? question ?? "").trim();
+    if (!text) {
+      console.error("Pass a question or --text.");
+      process.exitCode = 1;
+      return;
+    }
+    const paths = queuePaths(opts.dir, opts.queue);
+    const result = await observeCommand(
+      "brain_queue_add",
+      { query: text },
+      async () => {
+        const asked = await askFromDir(paths.brainRoot, text);
+        return enqueueDraft({
+          brainRoot: paths.brainRoot,
+          queueDir: paths.queueDir,
+          question: text,
+          draft: asked.draft,
+        });
+      },
+      (value) => ({
+        ok: value.enqueued,
+        enqueued: value.enqueued,
+        status: value.enqueued ? value.item.status : "held",
+        kind: value.enqueued ? value.item.kind : undefined,
+      }),
+    );
+    console.log(JSON.stringify(result, null, 2));
+    if (!result.enqueued) process.exitCode = 1;
+  });
+
+queue
+  .command("list")
+  .description("List queued drafts")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--queue <path>", "Queue directory, outside brain/")
+  .action(async (opts: { dir: string; queue?: string }) => {
+    const paths = queuePaths(opts.dir, opts.queue);
+    const items = await observeCommand(
+      "brain_queue_list",
+      {},
+      () => listQueue(paths.brainRoot, paths.queueDir),
+      (value) => ({
+        ok: true,
+        count: value.length,
+        pending: value.filter((item) => item.status === "pending").length,
+      }),
+    );
+    console.log(JSON.stringify(items, null, 2));
+  });
+
+function decideCommand(decision: "approve" | "reject"): void {
+  queue
+    .command(decision)
+    .description(decision === "approve" ? "Approve one pending draft" : "Reject one pending draft")
+    .argument("<id>", "Queue item id")
+    .option("--dir <path>", "Brain root directory", ".")
+    .option("--queue <path>", "Queue directory, outside brain/")
+    .action(async (id: string, opts: { dir: string; queue?: string }) => {
+      const paths = queuePaths(opts.dir, opts.queue);
+      try {
+        const item = await observeCommand(
+          "brain_queue_decide",
+          { query: id },
+          () =>
+            decideQueueItem({
+              brainRoot: paths.brainRoot,
+              queueDir: paths.queueDir,
+              id,
+              decision,
+            }),
+          (value) => ({ ok: true, status: value.status, kind: value.kind }),
+        );
+        console.log(JSON.stringify(item, null, 2));
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exitCode = 1;
+      }
+    });
+}
+
+decideCommand("approve");
+decideCommand("reject");
+
+program
   .command("brief")
   .description("Print a token-bounded context pack for agents")
   .option("--dir <path>", "Brain root directory", ".")
   .action(async (opts: { dir: string }) => {
-    const text = await buildBriefFromDir(resolve(opts.dir));
+    const text = await observeCommand(
+      "brain_brief",
+      {},
+      () => buildBriefFromDir(resolve(opts.dir)),
+      (value) => summarizeToolPayload(value, false),
+    );
     console.log(text);
   });
 
@@ -187,9 +387,19 @@ program
       url: string,
       opts: { json?: boolean; multipage?: boolean; deep?: boolean; init?: string; engram?: boolean },
     ) => {
-      const extract = await extractBrainFromWebsiteUrl(url, {
-        mode: resolveExtractMode(opts),
-      });
+      const mode = resolveExtractMode(opts);
+      const extract = await observeCommand(
+        "brain_extract_url",
+        { host: traceHost(url), mode },
+        () => extractBrainFromWebsiteUrl(url, { mode }),
+        (value) => ({
+          ok: true,
+          method: value.method,
+          scanMode: value.scanMode,
+          pageCount: value.pagesFetched.length,
+          warningCount: value.warnings.length,
+        }),
+      );
       if (opts.init) {
         const input = mergeExtractIntoBrain(EMPTY_BRAIN_INPUT, extract, "replace") as BrainInput;
         const target = resolve(opts.init);
@@ -217,8 +427,16 @@ program
   .option("--dir <path>", "Load draft from brain/ on disk", ".")
   .option("--json", "Print GapFillResult JSON")
   .action(async (opts: { dir: string; json?: boolean }) => {
-    const input = await loadBrainInputFromDir(resolve(opts.dir));
-    const result = await suggestGapFills(input);
+    const result = await observeCommand(
+      "brain_fill_gaps",
+      {},
+      async () => suggestGapFills(await loadBrainInputFromDir(resolve(opts.dir))),
+      (value) => ({
+        ok: true,
+        suggestionCount: value.suggestions.length,
+        warningCount: value.warnings.length,
+      }),
+    );
     if (opts.json) {
       console.log(JSON.stringify(result, null, 2));
     } else {

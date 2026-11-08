@@ -1,57 +1,52 @@
 # How to stop your blog publishing prices that do not exist
 
-If you run a shop or a studio and you let an AI write the blog, the risk is not that the text “sounds like a machine”. The risk is that it publishes a price, a pack, or a deadline you will not honour.
+If an AI writes the blog for your shop or studio, it can publish a price, a pack, or a deadline you will not honour. A client reads it and asks you for that offer.
 
-A founder is not searching “what is an agent”. They are searching how to publish every week without the site and the post saying different things. That is buying intent. This answers that search.
+## What happened in one draft
 
-## The problem (yours, not the builder’s)
+On the site the service is on request. The article said “from 99 €”. A client quoted that number. Someone then had to honour a price nobody had set.
 
-A realistic example, no invented company figures: on the site the service is “on request”. The article, written in one pass, says “from 99 €”. A client quotes it. You never meant to sell it. The damage is not SEO. It is trust.
+## Before you publish
 
-That happens when the model fills gaps. It writes fluently. Fluency is not a fact.
+Someone reads the draft and marks these five points. If one fails, the draft stays put. It takes about a minute.
 
-## What is not enough
+1. The title is a problem a shop or studio owner would search, in their own words.
+2. Every price, pack, or deadline is in your facts. If it is missing, cut it.
+3. A ranking, a visit count, or a client name stays in only when you can open it on a page.
+4. You can see where each fact came from: your site, your service list, or your notes.
+5. The close asks for a conversation or the waitlist: no invoices, no passwords, and no personal phone.
 
-Asking it “not to hallucinate” is not enough. A style pass is not enough. Publishing twenty posts to “feed the blog” is worse: scaled low-quality pages are a problem for search, and your network will see the same error again.
+The list is public: [agentkbase.com/company-brain](/company-brain).
 
-A tool that publishes alone to WordPress or Instagram is not enough either. If it publishes alone, it scales the error.
+## How we do it here
 
-## What works: a short list before you hit publish
+Agent KBase keeps the offer in git. One worker writes the article and leaves it in a queue. The LinkedIn draft comes after the article is published. This piece went through that review before it came out here.
 
-Before a text goes to the site or to LinkedIn, someone (you, or an operator) marks five yeses:
+The first readers arrive from LinkedIn and from conversations.
 
-1. The title is a shop or studio problem, not a jargon word.
-2. Every price, pack, or deadline is in your company facts, or it was cut.
-3. No traffic, rankings, or “N clients chose us” that you cannot show.
-4. You can see where the text came from (your site, your service list, your notes).
-5. The close asks for a conversation or a waitlist, not an invoice or a personal phone.
+## Who it is for
 
-If one line is no, the draft does not go live. The bottleneck is that review. That is why it has to fit in a minute, not a meeting.
-
-The five checks are public: [agentkbase.com/company-brain](/company-brain).
-
-## How we run it here
-
-Agent KBase keeps what is true in git: the offer, the tone, what must not be said. One worker writes the article and leaves it in a queue. A second worker may write the LinkedIn draft only when the article is approved and published. Nothing fires alone.
-
-This piece is the first run of that loop. A human said yes before it lived on this page. We do not promise Google rankings. The first readers (and the first clients) come from LinkedIn and from conversations, not from a post that went live today.
-
-## Who this is for
-
-A business with a website and no marketing team. A shop, a studio, a one or two person consultancy. Not a department that already has an agency.
+A business with a website and no marketing team. A shop, a studio, or a one or two person consultancy.
 
 ## Five checks, one post each
 
-Each failed check is its own post. The reader stays a shop or a studio. This one is the price.
+Each check gets its own post. The reader stays a shop or a studio. This one is the price.
 
 1. How to title a post a shop owner would actually search.
 2. [How to stop your blog publishing prices that do not exist](/blog/stop-fake-prices).
-3. How to stop your blog claiming a ranking you cannot show.
+3. [How to stop your blog claiming a ranking you cannot show](/blog/ranking-you-cannot-show).
 4. How to see where each line in a draft came from.
-5. How to stop a draft asking for your personal phone.
+5. How to close a draft with no personal phone.
 
-The other four are drafts. They stay unlinked until a human approves them. The list they all use is [agentkbase.com/company-brain](/company-brain).
+The other three are drafts. They stay unlinked until a person approves them. The list they share is [agentkbase.com/company-brain](/company-brain).
 
 ## Next step
 
-If the loop fits: [workers waitlist](/company-brain). The OSS brain is free. Publish without review is not in the product.
+If the loop fits, join the [waitlist](/company-brain). The open-source brain is free. A person still says yes before anything goes live.
+
+## Sources
+
+* `brain/facts/offers.md` — the open-source brain is free. Done-for-you is quoted separately, with no number in the post.
+* `brain/facts/project.md` — what we can say in public.
+* `brain/content/review-checklist.md` — the five checks.
+* [agentkbase.com/company-brain](/company-brain) — the public list.
