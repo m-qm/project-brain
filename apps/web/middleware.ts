@@ -15,13 +15,16 @@ function contentSecurityPolicy(nonce: string): string {
     isDev ? "'unsafe-eval'" : "",
   ].filter(Boolean);
 
+  /** Reagraph (troika-three-text) loads unicode codepoint JSON + font assets from jsDelivr at runtime. */
+  const reagraphCdn = "https://cdn.jsdelivr.net";
+
   return [
     "default-src 'self'",
     `script-src ${scriptSrc.join(" ")}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
-    "font-src 'self'",
-    "connect-src 'self'",
+    `font-src 'self' ${reagraphCdn} data:`,
+    `connect-src 'self' ${reagraphCdn}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
