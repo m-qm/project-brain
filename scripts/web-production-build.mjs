@@ -18,7 +18,9 @@ function devOn3000() {
 
 if (devOn3000()) {
   console.error(
-    "\n[build] Port 3000 is in use (next dev?). Stop dev (Ctrl+C) before pnpm build.\n",
+    "\n[build] Port 3000 is in use (next dev?). This is not a TypeScript error.\n",
+    "  • Stop dev (Ctrl+C), then: pnpm build\n",
+    "  • Or build web only (leaves .next alone): pnpm build:web\n",
   );
   process.exit(1);
 }

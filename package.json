@@ -5,6 +5,7 @@
   "scripts": {
     "build:packages": "pnpm --filter @agentkbase/templates build && pnpm --filter @agentkbase/core build && pnpm --filter @agentkbase/cli build && pnpm --filter @agentkbase/mcp build",
     "build": "pnpm run build:packages && node scripts/web-production-build.mjs",
+    "build:web": "pnpm run build:packages && pnpm --filter @agentkbase/web run build",
     "dev": "pnpm run build:packages && concurrently -k -n core,cli,web \"pnpm --filter @agentkbase/core run watch\" \"pnpm --filter @agentkbase/cli run watch\" \"pnpm --filter @agentkbase/web run dev\"",
     "dev:fast": "pnpm run build:packages && pnpm --filter @agentkbase/web exec node scripts/copy-docs.mjs && pnpm --filter @agentkbase/web run dev",
     "dev:resync": "pnpm run build:packages && concurrently -k -n core,cli,web \"pnpm --filter @agentkbase/core run watch\" \"pnpm --filter @agentkbase/cli run watch\" \"pnpm --filter @agentkbase/web run dev:resync\"",

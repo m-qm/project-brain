@@ -13,8 +13,16 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  transpilePackages: ["@agentkbase/core", "@agentkbase/templates", "next-intl", "reagraph"],
+  transpilePackages: ["@agentkbase/core", "@agentkbase/templates", "next-intl"],
+  /** Reagraph + R3F: client-only (dynamic import); keep off the server bundle. */
+  serverExternalPackages: ["reagraph", "three", "@react-three/fiber", "@react-three/drei"],
   outputFileTracingRoot: join(__dirname, "../.."),
+  webpack: (config) => {
+    // three.js optional native deps (dev compile on macOS/Linux)
+    config.resolve.alias = { ...config.resolve.alias, canvas: false };
+    config.resolve.fallback = { ...config.resolve.fallback, canvas: false };
+    return config;
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
