@@ -1,6 +1,10 @@
 import type { BrainInput } from "./types.js";
 import { parsePageSignals, type PageSignals } from "./extract-page-signals.js";
-import { scrubLegacyInvoiceMission, synthesizeBrainFromPage } from "./synthesize-from-page.js";
+import {
+  sanitizeExtractSuggestion,
+  scrubLegacyInvoiceMission,
+  synthesizeBrainFromPage,
+} from "./synthesize-from-page.js";
 import type { ExtractScanMode } from "./extract-bounds.js";
 import type { ExtractScanLogEntry } from "./extract-scan-log.js";
 import { hasExtractLlmKey, type ExtractLlmProvider } from "./extract-with-llm.js";
@@ -45,7 +49,7 @@ export function websiteExtractFromSignals(
   extraWarnings: string[] = [],
   scanLog: ExtractScanLogEntry[] = [],
 ): WebsiteExtract {
-  const suggested = synthesizeBrainFromPage(signals);
+  const suggested = sanitizeExtractSuggestion(signals, synthesizeBrainFromPage(signals));
   return {
     sourceUrl,
     suggested,
@@ -111,7 +115,7 @@ export function applyLlmSuggestion(
     signals && llm.projectDescription
       ? scrubLegacyInvoiceMission(llm.projectDescription, brand, signals)
       : llm.projectDescription;
-  const suggested =
+  const merged =
     mission !== llm.projectMission || description !== llm.projectDescription
       ? {
           ...llm,
@@ -119,6 +123,7 @@ export function applyLlmSuggestion(
           ...(description ? { projectDescription: description ?? mission } : {}),
         }
       : llm;
+  const suggested = signals ? sanitizeExtractSuggestion(signals, merged) : merged;
   return {
     ...base,
     suggested,

@@ -138,12 +138,29 @@ function mentionsInvoiceWorkflow(signals: PageSignals): boolean {
   return (strongSpend && /invoice|facturas/i.test(focus)) || invoiceInputs || auditMethod;
 }
 
-/** Hatchpad-era default mission injected for any `lang=es` page on older builds. */
-function isLegacyInvoiceMissionBoilerplate(text: string): boolean {
-  return (
-    /ayuda a equipos a controlar el gasto en herramientas de ia/i.test(text) ||
-    /helps teams control AI tool spend before renewals/i.test(text)
-  );
+/** Hatchpad-era default mission (heuristic template or LLM echo). */
+function isLegacyInvoiceMissionBoilerplate(text: string, signals?: PageSignals): boolean {
+  const t = text.toLowerCase();
+  if (
+    /ayuda a equipos a controlar el gasto en herramientas de ia/.test(t) ||
+    /helps teams control ai tool spend before renewals/.test(t)
+  ) {
+    return true;
+  }
+  if (/from invoices and an optional member export/.test(t)) return true;
+  if (/a partir de facturas y export opcional de miembros/.test(t)) return true;
+  if (/without logging into vendor accounts/.test(t) && /renewals|ai tool spend/.test(t)) {
+    return true;
+  }
+  if (
+    signals &&
+    !mentionsInvoiceWorkflow(signals) &&
+    /ai tool spend|member export|optional member export/.test(t) &&
+    /invoice|facturas/.test(t)
+  ) {
+    return true;
+  }
+  return false;
 }
 
 function missionLead(brand: string, signals: PageSignals): string {
@@ -215,10 +232,34 @@ export function scrubLegacyInvoiceMission(
   brand: string,
   signals: PageSignals,
 ): string | undefined {
-  if (!mission || !isLegacyInvoiceMissionBoilerplate(mission)) return mission;
+  if (!mission || !isLegacyInvoiceMissionBoilerplate(mission, signals)) return mission;
   let replacement = missionLead(brand, signals);
   if (!replacement.endsWith(".")) replacement += ".";
   return replacement;
+}
+
+export function sanitizeExtractSuggestion(
+  signals: PageSignals,
+  suggested: Partial<BrainInput>,
+): Partial<BrainInput> {
+  const brand = suggested.projectName?.trim() || brandName(signals);
+  const projectMission = scrubLegacyInvoiceMission(suggested.projectMission, brand, signals);
+  const projectDescription = scrubLegacyInvoiceMission(
+    suggested.projectDescription,
+    brand,
+    signals,
+  );
+  if (
+    projectMission === suggested.projectMission &&
+    projectDescription === suggested.projectDescription
+  ) {
+    return suggested;
+  }
+  return {
+    ...suggested,
+    ...(projectMission ? { projectMission, projectDescription: projectDescription ?? projectMission } : {}),
+    ...(projectDescription && !projectMission ? { projectDescription } : {}),
+  };
 }
 
 export function synthesizeBrainFromPage(signals: PageSignals): Partial<BrainInput> {

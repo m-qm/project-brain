@@ -37,6 +37,7 @@ Rules:
 - storyBuilt = delivery/process narrative, not a copy-paste of factBullets.
 - Do NOT output Cursor skills, SKILL.md, or tool recipes; skills come from SkillTree separately.
 - Do not invent metrics, customers, or features not supported by the excerpt.
+- Never use a generic "AI tool spend / invoices / member export / without logging into vendor accounts" mission unless the excerpt clearly describes that exact business.
 - openQuestions = what a human must still confirm (include that skills are not auto-generated).
 
 Website excerpt:
