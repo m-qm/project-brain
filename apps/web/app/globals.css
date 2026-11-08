@@ -522,31 +522,27 @@ a.nav-menu-cta {
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-graph-halo {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: hero-graph-breathe 5.6s ease-in-out infinite;
+    animation: hero-graph-breathe 8s ease-in-out infinite;
   }
 
   .hero-graph-orbit {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: hero-graph-spin 42s linear infinite;
+    animation: hero-graph-dash 36s linear infinite;
   }
 }
 
 @keyframes hero-graph-breathe {
   0%,
   100% {
-    opacity: 0.12;
+    opacity: 0.1;
   }
   50% {
-    opacity: 0.38;
+    opacity: 0.32;
   }
 }
 
-@keyframes hero-graph-spin {
+@keyframes hero-graph-dash {
   to {
-    transform: rotate(360deg);
+    stroke-dashoffset: -75;
   }
 }
 

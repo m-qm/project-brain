@@ -105,38 +105,51 @@ const EDGES: EdgeDef[] = [
 ];
 
 const PULSES = [
-  { edge: 0, speed: 0.16, offset: 0 },
-  { edge: 1, speed: 0.13, offset: 0.35 },
-  { edge: 4, speed: 0.18, offset: 0.62 },
-  { edge: 16, speed: 0.15, offset: 0.2 },
+  { edge: 0, speed: 0.085, offset: 0.08 },
+  { edge: 1, speed: 0.07, offset: 0.4 },
+  { edge: 4, speed: 0.09, offset: 0.62 },
+  { edge: 16, speed: 0.075, offset: 0.22 },
 ];
 
 const NODE_BY_ID = new Map(NODES.map((node) => [node.id, node]));
 
-function controlPoint(a: Point, b: Point, bend: number): Point {
+function bendAmount(a: Point, b: Point, bend: number): number {
+  const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+  return Math.min(34, len * 0.16) * bend;
+}
+
+function controlPoint(a: Point, b: Point, signedBend: number): Point {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.hypot(dx, dy) || 1;
-  const mag = Math.min(40, len * 0.18) * bend;
   return {
-    x: (a.x + b.x) / 2 + (-dy / len) * mag,
-    y: (a.y + b.y) / 2 + (dx / len) * mag,
+    x: (a.x + b.x) / 2 + (-dy / len) * signedBend,
+    y: (a.y + b.y) / 2 + (dx / len) * signedBend,
   };
 }
 
-function edgePath(a: Point, b: Point, bend: number): string {
-  const c = controlPoint(a, b, bend);
-  return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${c.x.toFixed(1)} ${c.y.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+function edgePath(a: Point, b: Point, signedBend: number): string {
+  const c = controlPoint(a, b, signedBend);
+  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} Q ${c.x.toFixed(2)} ${c.y.toFixed(2)} ${b.x.toFixed(2)} ${b.y.toFixed(2)}`;
 }
 
-function pointOnEdge(a: Point, b: Point, bend: number, u: number): Point {
-  const c = controlPoint(a, b, bend);
+function pointOnEdge(a: Point, b: Point, signedBend: number, u: number): Point {
+  const c = controlPoint(a, b, signedBend);
   const t = 1 - u;
   return {
     x: t * t * a.x + 2 * t * u * c.x + u * u * b.x,
     y: t * t * a.y + 2 * t * u * c.y + u * u * b.y,
   };
 }
+
+/** Bend is fixed from the resting layout so curves don't kink as nodes drift. */
+const REST_BEND = new Map(
+  EDGES.map((edge) => {
+    const a = NODE_BY_ID.get(edge.from);
+    const b = NODE_BY_ID.get(edge.to);
+    return [edgeKey(edge), a && b ? bendAmount(a, b, edge.bend) : 0] as const;
+  }),
+);
 
 function labelPlacement(anchor: Anchor, r: number): { x: number; y: number; textAnchor: "start" | "middle" | "end" } {
   switch (anchor) {
@@ -175,51 +188,80 @@ export function HeroKnowledgeGraph({ copy }: { copy: HeroGraphCopy }) {
     let frame = 0;
     let alive = true;
 
-    const place = (at: (node: NodeDef) => Point) => {
-      const pos = new Map<string, Point>();
+    const current = new Map<string, Point>(NODES.map((node) => [node.id, { x: node.x, y: node.y }]));
+    let last = 0;
+
+    const targetAt = (node: NodeDef, t: number): Point => {
+      const slow = Math.sin(t * 0.34 + node.phase);
+      const drift = Math.sin(t * 0.15 + node.phase * 1.7);
+      const slowY = Math.cos(t * 0.27 + node.phase * 1.15);
+      const driftY = Math.cos(t * 0.12 + node.phase * 0.6);
+      return {
+        x: node.x + (slow * 0.72 + drift * 0.28) * node.drift,
+        y: node.y + (slowY * 0.68 + driftY * 0.32) * node.drift * 0.85,
+      };
+    };
+
+    const place = (pos: Map<string, Point>) => {
       for (const node of NODES) {
-        const point = at(node);
-        pos.set(node.id, point);
+        const point = pos.get(node.id);
+        if (!point) continue;
         groups.current[node.id]?.setAttribute("transform", `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)})`);
       }
-      EDGES.forEach((edge) => {
+      for (const edge of EDGES) {
         const a = pos.get(edge.from);
         const b = pos.get(edge.to);
-        if (!a || !b) return;
-        paths.current[edgeKey(edge)]?.setAttribute("d", edgePath(a, b, edge.bend));
-      });
-      return pos;
+        if (!a || !b) continue;
+        paths.current[edgeKey(edge)]?.setAttribute("d", edgePath(a, b, REST_BEND.get(edgeKey(edge)) ?? 0));
+      }
     };
 
     const reset = () => {
-      place((node) => ({ x: node.x, y: node.y }));
+      for (const node of NODES) {
+        const point = current.get(node.id);
+        if (point) {
+          point.x = node.x;
+          point.y = node.y;
+        }
+      }
+      place(current);
       pulses.current.forEach((dot) => dot?.setAttribute("opacity", "0"));
     };
 
     const tick = (now: number) => {
       if (!alive) return;
       if (document.visibilityState === "hidden") {
+        last = 0;
         frame = requestAnimationFrame(tick);
         return;
       }
+      const dt = last === 0 ? 0.016 : Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const follow = 1 - Math.exp(-3.4 * dt);
       const t = now / 1000;
-      const pos = place((node) => ({
-        x: node.x + Math.sin(t * 0.72 + node.phase) * node.drift,
-        y: node.y + Math.cos(t * 0.56 + node.phase * 1.17) * node.drift * 0.85,
-      }));
-      PULSES.forEach((pulse, index) => {
+      for (const node of NODES) {
+        const point = current.get(node.id);
+        const target = targetAt(node, t);
+        if (!point) continue;
+        point.x += (target.x - point.x) * follow;
+        point.y += (target.y - point.y) * follow;
+      }
+      place(current);
+      for (let index = 0; index < PULSES.length; index += 1) {
+        const pulse = PULSES[index];
         const edge = EDGES[pulse.edge];
         const dot = pulses.current[index];
-        if (!edge || !dot) return;
-        const a = pos.get(edge.from);
-        const b = pos.get(edge.to);
-        if (!a || !b) return;
+        if (!edge || !dot) continue;
+        const a = current.get(edge.from);
+        const b = current.get(edge.to);
+        if (!a || !b) continue;
         const u = (t * pulse.speed + pulse.offset) % 1;
-        const p = pointOnEdge(a, b, edge.bend, u);
+        const p = pointOnEdge(a, b, REST_BEND.get(edgeKey(edge)) ?? 0, u);
+        const fade = Math.sin(u * Math.PI);
         dot.setAttribute("cx", p.x.toFixed(2));
         dot.setAttribute("cy", p.y.toFixed(2));
-        dot.setAttribute("opacity", "1");
-      });
+        dot.setAttribute("opacity", fade.toFixed(3));
+      }
       frame = requestAnimationFrame(tick);
     };
 
@@ -263,7 +305,7 @@ export function HeroKnowledgeGraph({ copy }: { copy: HeroGraphCopy }) {
               ref={(el) => {
                 paths.current[edgeKey(edge)] = el;
               }}
-              d={edgePath(a, b, edge.bend)}
+              d={edgePath(a, b, REST_BEND.get(edgeKey(edge)) ?? 0)}
               className={edge.gap ? "hero-graph-edge is-gap" : "hero-graph-edge"}
             />
           );
@@ -273,7 +315,8 @@ export function HeroKnowledgeGraph({ copy }: { copy: HeroGraphCopy }) {
             const edge = EDGES[pulse.edge];
             const a = edge ? NODE_BY_ID.get(edge.from) : undefined;
             const b = edge ? NODE_BY_ID.get(edge.to) : undefined;
-            const p = a && b && edge ? pointOnEdge(a, b, edge.bend, pulse.offset) : { x: 0, y: 0 };
+            const p =
+              a && b && edge ? pointOnEdge(a, b, REST_BEND.get(edgeKey(edge)) ?? 0, pulse.offset) : { x: 0, y: 0 };
             return (
               <circle
                 key={pulse.edge}
