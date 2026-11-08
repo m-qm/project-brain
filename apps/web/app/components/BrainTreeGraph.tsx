@@ -12,6 +12,7 @@ import {
 } from "@/lib/brain-tree-data";
 import { loadWizardState } from "@/lib/wizard-state";
 import { BrainTreeGraphSvg } from "./BrainTreeGraphSvg";
+import { BrainTreeGraphGLErrorBoundary } from "./BrainTreeGraphGLErrorBoundary";
 
 const BrainTreeGraphGL = dynamic(
   () => import("./BrainTreeGraphGL").then((m) => m.BrainTreeGraphGL),
@@ -110,13 +111,29 @@ export function BrainTreeGraph({
           liveReady={liveReady}
         />
       ) : (
-        <BrainTreeGraphGL
-          layoutNodes={nodes}
-          layoutEdges={edges}
-          centerLabel={centerLabel}
-          extractDemo={extractDemo}
-          highlightDomains={highlightDomains}
-        />
+        <BrainTreeGraphGLErrorBoundary
+          fallback={
+            <BrainTreeGraphSvg
+              nodes={nodes}
+              edges={edges}
+              centerLabel={centerLabel}
+              extractDemo={extractDemo}
+              highlightDomains={highlightDomains}
+              activeDomain={activeDomain}
+              onActiveDomain={setActiveDomain}
+              live={live}
+              liveReady={liveReady}
+            />
+          }
+        >
+          <BrainTreeGraphGL
+            layoutNodes={nodes}
+            layoutEdges={edges}
+            centerLabel={centerLabel}
+            extractDemo={extractDemo}
+            highlightDomains={highlightDomains}
+          />
+        </BrainTreeGraphGLErrorBoundary>
       )}
       {live && liveReady && liveTree.isLive && (
         <figcaption className="brain-tree-caption live">{t("synced")}</figcaption>
