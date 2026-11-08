@@ -1,22 +1,81 @@
-/* Tokens · SkillTree inspired (light marketing + dark showcase) */
+/* Self-hosted latin subsets. Spanish accents live in this range. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/inter-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./fonts/inter-latin-800-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/newsreader-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/newsreader-latin-500-italic.woff2") format("woff2");
+}
+
+/* Tokens · paper, spruce ink, one pine accent */
 :root {
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", "Noto Sans", system-ui, sans-serif;
+  --font-serif: "Newsreader", "Iowan Old Style", Palatino, Georgia, serif;
 
-  --bg: #f4f4f5;
-  --bg-2: #ececee;
+  --bg: #f3f6f4;
+  --bg-2: #e6eeea;
   --bg-3: #ffffff;
-  --ivory: #161618;
-  --ivory-2: #3f3f46;
-  --ink-2: #52525b;
-  --ink-3: #71717a;
+  --ivory: #14221c;
+  --ivory-2: #24352d;
+  --ink: #14221c;
+  --ink-2: #4d5e56;
+  --ink-3: #5e6f67;
+  --muted: #5e6f67;
 
-  --accent: #161618;
-  --accent-fg: #fafafa;
-  --line: rgba(22, 22, 24, 0.1);
-  --line-2: rgba(22, 22, 24, 0.16);
+  --accent: #0f5c4c;
+  --accent-fg: #f4faf7;
+  --line: rgba(20, 34, 28, 0.1);
+  --line-2: rgba(20, 34, 28, 0.16);
   --card: #ffffff;
-  --card-muted: #f4f4f5;
+  --card-muted: #eef4f1;
 
   --screen: #111114;
   --screen-2: #1b1b21;
@@ -99,9 +158,9 @@ a:hover {
   gap: 0.5rem;
   flex-shrink: 0;
   white-space: nowrap;
-  font-weight: 800;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
 }
 
 .brand-mark {
@@ -175,8 +234,36 @@ a.nav-menu-cta {
 
 /* Hero */
 .hero {
-  text-align: center;
-  padding: 3.5rem 1.5rem 2rem;
+  position: relative;
+  padding: 2.5rem 0 3.25rem;
+  background:
+    radial-gradient(ellipse 42% 55% at 78% 38%, rgba(15, 92, 76, 0.09), transparent 70%),
+    radial-gradient(ellipse 36% 42% at 8% 0%, rgba(29, 79, 143, 0.06), transparent 72%);
+}
+
+.hero-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(300px, 0.98fr);
+  grid-template-areas:
+    "intro graph"
+    "actions graph";
+  column-gap: 2rem;
+  row-gap: 0.35rem;
+  align-items: center;
+}
+
+.hero-intro {
+  grid-area: intro;
+}
+
+.hero-actions {
+  grid-area: actions;
 }
 
 .hero-badge {
@@ -191,31 +278,31 @@ a.nav-menu-cta {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-2);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.1rem;
+  background: color-mix(in srgb, var(--bg-3) 80%, transparent);
 }
 
 .hero-title {
-  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  font-size: clamp(2.55rem, 4.4vw, 4.05rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  margin: 0 0 1.25rem;
-  max-width: 14ch;
-  margin-left: auto;
-  margin-right: auto;
+  letter-spacing: -0.048em;
+  line-height: 0.98;
+  margin: 0;
+  max-width: 11ch;
 }
 
 .hero-title em {
   font-family: var(--font-serif);
   font-style: italic;
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }
 
 .hero-lead {
-  font-size: clamp(1rem, 2vw, 1.125rem);
+  font-size: clamp(1rem, 1.6vw, 1.08rem);
   color: var(--ink-2);
-  max-width: 42rem;
-  margin: 0 auto 2rem;
+  max-width: 38rem;
+  margin: 0 0 1.35rem;
   line-height: 1.6;
 }
 
@@ -223,34 +310,38 @@ a.nav-menu-cta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .perk-box {
-  max-width: 28rem;
-  margin: 0 auto 1.5rem;
+  max-width: none;
+  margin: 2rem 0 0;
   text-align: left;
-  background: var(--card-muted);
+  background: color-mix(in srgb, var(--bg-3) 86%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
+  padding: 1.15rem 1.35rem;
 }
 
 .perk-box ul {
   margin: 0;
   padding: 0;
   list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.85rem 1.15rem;
 }
 
 .perk-box li {
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   color: var(--ivory-2);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  line-height: 1.45;
 }
 
 .perk-box li::before {
@@ -262,17 +353,13 @@ a.nav-menu-cta {
 .hero-install.learn-code-block {
   width: 100%;
   max-width: 28rem;
-  /* Beat .learn-code-block { margin: 1.25rem 0 } so the box centers in the hero */
-  margin: 0 auto 1.5rem;
-  text-align: center;
-}
-
-.hero-install .learn-code-label {
-  text-align: center;
+  margin: 0 0 1rem;
+  text-align: left;
 }
 
 .hero-install .learn-code {
-  text-align: center;
+  background: var(--bg-3);
+  color: var(--ivory);
 }
 
 .hero-meta {
@@ -285,103 +372,237 @@ a.nav-menu-cta {
   text-underline-offset: 3px;
 }
 
-/* Dark showcase */
-.showcase-wrap {
-  padding: 0 1rem 4rem;
-  max-width: 1120px;
-  margin: 0 auto;
+/* Living knowledge graph */
+.hero-graph {
+  grid-area: graph;
+  margin: 0;
+  min-width: 0;
 }
 
-.showcase {
-  background: linear-gradient(180deg, var(--screen-2) 0%, var(--screen) 100%);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--screen-line);
-  overflow: hidden;
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-  min-height: 420px;
-  position: relative;
+.hero-graph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
-.showcase-chrome {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-bottom: 1px solid var(--screen-line);
+.hero-graph-edge {
+  fill: none;
+  stroke: rgba(20, 34, 28, 0.28);
+  stroke-width: 1.35;
+  stroke-linecap: round;
 }
 
-.showcase-tab {
-  font-size: 0.65rem;
+.hero-graph-edge.is-gap {
+  stroke: rgba(184, 92, 14, 0.72);
+  stroke-dasharray: 4 5;
+}
+
+.hero-graph-pulse {
+  fill: #0f5c4c;
+}
+
+.hero-graph-halo {
+  fill: currentColor;
+  opacity: 0.14;
+}
+
+.hero-graph-dot {
+  fill: currentColor;
+}
+
+.hero-graph-node.is-fact {
+  color: #12715c;
+}
+
+.hero-graph-node.is-story {
+  color: #1d4f8f;
+}
+
+.hero-graph-node.is-question {
+  color: #8a5a12;
+}
+
+.hero-graph-node.is-confirm {
+  color: #b85c0e;
+}
+
+.hero-graph-node.is-agent {
+  color: #14221c;
+}
+
+.hero-graph-node.is-center {
+  color: #0f5c4c;
+}
+
+.hero-graph-node.is-gap .hero-graph-dot {
+  fill: #fbf8f2;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-dasharray: 3.2 2.4;
+}
+
+.hero-graph-node.is-dust {
+  opacity: 0.7;
+}
+
+.hero-graph-orbit {
+  fill: none;
+  stroke: rgba(15, 92, 76, 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 2.5 5;
+}
+
+.hero-graph-label {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  fill: #14221c;
+  letter-spacing: -0.01em;
+}
+
+.hero-graph-label.is-mono {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+  font-size: 17px;
+  font-weight: 500;
+  fill: #3d4f47;
+}
+
+.hero-graph-center-label {
+  font-family: var(--font-sans);
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  padding: 0.4rem 0.75rem;
-  border-radius: var(--radius-pill);
-  color: var(--screen-muted);
+  letter-spacing: 0.06em;
+  fill: #f4faf7;
 }
 
-.showcase-tab.active {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--screen-text);
-}
-
-.showcase-body {
-  padding: 2rem 1.5rem 2.5rem;
-  color: var(--screen-text);
-}
-
-.showcase-search {
-  max-width: 320px;
-  margin: 0 auto 2rem;
-  padding: 0.65rem 1rem;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--screen-line);
-  color: var(--screen-muted);
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-.showcase-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.showcase-node {
-  padding: 1rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--screen-line);
-  background: rgba(255, 255, 255, 0.03);
+.hero-graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  justify-content: center;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-2);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--screen-muted);
-  text-align: center;
 }
 
-.showcase-node strong {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--screen-text);
-  text-transform: none;
-  letter-spacing: 0;
-  margin-top: 0.35rem;
-  font-weight: 600;
+.hero-graph-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.showcase-dots {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.35;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
-  background-size: 24px 24px;
+.hero-graph-swatch {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.hero-graph-swatch.is-fact {
+  background: #12715c;
+}
+
+.hero-graph-swatch.is-story {
+  background: #1d4f8f;
+}
+
+.hero-graph-swatch.is-question {
+  background: #8a5a12;
+}
+
+.hero-graph-swatch.is-confirm {
+  background: transparent;
+  border: 1.5px dashed #b85c0e;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-graph-halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hero-graph-breathe 5.6s ease-in-out infinite;
+  }
+
+  .hero-graph-orbit {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hero-graph-spin 42s linear infinite;
+  }
+}
+
+@keyframes hero-graph-breathe {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.38;
+  }
+}
+
+@keyframes hero-graph-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding-top: 1.75rem;
+  }
+
+  .hero-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "intro"
+      "graph"
+      "actions";
+    justify-items: center;
+    text-align: center;
+  }
+
+  .hero-intro,
+  .hero-actions {
+    width: min(40rem, 100%);
+  }
+
+  .hero-title {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 14ch;
+  }
+
+  .hero-lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta-row {
+    justify-content: center;
+  }
+
+  .hero-install.learn-code-block {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-graph {
+    width: min(560px, 100%);
+  }
+
+  .perk-box ul {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .perk-box ul {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Story + brain tree graph */
@@ -494,6 +715,7 @@ a.nav-menu-cta {
 }
 
 .brain-tree-gl {
+  position: relative;
   width: 100%;
   height: min(72vw, 520px);
   min-height: 360px;
@@ -1262,6 +1484,23 @@ a.nav-menu-cta {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+
+  .hero-graph-halo,
+  .hero-graph-orbit {
+    animation: none;
+  }
+
+  .hero-graph-pulse {
+    display: none;
+  }
+
   .extract-scan-item--in,
   .extract-scan-item--placeholder,
   .extract-scan-pulse,
@@ -2336,6 +2575,6 @@ pre.preview {
   }
 
   .hero-title {
-    max-width: none;
+    max-width: 16ch;
   }
 }

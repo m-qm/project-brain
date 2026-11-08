@@ -68,6 +68,28 @@
     "search": "Search ground truth",
     "openQuestions": "open questions"
   },
+  "graph": {
+    "label": "Living map of the base: facts, stories, open questions, and gaps marked [CONFIRM].",
+    "legendFacts": "Facts",
+    "legendStories": "Stories",
+    "legendQuestions": "Open questions",
+    "legendConfirm": "[CONFIRM]",
+    "center": "brain",
+    "facts": "Facts",
+    "stories": "Stories",
+    "questions": "Open questions",
+    "confirm": "[CONFIRM]",
+    "agents": "AGENTS.md",
+    "project": "project.md",
+    "routing": "routing.md",
+    "voice": "voice",
+    "offers": "offers",
+    "constraints": "constraints",
+    "client": "client",
+    "audience": "audience",
+    "price": "price",
+    "deadline": "deadline"
+  },
   "story": {
     "eyebrow": "STORY",
     "title": "It grounds your business, then <em>the tree knows it.</em>",

@@ -20,38 +20,38 @@ export type ToReagraphOptions = {
 export const agentKBaseGraphTheme: Theme = {
   ...lightTheme,
   canvas: {
-    background: "#f4f4f5",
+    background: "#f3f6f4",
     fog: null,
   },
   node: {
     ...lightTheme.node,
-    fill: "#18181b",
-    activeFill: "#09090b",
+    fill: "#14221c",
+    activeFill: "#0f5c4c",
     opacity: 1,
     inactiveOpacity: 0.15,
     selectedOpacity: 1,
     label: {
       ...lightTheme.node.label,
-      color: "#3f3f46",
-      activeColor: "#161618",
+      color: "#4d5e56",
+      activeColor: "#14221c",
     },
   },
   edge: {
     ...lightTheme.edge,
-    fill: "#d4d4d8",
-    activeFill: "#18181b",
+    fill: "#c5d1cb",
+    activeFill: "#0f5c4c",
     opacity: 0.55,
     inactiveOpacity: 0.1,
     selectedOpacity: 1,
     label: {
       ...lightTheme.edge.label,
-      color: "#71717a",
-      activeColor: "#52525b",
+      color: "#5e6f67",
+      activeColor: "#0f5c4c",
     },
   },
   arrow: {
-    fill: "#d4d4d8",
-    activeFill: "#18181b",
+    fill: "#c5d1cb",
+    activeFill: "#0f5c4c",
   },
 };
 
@@ -82,9 +82,9 @@ export function layoutToReagraph(
     const dim = Boolean(extractDemo && n.domainId && !highlightDomains.has(n.domainId));
 
     let fill: string | undefined;
-    if (isCenter) fill = "#fafafa";
-    else if (n.kind === "hub") fill = hot ? "#18181b" : dim ? "#a1a1aa" : "#18181b";
-    else fill = hot ? "#18181b" : dim ? "#d4d4d8" : "#52525b";
+    if (isCenter) fill = "#0f5c4c";
+    else if (n.kind === "hub") fill = hot ? "#0f5c4c" : dim ? "#b7c4be" : "#14221c";
+    else fill = hot ? "#0f5c4c" : dim ? "#d5ded9" : "#4d5e56";
 
     const label =
       isCenter ? centerLabel.replace(/\n/g, " · ") : n.kind === "hub" || n.kind === "leaf" ? n.label : undefined;
@@ -110,7 +110,7 @@ export function layoutToReagraph(
       source: e.from,
       target: e.to,
       interpolation: "curved",
-      fill: hot ? "#18181b" : undefined,
+      fill: hot ? "#0f5c4c" : undefined,
     };
   });
 

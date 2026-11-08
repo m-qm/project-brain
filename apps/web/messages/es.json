@@ -68,6 +68,28 @@
     "search": "Buscar la verdad de base",
     "openQuestions": "preguntas abiertas"
   },
+  "graph": {
+    "label": "Mapa vivo de la base: hechos, historias, preguntas abiertas y huecos marcados [CONFIRM].",
+    "legendFacts": "Hechos",
+    "legendStories": "Historias",
+    "legendQuestions": "Preguntas abiertas",
+    "legendConfirm": "[CONFIRM]",
+    "center": "brain",
+    "facts": "Hechos",
+    "stories": "Historias",
+    "questions": "Preguntas abiertas",
+    "confirm": "[CONFIRM]",
+    "agents": "AGENTS.md",
+    "project": "project.md",
+    "routing": "routing.md",
+    "voice": "voz",
+    "offers": "ofertas",
+    "constraints": "límites",
+    "client": "cliente",
+    "audience": "audiencia",
+    "price": "precio",
+    "deadline": "plazo"
+  },
   "story": {
     "eyebrow": "HISTORIA",
     "title": "Fija el negocio, y entonces <em>el árbol lo sabe.</em>",

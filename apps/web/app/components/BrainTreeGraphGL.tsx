@@ -73,6 +73,7 @@ export function BrainTreeGraphGL({
         minZoom={0.35}
         maxZoom={2.2}
         labelType="all"
+        labelFontUrl="/fonts/inter-latin-600-normal.woff"
         edgeInterpolation="curved"
         onNodePointerOver={interactive ? onNodePointerOver : undefined}
         onNodePointerOut={interactive ? onNodePointerOut : undefined}
