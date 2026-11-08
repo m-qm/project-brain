@@ -5,7 +5,9 @@ export type BlogPost = {
   date: string;
 };
 
-/** Live posts only. Drafts stay in the HITL queue until a human adds a slug here. */
+/** Live posts only. Drafts stay in the HITL queue until a human adds a slug here.
+ * `date` is the sitemap lastmod for both languages. Change it when the page changes.
+ */
 export const BLOG_POSTS: BlogPost[] = [
   {
     slug: "stop-fake-prices",

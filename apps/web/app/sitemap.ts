@@ -18,10 +18,18 @@ const pages: {
   { path: "/tree", priority: 0.3, changeFrequency: "yearly" },
 ];
 
+function latestBlogDate(): string | undefined {
+  return BLOG_POSTS.reduce<string | undefined>((latest, post) => {
+    if (!latest || post.date > latest) return post.date;
+    return latest;
+  }, undefined);
+}
+
 function entry(
   path: string,
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>,
   priority: number,
+  lastModified?: string,
 ): MetadataRoute.Sitemap {
   const languages = {
     en: localizedUrl(path, "en"),
@@ -30,6 +38,7 @@ function entry(
   };
   return (["en", "es"] as const).map((locale) => ({
     url: localizedUrl(path, locale),
+    ...(lastModified ? { lastModified } : {}),
     changeFrequency,
     priority,
     alternates: { languages },
@@ -37,9 +46,17 @@ function entry(
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const blogUpdated = latestBlogDate();
   return [
-    ...pages.flatMap((page) => entry(page.path, page.changeFrequency, page.priority)),
-    ...BLOG_POSTS.flatMap((post) => entry(`/blog/${post.slug}`, "monthly", 0.7)),
+    ...pages.flatMap((page) =>
+      entry(
+        page.path,
+        page.changeFrequency,
+        page.priority,
+        page.path === "/blog" ? blogUpdated : undefined,
+      ),
+    ),
+    ...BLOG_POSTS.flatMap((post) => entry(`/blog/${post.slug}`, "monthly", 0.7, post.date)),
     ...LEARN_DOCS.flatMap((doc) => entry(`/learn/${doc.slug}`, "monthly", 0.8)),
     ...LEGAL_DOCS.flatMap((doc) => entry(`/legal/${doc.slug}`, "yearly", 0.4)),
   ];
