@@ -111,10 +111,46 @@ function titleNeedsExpansion(titleMission: string | undefined): boolean {
   return words <= 8;
 }
 
-function buildMission(brand: string, signals: PageSignals): string {
+function pageCorpus(signals: PageSignals): string {
+  return [signals.metaDescription ?? "", ...signals.h1, ...signals.paragraphs.slice(0, 8)].join(
+    "\n",
+  );
+}
+
+function mentionsInvoiceWorkflow(corpus: string): boolean {
+  return (
+    /invoice|facturas/i.test(corpus) &&
+    (/member export|export de miembros|gasto en herramientas|AI tool spend|renovar contratos|before renewals/i.test(
+      corpus,
+    ) ||
+      /classify spend|leemos la factura|read the period invoice/i.test(corpus))
+  );
+}
+
+function missionLead(brand: string, signals: PageSignals): string {
   const isEs = signals.lang === "es";
   const titleMission = missionFromTitle(signals.title);
+  const meta = signals.metaDescription?.trim();
+  if (meta && meta.length >= 20) {
+    return firstSentence(meta);
+  }
+  const titleTail = signals.title?.split("·").pop()?.trim();
+  if (titleTail && titleTail.length >= 12 && !looksLikeSkuTagline(titleTail)) {
+    return `${brand}: ${titleTail}.`;
+  }
+  if (titleMission && !titleNeedsExpansion(titleMission)) {
+    return `${brand}: ${titleMission}.`;
+  }
   const h1 = signals.h1[0]?.replace(/^[¿?]+|[?]+$/g, "").trim();
+  if (h1) {
+    return isEs ? `${brand}: ${h1}.` : `${brand}: ${h1}.`;
+  }
+  return `${brand} (confirm mission from the live site).`;
+}
+
+function buildMission(brand: string, signals: PageSignals): string {
+  const isEs = signals.lang === "es";
+  const corpus = pageCorpus(signals);
   const privacyFromMeta =
     signals.metaDescription?.match(/never log[^.]+/i)?.[0] ??
     signals.metaDescription?.match(/no accedemos[^.]+/i)?.[0];
@@ -137,37 +173,53 @@ function buildMission(brand: string, signals: PageSignals): string {
     /classify spend|match each person|leemos la factura|read the period invoice/i,
   );
 
-  if (isEs) {
-    const parts = [
-      `${brand} ayuda a equipos a controlar el gasto en herramientas de IA antes de renovar contratos`,
-      processHint ? "con un flujo muestra → datos reales → informe" : "",
-      "a partir de facturas y export opcional de miembros",
-      privacy ? `(${privacy.charAt(0).toLowerCase()}${privacy.slice(1).replace(/\.$/, "")})` : "sin acceder a las cuentas del cliente",
-    ].filter(Boolean);
-    if (parts.length > 1) return `${parts[0]}, ${parts.slice(1).join(", ")}.`;
+  if (mentionsInvoiceWorkflow(corpus)) {
+    const parts = isEs
+      ? [
+          `${brand} ayuda a equipos a controlar el gasto en herramientas de IA antes de renovar contratos`,
+          processHint ? "con un flujo muestra → datos reales → informe" : "",
+          /facturas/i.test(corpus) ? "a partir de facturas y export opcional de miembros" : "",
+          privacy
+            ? `(${privacy.charAt(0).toLowerCase()}${privacy.slice(1).replace(/\.$/, "")})`
+            : privacyFromBody || /sin acceder|no entramos/i.test(corpus)
+              ? "sin acceder a las cuentas del cliente"
+              : "",
+        ]
+      : [
+          `${brand} helps teams control AI tool spend before renewals`,
+          processHint
+            ? "using a sample-first flow then a report on the customer's figures"
+            : "",
+          /invoice/i.test(corpus) ? "from invoices and an optional member export" : "",
+          privacy
+            ? privacy.replace(/\.$/, "").replace(/^never/i, "We never")
+            : privacyFromBody || /without access|do not log into/i.test(corpus)
+              ? "without logging into vendor accounts"
+              : "",
+        ];
+    const filtered = parts.filter(Boolean);
+    if (filtered.length > 1) {
+      return `${filtered[0]}, ${filtered.slice(1).join(", ")}.`;
+    }
   }
 
-  const enParts = [
-    `${brand} helps teams control AI tool spend before renewals`,
-    processHint ? "using a sample-first flow then a report on the customer's figures" : "",
-    "from invoices and an optional member export",
-    privacy
-      ? privacy.replace(/\.$/, "").replace(/^never/i, "We never")
-      : "without logging into vendor accounts",
-  ].filter(Boolean);
-  if (methodHint || processHint || privacy || titleNeedsExpansion(titleMission)) {
-    return `${enParts[0]}, ${enParts.slice(1).join(", ")}.`;
+  let mission = missionLead(brand, signals);
+  const extras: string[] = [];
+  if (processHint) {
+    extras.push(firstSentence(processHint));
   }
-
-  if (titleMission) {
-    return `${brand}: ${titleMission}.`;
+  if (methodHint) {
+    extras.push(firstSentence(methodHint));
   }
-  if (h1) {
-    return isEs
-      ? `${brand} ayuda a equipos ante esta pregunta: ${signals.h1[0]}`
-      : `${brand} helps teams facing: ${h1}`;
+  if (privacy) {
+    const p = privacy.replace(/\.$/, "");
+    extras.push(isEs ? p : p.replace(/^never/i, "We never"));
   }
-  return `${brand} (confirm mission from the live site).`;
+  if (extras.length === 0) {
+    return mission.endsWith(".") ? mission : `${mission}.`;
+  }
+  mission = mission.replace(/\.$/, "");
+  return `${mission} (${extras.join("; ")}).`;
 }
 
 export function synthesizeBrainFromPage(signals: PageSignals): Partial<BrainInput> {
@@ -282,9 +334,10 @@ export function synthesizeBrainFromPage(signals: PageSignals): Partial<BrainInpu
 
   const storyProblem =
     signals.h1[0] ??
+    (signals.metaDescription ? firstSentence(signals.metaDescription) : undefined) ??
     (isEs
-      ? "Renovar herramientas de IA sin visibilidad de gasto y uso real."
-      : "Renewing AI tools without spend and usage visibility.");
+      ? "Confirmar el problema público desde la web."
+      : "Confirm the public problem from the site.");
 
   const storyBlocks = [
     funnel,
@@ -308,21 +361,26 @@ export function synthesizeBrainFromPage(signals: PageSignals): Partial<BrainInpu
       .join(" ")
       .slice(0, 480);
 
+  const invoiceWorkflow = mentionsInvoiceWorkflow(corpus);
   const openQuestions = isEs
     ? [
         sampleNote
-          ? "¿Qué partes del informe Hatchpad son ficticias vs replicables con datos reales?"
+          ? "¿Qué partes de la muestra pública son ficticias vs replicables con datos reales?"
           : "¿Hay demo o muestra pública antes de comprar?",
-        "¿Qué campos del export de miembros son obligatorios vs opcionales?",
-        "¿Qué frases de marketing no deben citarse como garantía de ahorro?",
+        ...(invoiceWorkflow
+          ? ["¿Qué campos del export de miembros son obligatorios vs opcionales?"]
+          : ["¿Qué ofertas y precios públicos requieren confirmación antes de citarlos?"]),
+        "¿Qué frases de marketing no deben citarse como garantía?",
         "¿Qué skills de Cursor/SkillTree debe cargar el agente (este extract no genera skills)?",
       ]
     : [
         sampleNote
-          ? "Which parts of the Hatchpad sample are fictional vs reproducible with real customer data?"
+          ? "Which parts of the public sample are fictional vs reproducible with real customer data?"
           : "Is there a public sample before purchase?",
-        "Which member-export fields are required vs optional?",
-        "Which marketing lines must not be quoted as guaranteed savings?",
+        ...(invoiceWorkflow
+          ? ["Which member-export fields are required vs optional?"]
+          : ["Which public offers and prices need confirmation before quoting?"]),
+        "Which marketing lines must not be quoted as guarantees?",
         "Which Cursor/SkillTree skills should agents load (extract does not create skills)?",
       ];
 
