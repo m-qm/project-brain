@@ -1,0 +1,20 @@
+---
+description: Pick the next blog from a Google search this site does not answer
+globs: examples/content-ads-brain/brain/content/article-slate.md,examples/content-ads-brain/brain/content/articles/**/*.md,apps/web/public/blog/**/*.md,apps/web/public/es/blog/**/*.md
+alwaysApply: false
+---
+
+# Blog topics come from a Google gap
+
+Before a new title, compare the live posts and the unused slate rows with Google result pages for the same job.
+
+Write the next article only when both are true:
+
+1. Google already shows results for that search.
+2. This site has no page that answers it.
+
+Record the search on the slate row before drafting. A checklist line with no result page stays unused. These have no result page: “sin palabras de informática”, “que no pida el móvil”, “de dónde salió cada dato”.
+
+Do not invent a search volume. Do not put a ranking, a position, or a traffic number in the article.
+
+Open gaps from the last comparison: a price that was right and is now stale on a live post; whether Google treats an AI blog as spam (“abuso de contenido a gran escala”); “cómo titular un artículo de blog”.
