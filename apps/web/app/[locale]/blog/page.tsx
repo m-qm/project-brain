@@ -44,7 +44,7 @@ export default async function BlogIndexPage() {
               const copy = blogText(post, locale);
               return (
                 <li key={post.slug}>
-                  <Link href={`/blog/${post.slug}`} className="learn-card">
+                  <Link href={`/blog/${post.slug}`} className="learn-card blog-card">
                     <span className="learn-card-body">
                       <span className="learn-card-title">{copy.title}</span>
                       <span className="learn-card-desc">{copy.description}</span>

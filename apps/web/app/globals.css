@@ -2030,6 +2030,17 @@ pre.preview {
   white-space: nowrap;
 }
 
+/* Blog index has a title and a date, not the learn index and arrow. */
+.learn-card.blog-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.learn-card.blog-card .learn-card-meta {
+  justify-self: end;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .learn-card-arrow {
   font-size: 1.1rem;
   color: var(--ink-3);
@@ -2346,6 +2357,16 @@ pre.preview {
 
   .learn-card-arrow {
     justify-self: end;
+  }
+
+  .learn-card.blog-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+  }
+
+  .learn-card.blog-card .learn-card-meta {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .learn-doc-footer {
