@@ -18,33 +18,35 @@ export async function generateMetadata({
 
 export default async function BlogIndexPage() {
   const t = await getTranslations("blog");
+  const nav = await getTranslations("nav");
   const locale = await getLocale();
+  const mailto = `mailto:hello@agentkbase.com?subject=${encodeURIComponent(nav("writeSubject"))}`;
 
   return (
     <div className="page-shell">
-      <SiteNav ctaHref="/wizard" ctaLabel={t("tryWizard")} />
+      <SiteNav />
       <header className="learn-hero">
         <div className="container learn-hero-inner">
           <p className="learn-eyebrow">{t("eyebrow")}</p>
-          <h1 className="learn-title">{t.rich("title", { em: (chunks) => <em>{chunks}</em> })}</h1>
+          <h1 className="learn-title">{t("title")}</h1>
           <p className="learn-lead">{t("lead")}</p>
+          <div className="learn-hero-actions">
+            <a className="btn" href={mailto}>
+              {t("write")}
+            </a>
+          </div>
         </div>
       </header>
       <main className="learn-main container">
         {BLOG_POSTS.length === 0 ? (
-          <p className="learn-lead">
-            {t.rich("empty", { code: (chunks) => <code>{chunks}</code> })}{" "}
-            <Link href="/company-brain">{t("workers")}</Link>
-            {" · "}
-            <Link href="/learn/11-content-ads-workers">{t("how")}</Link>.
-          </p>
+          <p className="learn-lead">{t("empty")}</p>
         ) : (
           <ul className="learn-grid">
             {BLOG_POSTS.map((post) => {
               const copy = blogText(post, locale);
               return (
                 <li key={post.slug}>
-                  <Link href={`/blog/${post.slug}`} className="learn-card">
+                  <Link href={`/blog/${post.slug}`} className="learn-card blog-card">
                     <span className="learn-card-body">
                       <span className="learn-card-title">{copy.title}</span>
                       <span className="learn-card-desc">{copy.description}</span>

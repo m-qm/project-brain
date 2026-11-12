@@ -3,7 +3,6 @@
 import { track } from "@vercel/analytics";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "@/i18n/navigation";
 import type { BrainInput } from "@agentkbase/core/browser";
 import {
   buildBrief,
@@ -22,10 +21,13 @@ import {
   CLI_LLM_GAP_HINT,
   wizardHostedLlmEnabled,
 } from "@/lib/wizard-llm-ui";
+import { Link } from "@/i18n/navigation";
 import {
   defaultWizardState,
+  loadWizardHostedProfileId,
   loadWizardSiteUrl,
   loadWizardState,
+  saveWizardHostedProfileId,
   saveWizardSiteUrl,
   saveWizardState,
 } from "@/lib/wizard-state";
@@ -57,10 +59,13 @@ export default function WizardPage() {
   >([]);
   const [gapNotes, setGapNotes] = useState<string[]>([]);
   const [gapLoading, setGapLoading] = useState(false);
+  const [hostedProfileId, setHostedProfileId] = useState("");
+  const [hosting, setHosting] = useState(false);
 
   useEffect(() => {
     setInput(loadWizardState());
     setSiteUrl(loadWizardSiteUrl());
+    setHostedProfileId(loadWizardHostedProfileId());
   }, []);
 
   useEffect(() => {
@@ -164,15 +169,47 @@ export default function WizardPage() {
     }
   };
 
+  const runSaveHosted = async () => {
+    const v = validateBrainInputStrict(input);
+    if (!v.ok) {
+      setIssues(v.issues.filter((i) => i.level === "error").map((i) => i.message));
+      return;
+    }
+    setHosting(true);
+    setIssues([]);
+    try {
+      const res = await fetch("/api/hosted-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brain: input,
+          sourceUrl: siteUrl.trim() || undefined,
+        }),
+      });
+      const data = (await res.json()) as { profileId?: string; errors?: string[]; error?: string };
+      if (!res.ok) {
+        setIssues(data.errors ?? (data.error ? [data.error] : [t("hostFailed")]));
+        return;
+      }
+      const id = data.profileId ?? "";
+      setHostedProfileId(id);
+      saveWizardHostedProfileId(id);
+      track("wizard_hosted_save");
+    } finally {
+      setHosting(false);
+    }
+  };
+
+  const claudeSnippet = hostedProfileId
+    ? t("claudeSnippet", { id: hostedProfileId })
+    : "";
+
   return (
     <div className="page-shell">
-      <SiteNav ctaHref="/" ctaLabel={t("home")} />
+      <SiteNav hideCta />
       <main className="page-main container-narrow">
         <h1 className="page-title">{t("title")}</h1>
         <p className="page-lead">{t("lead")}</p>
-        <p className="company-brain-banner">
-          {t("banner")} <Link href="/company-brain">{t("knowledge")}</Link> {t("bannerRest")}
-        </p>
         <WizardStepper steps={steps} current={step} onStepChange={setStep} />
 
         {step === 0 && (
@@ -246,10 +283,7 @@ export default function WizardPage() {
                     <p className="extract-mode-callout-title">{t("claudeTitle")}</p>
                     <p className="extract-mode-callout-body">{t("claudeBody")}</p>
                     <code className="extract-mode-callout-code">{CLI_LLM_EXTRACT_HINT}</code>
-                    <p className="extract-mode-callout-body">
-                      {t("orCli")}{" "}
-                      <Link href="/learn/07-extract-from-website">{t("extractGuide")}</Link>.
-                    </p>
+                    <p className="extract-mode-callout-body">{t("orCli")}</p>
                   </div>
                 )}
               </div>
@@ -257,24 +291,13 @@ export default function WizardPage() {
             <div className="btn-row" style={{ marginTop: 0 }}>
               <button
                 type="button"
-                className="btn secondary"
+                className="btn"
                 onClick={runExtract}
                 disabled={extracting || !extractReady}
                 aria-disabled={extracting || !extractReady}
                 title={extractReady ? undefined : t("needUrlFirst")}
               >
                 {extracting ? t("extracting") : t("extract")}
-              </button>
-              <button
-                type="button"
-                className="btn ghost"
-                onClick={() => {
-                  const example = "https://auditamia.com/es";
-                  setSiteUrl(example);
-                  saveWizardSiteUrl(example);
-                }}
-              >
-                {t("example")}
               </button>
             </div>
             <ExtractScanLogPanel entries={extractScanLog} loading={extracting} />
@@ -543,6 +566,44 @@ export default function WizardPage() {
                 ? t("building")
                 : t("download", { name: slugify(input.projectName || "project") })}
             </button>
+            <p className="field-hint" style={{ marginTop: "1rem" }}>
+              {t("exportAlso")}
+            </p>
+            <button
+              type="button"
+              className="btn secondary"
+              onClick={runSaveHosted}
+              disabled={hosting || !validation.ok}
+            >
+              {hosting ? t("hosting") : t("saveOnline")}
+            </button>
+            {hostedProfileId && (
+              <div className="hosted-card">
+                <p className="field-hint">{t("sheetId")}</p>
+                <code className="hosted-id">{hostedProfileId}</code>
+                <div className="btn-row" style={{ marginTop: "0.75rem" }}>
+                  <button
+                    type="button"
+                    className="btn ghost"
+                    onClick={() => navigator.clipboard.writeText(hostedProfileId)}
+                  >
+                    {t("copyId")}
+                  </button>
+                  <Link className="btn ghost" href={`/check?id=${encodeURIComponent(hostedProfileId)}`}>
+                    {t("openCheck")}
+                  </Link>
+                </div>
+                <p className="field-hint">{t("checkHint")}</p>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => navigator.clipboard.writeText(claudeSnippet)}
+                >
+                  {t("copyClaude")}
+                </button>
+                <pre className="preview hosted-snippet">{claudeSnippet}</pre>
+              </div>
+            )}
             {brief && (
               <>
                 <h2 style={{ marginTop: "1.5rem" }}>{t("brief")}</h2>
@@ -565,7 +626,7 @@ export default function WizardPage() {
         )}
 
         <p className="hero-meta" style={{ marginTop: "2rem" }}>
-          {t("saved")} <Link href="/learn/01-first-brain">{t("learnMore")}</Link>
+          {t("saved")}
         </p>
       </main>
     </div>

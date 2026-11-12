@@ -251,7 +251,7 @@ function polar(cx: number, cy: number, r: number, deg: number): { x: number; y: 
 
 /** Stable “nebula” dots for the center brain cluster */
 export function centerClusterDots(seed = 1): { cx: number; cy: number; r: number; fill: string }[] {
-  const colors = ["#2dd4bf", "#f472b6", "#fb923c", "#52525b", "#18181b", "#a1a1aa"];
+  const colors = ["#f4f4f5", "#d4d4d8", "#a1a1aa", "#71717a", "#e4e4e7", "#fafafa"];
   const out: { cx: number; cy: number; r: number; fill: string }[] = [];
   let s = seed;
   const rand = () => {

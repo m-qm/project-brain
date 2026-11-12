@@ -16,42 +16,42 @@ export type ToReagraphOptions = {
   extractDemo: boolean;
 };
 
-/** Agent KBase marketing palette → Reagraph theme */
+/** Dark monochrome canvas for the marketing graph. */
 export const agentKBaseGraphTheme: Theme = {
   ...lightTheme,
   canvas: {
-    background: "#f3f6f4",
+    background: "#0e0e10",
     fog: null,
   },
   node: {
     ...lightTheme.node,
-    fill: "#14221c",
-    activeFill: "#0f5c4c",
+    fill: "#f4f4f5",
+    activeFill: "#ffffff",
     opacity: 1,
-    inactiveOpacity: 0.15,
+    inactiveOpacity: 0.2,
     selectedOpacity: 1,
     label: {
       ...lightTheme.node.label,
-      color: "#4d5e56",
-      activeColor: "#14221c",
+      color: "#a1a1aa",
+      activeColor: "#f4f4f5",
     },
   },
   edge: {
     ...lightTheme.edge,
-    fill: "#c5d1cb",
-    activeFill: "#0f5c4c",
-    opacity: 0.55,
-    inactiveOpacity: 0.1,
+    fill: "#3f3f46",
+    activeFill: "#f4f4f5",
+    opacity: 0.7,
+    inactiveOpacity: 0.15,
     selectedOpacity: 1,
     label: {
       ...lightTheme.edge.label,
-      color: "#5e6f67",
-      activeColor: "#0f5c4c",
+      color: "#8b8b93",
+      activeColor: "#f4f4f5",
     },
   },
   arrow: {
-    fill: "#c5d1cb",
-    activeFill: "#0f5c4c",
+    fill: "#3f3f46",
+    activeFill: "#f4f4f5",
   },
 };
 
@@ -82,9 +82,9 @@ export function layoutToReagraph(
     const dim = Boolean(extractDemo && n.domainId && !highlightDomains.has(n.domainId));
 
     let fill: string | undefined;
-    if (isCenter) fill = "#0f5c4c";
-    else if (n.kind === "hub") fill = hot ? "#0f5c4c" : dim ? "#b7c4be" : "#14221c";
-    else fill = hot ? "#0f5c4c" : dim ? "#d5ded9" : "#4d5e56";
+    if (isCenter) fill = "#f4f4f5";
+    else if (n.kind === "hub") fill = hot ? "#ffffff" : dim ? "#3f3f46" : "#d4d4d8";
+    else fill = hot ? "#ffffff" : dim ? "#3f3f46" : "#a1a1aa";
 
     const label =
       isCenter ? centerLabel.replace(/\n/g, " · ") : n.kind === "hub" || n.kind === "leaf" ? n.label : undefined;
@@ -110,7 +110,7 @@ export function layoutToReagraph(
       source: e.from,
       target: e.to,
       interpolation: "curved",
-      fill: hot ? "#0f5c4c" : undefined,
+      fill: hot ? "#f4f4f5" : undefined,
     };
   });
 

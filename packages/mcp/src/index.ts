@@ -91,7 +91,7 @@ server.registerTool(
   {
     title: "Search brain",
     description:
-      "Case-insensitive substring search over markdown under brain/. Returns JSON `{ dir, query, hits, truncated }` with path and 1-based line. At most 50 hits. Read-only.",
+      "Search brain/: ranked claims from brain/facts/ and open-questions first, then substring hits elsewhere. Returns JSON `{ dir, query, claims, hits, truncated }` with path, line, status. At most 50 hits. Read-only.",
     inputSchema: {
       dir: dirField,
       query: z.string().describe("Substring to find. Matching is case-insensitive."),

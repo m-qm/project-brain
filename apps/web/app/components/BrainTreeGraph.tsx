@@ -14,6 +14,8 @@ import { loadWizardState } from "@/lib/wizard-state";
 import { BrainTreeGraphSvg } from "./BrainTreeGraphSvg";
 import { BrainTreeGraphGLErrorBoundary } from "./BrainTreeGraphGLErrorBoundary";
 
+const EXTRACT_REVEAL = ["facts", "stories", "gaps", "offers", "clients", "voice", "ops", "skills"];
+
 const BrainTreeGraphGL = dynamic(
   () => import("./BrainTreeGraphGL").then((m) => m.BrainTreeGraphGL),
   {
@@ -49,6 +51,7 @@ export function BrainTreeGraph({
   const t = useTranslations("story");
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [useSvg, setUseSvg] = useState(preferSvg);
+  const [revealStep, setRevealStep] = useState(extractDemo ? 0 : EXTRACT_REVEAL.length);
 
   const [liveTree, setLiveTree] = useState(() => {
     if (extractDemo) return treeFromWizard(EXTRACT_DEMO_INPUT);
@@ -64,6 +67,20 @@ export function BrainTreeGraph({
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, [preferSvg]);
+
+  useEffect(() => {
+    if (!extractDemo) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setRevealStep(EXTRACT_REVEAL.length);
+      return;
+    }
+    setRevealStep(0);
+    const timer = window.setInterval(() => {
+      setRevealStep((step) => (step >= EXTRACT_REVEAL.length ? 0 : step + 1));
+    }, 900);
+    return () => window.clearInterval(timer);
+  }, [extractDemo]);
 
   useEffect(() => {
     if (!live) return;
@@ -87,6 +104,9 @@ export function BrainTreeGraph({
   const domains = domainsProp ?? liveTree.domains;
   const { nodes, edges } = useMemo(() => layoutBrainTree(domains), [domains]);
 
+  const showSvg = useSvg || extractDemo;
+  const revealed = extractDemo ? EXTRACT_REVEAL.slice(0, revealStep) : null;
+
   const graphClass = [
     "brain-tree-graph",
     extractDemo ? "brain-tree-graph--extract" : "",
@@ -98,13 +118,14 @@ export function BrainTreeGraph({
 
   return (
     <figure className={graphClass} aria-label={t("mapLabel")}>
-      {useSvg ? (
+      {showSvg ? (
         <BrainTreeGraphSvg
           nodes={nodes}
           edges={edges}
           centerLabel={centerLabel}
           extractDemo={extractDemo}
           highlightDomains={highlightDomains}
+          revealedDomains={revealed}
           activeDomain={activeDomain}
           onActiveDomain={setActiveDomain}
           live={live}
@@ -119,6 +140,7 @@ export function BrainTreeGraph({
               centerLabel={centerLabel}
               extractDemo={extractDemo}
               highlightDomains={highlightDomains}
+              revealedDomains={null}
               activeDomain={activeDomain}
               onActiveDomain={setActiveDomain}
               live={live}

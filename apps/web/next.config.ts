@@ -15,7 +15,18 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   transpilePackages: ["@agentkbase/core", "@agentkbase/templates", "next-intl"],
   /** Reagraph + R3F: client-only (dynamic import); keep off the server bundle. */
-  serverExternalPackages: ["reagraph", "three", "@react-three/fiber", "@react-three/drei"],
+  serverExternalPackages: [
+    "reagraph",
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+    "pdf-lib",
+    "@pdf-lib/fontkit",
+    "wawoff2",
+  ],
+  outputFileTracingIncludes: {
+    "/[locale]/onboarding/pdf": ["./app/fonts/*.woff2"],
+  },
   outputFileTracingRoot: join(__dirname, "../.."),
   webpack: (config) => {
     // three.js optional native deps (dev compile on macOS/Linux)

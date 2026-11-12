@@ -1,14 +1,14 @@
-# La capa de conocimiento que lee cada agente
+# Qué puedes decir en tu web
 
-Para un estudio o una consultoría de una o dos personas cuya web ya describe los servicios. Las tiendas, con precios y packs en la página, son una prueba posterior.
+Para un autónomo o una pyme pequeña con web y sin equipo de marketing. Una tienda, un estudio o una consultoría.
 
-Objetivo: una base de conocimiento que reconoces como tu negocio. Un agente, un artículo o un post de LinkedIn solo puede decir lo que esa base contiene. Si una línea no está, se corta o se marca para que la confirmes. Una persona dice que sí antes de que nada salga.
+Objetivo: una carpeta de notas que reconoces como tu negocio. Un agente (un programa que redacta con esas notas), un artículo o un post de LinkedIn solo puede decir lo que esa carpeta contiene. Si una línea no está, se corta o se marca para que la confirmes. Una persona dice que sí antes de que nada salga.
 
 Esto no es una búsqueda por similitud. El producto no busca un párrafo «parecido» y espera que valga. La frase está en tus archivos, o espera en `[CONFIRM]`, o no está.
 
 ## 1. Pega la web
 
-Abre el [asistente](/wizard). Pega la URL pública de tu estudio. Extrae un borrador.
+Abre el [asistente](/wizard). Pega la URL pública de tu web. Extrae un borrador.
 
 El borrador es una conjetura a partir de tu página: servicios, a quién sirves y lo que la página dice de verdad. No es una oferta nueva.
 
@@ -37,7 +37,7 @@ La respuesta vale solo cuando cada afirmación está en la base que acabas de ed
 
 Si puedes decir «esto describe mi negocio», ese archivo es la base. El agente que responde a un cliente, el que escribe un artículo y el que redacta un post de LinkedIn la leen todos. Una pieza para la web o para LinkedIn llega después, y solo con tu sí.
 
-Las comprobaciones de lo que saldría a vivo están en [la capa de conocimiento](/company-brain). No prometemos clientes nuevos, rankings de Google ni horas ahorradas.
+Las comprobaciones de lo que saldría a vivo están en [el servicio](/company-brain). No prometemos clientes nuevos, rankings de Google ni horas ahorradas.
 
 ## Lo que esta guía no abre
 

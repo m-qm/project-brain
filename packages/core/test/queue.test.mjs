@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readdir, symlink, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, readdir, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -49,6 +49,12 @@ test("a ready draft is pending and a held draft writes nothing", async () => {
   assert.deepEqual(held, { enqueued: false, reason: "held" });
   const names = await readdir(queueDir);
   assert.deepEqual(names, ["billing.json"]);
+});
+
+test("a missing brain folder still lists an outside queue", async () => {
+  const root = await mkdtemp(join(tmpdir(), "agentkbase-queue-"));
+  const items = await listQueue(root, join(root, ".agentkbase", "queue"));
+  assert.deepEqual(items, []);
 });
 
 test("the queue refuses a directory inside brain/", async () => {
@@ -115,6 +121,9 @@ test("approve and reject stick, and a second decision does not flip", async () =
   );
   const rejected = await decideQueueItem({ brainRoot: root, queueDir, id: "digest", decision: "reject" });
   assert.equal(rejected.status, "rejected");
+  const refused = await readFile(join(root, "brain", "facts", "refused.md"), "utf8");
+  assert.match(refused, /Monday cron sends the digest/);
+  assert.equal(refused.includes("not implemented in v1"), false);
   const items = await listQueue(root, queueDir);
   assert.deepEqual(
     items.map((item) => [item.id, item.status]),
@@ -150,4 +159,28 @@ test("an ask against the example brain queues the billing reply and drops the pr
   });
   assert.equal(held.enqueued, false);
   assert.equal(JSON.stringify(await listQueue(root, queueDir)).includes("49"), false);
+});
+
+test("a rejected draft is not sent the next time the same question is asked", async () => {
+  const root = await workspace();
+  await writeFile(
+    join(root, "brain", "facts", "project.md"),
+    "# Facts\n\n* Billing: not implemented in v1.\n",
+    "utf8",
+  );
+  const queueDir = join(root, ".agentkbase", "queue");
+  const first = await askFromDir(root, "Is billing implemented in v1?");
+  assert.equal(first.draft.status, "ready");
+  await enqueueDraft({
+    brainRoot: root,
+    queueDir,
+    question: "Is billing implemented in v1?",
+    draft: first.draft,
+    id: "billing",
+  });
+  await decideQueueItem({ brainRoot: root, queueDir, id: "billing", decision: "reject" });
+  const second = await askFromDir(root, "Is billing implemented in v1?");
+  assert.equal(second.draft.status, "held");
+  assert.equal(second.draft.text, "");
+  assert.ok(second.gaps.some((gap) => gap.code === "refused"));
 });

@@ -4,7 +4,7 @@ import {
   listBrainFiles,
   loadBrainInputFromDir,
   readBrainFile,
-  searchBrainFiles,
+  searchBrainWithClaims,
   validateBrainDir,
   type EvalCheck,
 } from "@agentkbase/core";
@@ -66,8 +66,8 @@ export async function brainRead(args: { dir?: string; path: string }): Promise<T
 export async function brainSearch(args: { dir?: string; query: string }): Promise<ToolTextResult> {
   try {
     const root = await resolveBrainDir(args.dir);
-    const result = await searchBrainFiles(root, args.query);
-    return ok(JSON.stringify({ dir: root, query: args.query, ...result }, null, 2));
+    const result = await searchBrainWithClaims(root, args.query);
+    return ok(JSON.stringify({ dir: root, ...result }, null, 2));
   } catch (err) {
     return fail(err);
   }

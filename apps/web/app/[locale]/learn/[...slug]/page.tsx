@@ -75,7 +75,7 @@ export default async function LearnDocPage({
 
         <article
           className="learn-article"
-          dangerouslySetInnerHTML={{ __html: learnMarkdownToHtml(md) }}
+          dangerouslySetInnerHTML={{ __html: learnMarkdownToHtml(md, { diagrams: true }) }}
         />
 
         <footer className="learn-doc-footer">

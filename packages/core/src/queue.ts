@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import type { WorkerDraft } from "./ask.js";
+import { recordRefusal } from "./refused.js";
 
 export type QueueStatus = "pending" | "approved" | "rejected";
 export type QueueDecision = "approve" | "reject";
@@ -15,6 +16,8 @@ export type QueueItem = {
   sources: string[];
   createdAt: string;
   decidedAt?: string;
+  /** Set after the approval chat has been sent. A second pass does not send again. */
+  notifiedAt?: string;
 };
 
 export type EnqueueResult =
@@ -48,7 +51,13 @@ export async function assertQueueOutsideBrain(brainRoot: string, queueDir: strin
   const brainDir = resolve(brainRoot, "brain");
   const queue = resolve(queueDir);
   if (isInside(brainDir, queue)) throw new Error("The queue stays outside brain/.");
-  const realBrain = await existingReal(brainDir);
+  let realBrain: string | undefined;
+  try {
+    realBrain = await realpath(brainDir);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") throw error;
+  }
   const realQueue = await existingReal(queue);
   if (realBrain && realQueue && isInside(realBrain, realQueue)) {
     throw new Error("The queue stays outside brain/.");
@@ -140,6 +149,7 @@ export async function decideQueueItem(input: {
   if (item.status !== "pending") {
     throw new Error(`Queue item ${item.id} is already ${item.status}.`);
   }
+  if (input.decision === "reject") await recordRefusal(input.brainRoot, item.text);
   const decided: QueueItem = {
     ...item,
     status: input.decision === "approve" ? "approved" : "rejected",
@@ -147,4 +157,22 @@ export async function decideQueueItem(input: {
   };
   await writeFile(itemPath(input.queueDir, item.id), `${JSON.stringify(decided, null, 2)}\n`, "utf8");
   return decided;
+}
+
+/** Remember that this pending draft was sent. Does not approve it. */
+export async function markQueueNotified(input: {
+  brainRoot: string;
+  queueDir: string;
+  id: string;
+  now?: Date;
+}): Promise<QueueItem> {
+  await assertQueueOutsideBrain(input.brainRoot, input.queueDir);
+  const item = await readItem(input.queueDir, input.id);
+  if (item.notifiedAt) return item;
+  const noted: QueueItem = {
+    ...item,
+    notifiedAt: (input.now ?? new Date()).toISOString(),
+  };
+  await writeFile(itemPath(input.queueDir, item.id), `${JSON.stringify(noted, null, 2)}\n`, "utf8");
+  return noted;
 }

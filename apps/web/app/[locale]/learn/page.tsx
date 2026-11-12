@@ -5,7 +5,7 @@ import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { LearnDocAnalytics } from "../../components/LearnDocAnalytics";
 import { SiteNav } from "../../components/SiteNav";
-import { LEARN_DOCS, LEARN_SECTIONS, LEARN_SECTION_ES, learnText } from "./learn-docs";
+import { LEARN_DOCS, LEARN_GROUPS, learnText } from "./learn-docs";
 
 export async function generateMetadata({
   params,
@@ -24,33 +24,29 @@ export default async function LearnIndexPage() {
   return (
     <div className="page-shell">
       <LearnDocAnalytics slug="index" section="hub" />
-      <SiteNav ctaHref="/wizard" ctaLabel={t("tryWizard")} />
+      <SiteNav ctaHref="/learn/12-what-you-sell" ctaLabel={t("forOwner")} />
       <header className="learn-hero">
         <div className="container learn-hero-inner">
           <p className="learn-eyebrow">{t("eyebrow")}</p>
-          <h1 className="learn-title">{t.rich("title", { em: (chunks) => <em>{chunks}</em> })}</h1>
+          <h1 className="learn-title">{t("title")}</h1>
           <p className="learn-lead">{t("lead")}</p>
           <div className="learn-hero-actions">
             <Link className="btn" href="/learn/12-what-you-sell">
-              {t("forStudio")}
-            </Link>
-            <Link className="btn secondary" href="/learn/01-first-brain">
-              {t("install")}
-            </Link>
-            <Link className="btn secondary" href="/wizard">
-              {t("openWizard")}
+              {t("forOwner")}
             </Link>
           </div>
         </div>
       </header>
 
       <main className="learn-main container">
-        {LEARN_SECTIONS.map((section) => {
-          const items = LEARN_DOCS.filter((d) => d.section === section);
+        {LEARN_GROUPS.map((group) => {
+          const items = group.slugs
+            .map((slug) => LEARN_DOCS.find((doc) => doc.slug === slug))
+            .filter((doc) => doc !== undefined);
           if (items.length === 0) return null;
-          const heading = locale === "es" ? LEARN_SECTION_ES[section] : section;
+          const heading = t(group.heading);
           return (
-            <section key={section} className="learn-section">
+            <section key={group.id} className="learn-section">
               <h2 className="learn-section-title">{heading}</h2>
               <ul className="learn-grid">
                 {items.map((doc, i) => {

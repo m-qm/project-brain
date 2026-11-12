@@ -10,43 +10,55 @@ export type BlogPost = {
  */
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: "stop-fake-prices",
-    title: "How to stop your blog publishing prices that do not exist",
+    slug: "same-notes-review-email-quote",
+    title: "How to answer a review, an email, and a quote from the same notes",
     description:
-      "If an AI writes your shop or studio blog, the expensive error is a price or pack that is not on your site.",
+      "The review, the email, and the quote can come from the same notes. A price that was never written is not sent.",
+    date: "2026-11-10",
+  },
+  {
+    slug: "stop-fake-prices",
+    title: "How to stop my blog posting a price I do not charge",
+    description:
+      "If an AI writes your blog, it can add a price your site does not charge. That number is cut or left to confirm.",
     date: "2026-11-03",
   },
   {
     slug: "ranking-you-cannot-show",
-    title: "How to stop your blog claiming a ranking you cannot show",
+    title: "How to remove a ranking or a client my blog cannot show",
     description:
-      "If an AI writes your shop or studio blog, the expensive line is a ranking, a visit count, or a client name you cannot show.",
+      "An AI can write that you rank first on Google, or name a client. If you cannot open the proof, that line comes out.",
     date: "2026-11-08",
   },
   {
     slug: "title-a-shop-owner-would-search",
-    title: "How to title a post a shop owner would actually search",
+    title: "How to title a blog post for your shop",
     description:
-      "The title is what a shop or studio owner types before they open the post. A headline full of builder words gets scrolled past.",
+      "The title should be the line you would type into Google: an empty blog, a price on request, an offer that is not yours.",
     date: "2026-11-08",
   },
 ];
 
 const BLOG_ES: Record<string, { title: string; description: string }> = {
-  "stop-fake-prices": {
-    title: "Cómo evitar que tu blog publique precios que no existen",
+  "same-notes-review-email-quote": {
+    title: "Cómo contestar una reseña, un correo y un presupuesto con la misma información",
     description:
-      "Si una IA escribe el blog de tu tienda o estudio, el error caro es un precio o un pack que no está en tu web.",
+      "La reseña, el correo y el presupuesto pueden salir de las mismas notas. Un precio que no está escrito no se envía.",
+  },
+  "stop-fake-prices": {
+    title: "Cómo evitar que mi blog ponga un precio que no cobro",
+    description:
+      "Si una IA escribe tu blog, puede colar un precio que tu web no cobra. Ese número se corta o queda por confirmar.",
   },
   "ranking-you-cannot-show": {
-    title: "Cómo evitar que tu blog afirme un ranking que no puedes mostrar",
+    title: "Cómo quitar de mi blog un ranking o un cliente que no puedo enseñar",
     description:
-      "Si una IA escribe el blog de tu tienda o estudio, la línea cara es un ranking, unas visitas o un cliente que no puedes mostrar.",
+      "Una IA puede escribir que sales primero en Google o nombrar un cliente. Si no puedes abrir la prueba, esa frase se quita.",
   },
   "title-a-shop-owner-would-search": {
-    title: "Cómo titular un post que el dueño de una tienda buscaría de verdad",
+    title: "Cómo titular el artículo del blog de tu tienda",
     description:
-      "El título es lo que escribe el dueño de una tienda o un estudio antes de abrir el post. Un titular lleno de palabras de quien programa se queda sin abrir.",
+      "El título tiene que ser la frase que escribirías en Google: el blog vacío, el precio a consultar, la oferta que no es tuya.",
   },
 };
 

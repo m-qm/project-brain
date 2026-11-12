@@ -12,6 +12,8 @@ type BrainTreeGraphSvgProps = {
   centerLabel: string;
   extractDemo: boolean;
   highlightDomains: string[];
+  /** Null shows every spoke. A list shows only those domains, in the extract fill. */
+  revealedDomains: string[] | null;
   activeDomain: string | null;
   onActiveDomain: (id: string | null) => void;
   live: boolean;
@@ -24,6 +26,7 @@ export function BrainTreeGraphSvg({
   centerLabel,
   extractDemo,
   highlightDomains,
+  revealedDomains,
   activeDomain,
   onActiveDomain,
   live,
@@ -32,6 +35,8 @@ export function BrainTreeGraphSvg({
   const dots = centerClusterDots(42);
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
   const highlightSet = new Set(highlightDomains);
+  const revealed = revealedDomains ? new Set(revealedDomains) : null;
+  const shown = (domainId?: string) => !revealed || (domainId ? revealed.has(domainId) : true);
 
   return (
     <svg
@@ -46,6 +51,8 @@ export function BrainTreeGraphSvg({
         const b = nodeById.get(e.to);
         if (!a || !b) return null;
         const edgeDomain = b.domainId ?? a.domainId;
+        if (!shown(edgeDomain) && e.from !== "center") return null;
+        if (e.from === "center" && b.domainId && !shown(b.domainId)) return null;
         const emphasized = extractDemo && edgeDomain && highlightSet.has(edgeDomain);
         const dim =
           activeDomain &&
@@ -59,7 +66,7 @@ export function BrainTreeGraphSvg({
             y1={a.y}
             x2={b.x}
             y2={b.y}
-            className={emphasized ? "brain-tree-edge brain-tree-edge--hot" : "brain-tree-edge"}
+            className={`brain-tree-reveal ${emphasized ? "brain-tree-edge brain-tree-edge--hot" : "brain-tree-edge"}`}
             style={{ opacity: dim ? 0.12 : emphasized ? 1 : 0.55 }}
           />
         );
@@ -87,6 +94,7 @@ export function BrainTreeGraphSvg({
           );
         }
 
+        if (!shown(node.domainId)) return null;
         const dim = activeDomain && node.domainId !== activeDomain;
         const isHub = node.kind === "hub";
         const hot = extractDemo && node.domainId && highlightSet.has(node.domainId);
@@ -94,6 +102,7 @@ export function BrainTreeGraphSvg({
         return (
           <g
             key={node.id}
+            className="brain-tree-reveal"
             style={{ opacity: dim ? 0.2 : hot ? 1 : extractDemo ? 0.45 : 1 }}
             onMouseEnter={() => node.domainId && onActiveDomain(node.domainId)}
             onMouseLeave={() => onActiveDomain(null)}

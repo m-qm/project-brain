@@ -50,7 +50,7 @@ export default async function BlogPostPage({
 
   return (
     <div className="page-shell">
-      <SiteNav ctaHref="/company-brain" ctaLabel={nav("knowledge")} />
+      <SiteNav />
       <main className="learn-doc-shell container-narrow">
         <nav className="learn-doc-nav" aria-label={t("breadcrumb")}>
           <Link href="/blog">{nav("blog")}</Link>
@@ -68,9 +68,7 @@ export default async function BlogPostPage({
         />
 
         <p className="field-hint" style={{ marginTop: "2rem" }}>
-          {t("footer")} <Link href="/company-brain">{t("seeList")}</Link>
-          {" · "}
-          <Link href="/blog">{t("all")}</Link>.
+          <Link href="/blog">{t("all")}</Link>
         </p>
       </main>
     </div>

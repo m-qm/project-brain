@@ -1,32 +1,28 @@
-# How to title a post a shop owner would actually search
+# How to title a blog post for your shop
 
-The title is the sentence a shop or studio owner types before they open the post.
+The title is the line you type into Google before you open the article. A headline full of builder words stays unopened.
 
-## What happened in one draft
+## What a draft did
 
-One draft carried this headline: “What RAG means for your content stack”. On a Tuesday that owner types a different sentence: a week with an empty blog, or a price the page still marks as on request. That second title is the post they open.
+A draft came out with this headline: "What RAG means for your content stack." RAG is a way to make the program look in your texts before it answers. The person who runs the shop, on a Tuesday, types another line: a week with an empty blog, or a price the page leaves as on request. That second title is the one that gets opened.
 
-## Before you publish
+## How to leave the title
 
-Read the title on its own. Leave it as the problem they would type: an empty week, a price still on request, a post that went out with the wrong offer.
+Read the title on its own. Leave it as the problem you would type: the empty week, the price on request, the post that went out with someone else's offer.
 
-This post is that one check. The other four are on the same list: [agentkbase.com/company-brain](/company-brain).
-
-## How we do it here
-
-Agent KBase keeps the offer in git. The worker writes one question a buyer would search and leaves the draft waiting. A person says yes before it becomes a page. This piece went through that review before it came out here.
+This article is only that point. The other four checks are on [agentkbase.com/company-brain](https://agentkbase.com/company-brain).
 
 ## Who it is for
 
-A shop, a studio, or a one or two person consultancy with a website and no marketing team.
+A shop, a studio, or a small consultancy, with a site and no marketing team.
 
 ## Next step
 
-If the loop fits, join the [waitlist](/company-brain). The open-source brain is free. A person still says yes before anything goes live.
+If you want titles like that on your blog, write to [hello@agentkbase.com](mailto:hello@agentkbase.com).
 
 ## Sources
 
-* `brain/facts/project.md` — the reader is a shop or studio with a site and no marketing team.
-* `brain/facts/brand-guardrails.md` — titles speak to that owner, in plain speech.
-* `brain/content/review-checklist.md` — check 1, the buyer’s problem.
-* [agentkbase.com/company-brain](/company-brain) — the five checks.
+* `brain/facts/project.md`. The reader is a shop or a studio with a site and no marketing team.
+* `brain/facts/brand-guardrails.md`. Titles speak to that person, in plain language.
+* `brain/content/review-checklist.md`. Check 1.
+* [agentkbase.com/company-brain](https://agentkbase.com/company-brain).

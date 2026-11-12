@@ -13,9 +13,9 @@ const pages: {
   { path: "/learn", priority: 0.9, changeFrequency: "weekly" },
   { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
   { path: "/wizard", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/skilltree", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/check", priority: 0.85, changeFrequency: "monthly" },
+  { path: "/onboarding", priority: 0.8, changeFrequency: "monthly" },
   { path: "/company-brain", priority: 0.7, changeFrequency: "weekly" },
-  { path: "/tree", priority: 0.3, changeFrequency: "yearly" },
 ];
 
 function latestBlogDate(): string | undefined {

@@ -23,10 +23,7 @@ export function SiteFooter() {
         <p className="site-footer-product">
           <Link href="/">agentkbase.com</Link>
           {" · "}
-          Agent KBase · {t("product")}{" "}
-          <a href="https://skilltree.ai" target="_blank" rel="noopener noreferrer">
-            SkillTree
-          </a>
+          Agent KBase · {t("product")}
           {" · "}
           <a href="https://www.npmjs.com/package/@agentkbase/cli">npm</a>
           {" · "}

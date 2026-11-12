@@ -15,6 +15,7 @@ Esta política cubre la **web y el asistente alojado**, no el código que ejecut
 ## Qué recogemos
 
 * **Lista de espera y contacto:** si envías la lista de espera de workers de contenido y anuncios, o nos escribes, recibimos la dirección que das y metadatos básicos (fecha, página de origen). Los avisos salen por [Resend](https://resend.com) hacia quien opera la web.
+* **Guía de inicio:** si pides la guía de una página, guardamos ese email en Resend Contacts. Entras en la lista de correo solo si marcas la casilla. Sin la casilla, la dirección se guarda por la petición y queda dada de baja, así que no recibe la lista.
 * **Analítica:** usamos [Vercel Web Analytics](https://vercel.com/docs/analytics) para visitas agregadas y eventos propios (por ejemplo exportar el asistente o enviar la lista). La configuración por defecto no usa cookies de publicidad.
 * **Registros del servidor:** el alojamiento puede guardar direcciones IP, agentes de usuario y rutas, por seguridad y para depurar.
 
@@ -27,11 +28,11 @@ Esta política cubre la **web y el asistente alojado**, no el código que ejecut
 
 ## Bases legales (visitantes del EEE)
 
-Donde aplica el RGPD, tratamos el email de la lista por **consentimiento** (envías el formulario) y por **interés legítimo** en los registros de seguridad y la analítica agregada.
+Donde aplica el RGPD, tratamos el email de la lista y de la guía por **consentimiento** (envías el formulario). La lista de correo es una casilla aparte. El **interés legítimo** cubre los registros de seguridad y la analítica agregada.
 
 ## Conservación
 
-Las entradas de la lista viven en el correo de quien opera y en los registros hasta que se pidan borrar. Los agregados de analítica se conservan según los términos de Vercel.
+Los avisos de la lista viven en el correo de quien opera hasta que se pidan borrar. Los emails de la guía viven en Resend Contacts hasta que pidas borrarlos, o hasta que te des de baja de la lista. Los agregados de analítica se conservan según los términos de Vercel.
 
 ## Tus derechos
 

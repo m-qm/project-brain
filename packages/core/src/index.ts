@@ -21,6 +21,8 @@ export {
   type EvalCheck,
 } from "./eval-draft.js";
 export { evalDraftAgainstDir, loadFactTextFromDir } from "./eval-from-dir.js";
+export { factsTextFromBrainInput } from "./facts-from-input.js";
+export { evalDraftAgainstBrainInput } from "./eval-from-input.js";
 export {
   BrainPathError,
   listBrainFiles,
@@ -30,6 +32,16 @@ export {
   type BrainSearchHit,
   type BrainSearchResult,
 } from "./brain-files.js";
+export {
+  buildClaimsIndex,
+  parseClaimsFromMarkdown,
+  searchBrainWithClaims,
+  searchClaims,
+  type BrainClaim,
+  type BrainSearchWithClaimsResult,
+  type ClaimSearchHit,
+  type ClaimStatus,
+} from "./claims.js";
 export { buildBriefFromDir } from "./brief-from-dir.js";
 export { validatePublicHttpUrl } from "./url-security.js";
 export {
@@ -79,4 +91,15 @@ export {
   type QueueItem,
   type QueueStatus,
 } from "./queue.js";
+export {
+  applyTelegramUpdate,
+  approvalCallbackData,
+  approvalText,
+  getTelegramUpdates,
+  notifyPendingDrafts,
+  parseApprovalCallback,
+  sendApproval,
+  type TelegramConfig,
+  type TelegramUpdate,
+} from "./telegram-approval.js";
 export { EMPTY_BRAIN_INPUT } from "./defaults.js";

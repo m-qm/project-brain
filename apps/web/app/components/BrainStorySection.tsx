@@ -5,10 +5,15 @@ import { BrainTreeGraph } from "./BrainTreeGraph";
 export async function BrainStorySection() {
   const t = await getTranslations("story");
   const steps = [
-    { n: "1", title: t("step1Title"), body: t("step1Body") },
-    { n: "2", title: t("step2Title"), body: t("step2Body") },
-    { n: "3", title: t("step3Title"), body: t("step3Body") },
-    { n: "4", title: t("step4Title"), body: t("step4Body") },
+    { kicker: t("band1Kicker"), title: t("step1Title"), body: t("step1Body") },
+    { kicker: t("band2Kicker"), title: t("step2Title"), body: t("step2Body") },
+    { kicker: t("band3Kicker"), title: t("step3Title"), body: t("step3Body") },
+    { kicker: t("band4Kicker"), title: t("step4Title"), body: t("step4Body") },
+  ];
+  const faqs = [
+    { q: t("faqMcpQ"), a: t("faqMcpA") },
+    { q: t("faqGitQ"), a: t("faqGitA") },
+    { q: t("faqLiveQ"), a: t("faqLiveA") },
   ];
 
   return (
@@ -20,17 +25,6 @@ export async function BrainStorySection() {
             <h2 className="story-title">{t.rich("title", { em: (chunks) => <em>{chunks}</em> })}</h2>
             <p className="story-lead">{t("lead1")}</p>
             <p className="story-lead">{t("lead2")}</p>
-            <ol className="story-steps">
-              {steps.map((step) => (
-                <li key={step.n}>
-                  <span className="story-step-num">{step.n}</span>
-                  <div>
-                    <h3>{step.title}</h3>
-                    <p>{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
             <Link className="btn" href="/wizard">
               {t("start")}
             </Link>
@@ -39,6 +33,18 @@ export async function BrainStorySection() {
             <BrainTreeGraph live />
           </div>
         </div>
+
+        <ol className="story-bands">
+          {steps.map((step) => (
+            <li key={step.kicker}>
+              <p className="story-band-kicker">{step.kicker}</p>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
 
         <div className="audit-block" id="audit">
           <div className="audit-copy">
@@ -65,6 +71,16 @@ export async function BrainStorySection() {
             </div>
             <BrainTreeGraph extractDemo highlightDomains={["facts", "gaps", "stories", "offers"]} />
           </div>
+        </div>
+
+        <div className="home-faq">
+          <h2>{t("faqTitle")}</h2>
+          {faqs.map((item) => (
+            <details key={item.q}>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
         </div>
       </div>
     </section>

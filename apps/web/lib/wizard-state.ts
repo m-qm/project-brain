@@ -2,6 +2,7 @@ import type { BrainInput } from "@agentkbase/core";
 
 export const STORAGE_KEY = "project-brain-wizard-v1";
 export const SITE_URL_KEY = "project-brain-wizard-site-url";
+export const HOSTED_PROFILE_KEY = "project-brain-hosted-profile-id";
 
 export const defaultWizardState = (): BrainInput => ({
   projectName: "",
@@ -39,4 +40,14 @@ export function loadWizardSiteUrl(): string {
 
 export function saveWizardSiteUrl(url: string): void {
   localStorage.setItem(SITE_URL_KEY, url.trim());
+}
+
+export function loadWizardHostedProfileId(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(HOSTED_PROFILE_KEY)?.trim() ?? "";
+}
+
+export function saveWizardHostedProfileId(id: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(HOSTED_PROFILE_KEY, id.trim());
 }

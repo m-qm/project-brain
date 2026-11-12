@@ -1,3 +1,5 @@
+import { mermaidFlowToSvg } from "./learn-flow";
+
 function escape(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -108,13 +110,14 @@ function renderTable(rows: string[][]): string {
   return renderGenericTable(rows);
 }
 
-export function learnMarkdownToHtml(md: string): string {
+export function learnMarkdownToHtml(md: string, options?: { diagrams?: boolean }): string {
   const lines = md.split("\n");
   let inCode = false;
   let codeLang = "command";
   const codeLines: string[] = [];
   const out: string[] = [];
   let listType: "ul" | "ol" | null = null;
+  let diagramIndex = 0;
 
   const flushList = () => {
     if (listType) {
@@ -128,10 +131,17 @@ export function learnMarkdownToHtml(md: string): string {
     const body = codeLines.join("\n");
     codeLines.length = 0;
     inCode = false;
+    if (options?.diagrams && codeLang.toLowerCase() === "mermaid") {
+      const svg = mermaidFlowToSvg(body, `d${diagramIndex++}`);
+      if (svg) {
+        out.push(svg);
+        return;
+      }
+    }
     out.push(
       `<div class="learn-code-block">` +
         `<div class="learn-code-label">${escape(codeLang)}</div>` +
-        `<pre class="learn-code"><code>${body}</code></pre>` +
+        `<pre class="learn-code"><code>${escape(body)}</code></pre>` +
         `</div>`,
     );
   };
@@ -150,7 +160,7 @@ export function learnMarkdownToHtml(md: string): string {
     }
 
     if (inCode) {
-      codeLines.push(escape(line));
+      codeLines.push(line);
       continue;
     }
 

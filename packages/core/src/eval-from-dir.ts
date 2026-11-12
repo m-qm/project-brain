@@ -1,4 +1,5 @@
 import { listBrainFiles, readBrainFile } from "./brain-files.js";
+import { isRefusalPath } from "./refused.js";
 import {
   evalDraft,
   evalLinkedInCaption,
@@ -7,7 +8,9 @@ import {
 } from "./eval-draft.js";
 
 export async function loadFactTextFromDir(dir: string): Promise<string> {
-  const files = (await listBrainFiles(dir)).filter((path) => path.startsWith("brain/facts/"));
+  const files = (await listBrainFiles(dir)).filter(
+    (path) => path.startsWith("brain/facts/") && !isRefusalPath(path),
+  );
   const parts: string[] = [];
   for (const path of files) {
     parts.push(await readBrainFile(dir, path));

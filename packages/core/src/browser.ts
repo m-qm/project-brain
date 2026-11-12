@@ -9,6 +9,8 @@ export {
   type DraftEvalResult,
   type EvalCheck,
 } from "./eval-draft.js";
+export { factsTextFromBrainInput } from "./facts-from-input.js";
+export { evalDraftAgainstBrainInput } from "./eval-from-input.js";
 export { buildBrief } from "./brief.js";
 export { EMPTY_BRAIN_INPUT } from "./defaults.js";
 export {

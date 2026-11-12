@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,8 +14,13 @@ import {
   checkBehaviorSet,
   decideQueueItem,
   enqueueDraft,
+  getTelegramUpdates,
   listQueue,
+  notifyPendingDrafts,
+  applyTelegramUpdate,
   buildBriefFromDir,
+  buildClaimsIndex,
+  searchBrainWithClaims,
   extractBrainFromWebsiteUrl,
   mergeExtractIntoBrain,
   type EvalCheck,
@@ -329,7 +334,11 @@ queue
 function decideCommand(decision: "approve" | "reject"): void {
   queue
     .command(decision)
-    .description(decision === "approve" ? "Approve one pending draft" : "Reject one pending draft")
+    .description(
+      decision === "approve"
+        ? "Approve one pending draft"
+        : "Reject one pending draft. The text is kept in brain/facts/refused.md and is not sent again.",
+    )
     .argument("<id>", "Queue item id")
     .option("--dir <path>", "Brain root directory", ".")
     .option("--queue <path>", "Queue directory, outside brain/")
@@ -358,6 +367,142 @@ function decideCommand(decision: "approve" | "reject"): void {
 
 decideCommand("approve");
 decideCommand("reject");
+
+function readTelegramConfig(): { token: string; chatId: string } | undefined {
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim() ?? "";
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim() ?? "";
+  if (!token || !chatId) return undefined;
+  return { token, chatId };
+}
+
+const telegram = program
+  .command("telegram")
+  .description("Send a pending draft to Telegram and store Publicar or No. Does not publish.");
+
+telegram
+  .command("notify")
+  .description("Send each pending draft that has not been sent yet")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--queue <path>", "Queue directory, outside brain/")
+  .action(async (opts: { dir: string; queue?: string }) => {
+    const config = readTelegramConfig();
+    if (!config) {
+      console.error("Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.");
+      process.exitCode = 1;
+      return;
+    }
+    const paths = queuePaths(opts.dir, opts.queue);
+    try {
+      const sent = await notifyPendingDrafts({ ...paths, config });
+      console.log(JSON.stringify({ sent: sent.map((item) => item.id) }, null, 2));
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+    }
+  });
+
+telegram
+  .command("poll")
+  .description("Wait for Publicar or No. Ctrl+C stops the wait.")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--queue <path>", "Queue directory, outside brain/")
+  .action(async (opts: { dir: string; queue?: string }) => {
+    const config = readTelegramConfig();
+    if (!config) {
+      console.error("Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.");
+      process.exitCode = 1;
+      return;
+    }
+    const paths = queuePaths(opts.dir, opts.queue);
+    let offset = 0;
+    let stop = false;
+    process.once("SIGINT", () => {
+      stop = true;
+    });
+    console.log("Esperando Publicar o No. Ctrl+C para salir.");
+    while (!stop) {
+      try {
+        const updates = await getTelegramUpdates({ token: config.token, offset, timeout: 25 });
+        for (const update of updates) {
+          offset = update.update_id + 1;
+          const result = await applyTelegramUpdate({ ...paths, config, update });
+          console.log(JSON.stringify({ update_id: update.update_id, ...result }));
+        }
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exitCode = 1;
+        return;
+      }
+    }
+  });
+
+program
+  .command("claims")
+  .description("List parsed claims from brain/facts/ and open-questions (Phase 2 index)")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--json", "Print JSON instead of a table")
+  .action(async (opts: { dir: string; json?: boolean }) => {
+    const dir = resolve(opts.dir);
+    const claims = await observeCommand(
+      "brain_claims",
+      {},
+      () => buildClaimsIndex(dir),
+      (value) => ({ claimCount: value.length }),
+    );
+    if (opts.json) {
+      console.log(JSON.stringify({ dir, claimCount: claims.length, claims }, null, 2));
+      return;
+    }
+    console.log(`Claims: ${claims.length} (${dir})\n`);
+    for (const c of claims) {
+      const flag = c.status === "confirm" ? "[CONFIRM] " : "";
+      console.log(`${c.path}:${c.line}  ${flag}${c.text.slice(0, 100)}`);
+      if (c.section) console.log(`  § ${c.section}`);
+    }
+  });
+
+program
+  .command("search")
+  .description("Search brain/: ranked claims first, then other markdown hits")
+  .argument("<query>", "Search terms")
+  .option("--dir <path>", "Brain root directory", ".")
+  .option("--json", "Print full JSON (claims with scores)")
+  .action(async (query: string, opts: { dir: string; json?: boolean }) => {
+    const dir = resolve(opts.dir);
+    const result = await observeCommand(
+      "brain_search",
+      { query },
+      () => searchBrainWithClaims(dir, query),
+      (value) => ({
+        claimCount: value.claims.length,
+        hitCount: value.hits.length,
+        truncated: value.truncated,
+      }),
+    );
+    if (opts.json) {
+      console.log(JSON.stringify({ dir, ...result }, null, 2));
+      return;
+    }
+    console.log(`Query: ${result.query}\n`);
+    if (result.claims.length > 0) {
+      console.log("Claims (ranked):");
+      for (const c of result.claims) {
+        const flag = c.status === "confirm" ? "[CONFIRM] " : "";
+        console.log(`  score=${c.score}  ${c.path}:${c.line}  ${flag}${c.text.slice(0, 120)}`);
+      }
+      console.log("");
+    }
+    const extra = result.hits.filter(
+      (h) => !result.claims.some((c) => c.path === h.path && c.line === h.line),
+    );
+    if (extra.length > 0) {
+      console.log("Other hits:");
+      for (const h of extra.slice(0, 15)) {
+        console.log(`  ${h.path}:${h.line}  ${h.text.slice(0, 120)}`);
+      }
+    }
+    if (result.truncated) console.log("\n(truncated at 50 hits)");
+  });
 
 program
   .command("brief")
@@ -467,4 +612,26 @@ program
     if (existsSync(localGuide)) console.log(`Local: ${localGuide}`);
   });
 
+loadProjectEnv(resolve(".env"));
+loadProjectEnv(resolve(".env.local"));
+
 program.parse();
+
+/** Fill empty variables from a local env file. Existing variables stay as they are. */
+function loadProjectEnv(path: string): void {
+  if (!existsSync(path)) return;
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+    const eq = trimmed.indexOf("=");
+    const key = trimmed.slice(0, eq).trim();
+    let value = trimmed.slice(eq + 1).trim();
+    if (
+      value.length >= 2 &&
+      ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (key && process.env[key] === undefined) process.env[key] = value;
+  }
+}

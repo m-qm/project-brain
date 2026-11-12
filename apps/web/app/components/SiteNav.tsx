@@ -7,15 +7,15 @@ import { Link, usePathname } from "@/i18n/navigation";
 const LINK_DEFS = [
   { href: "/learn", key: "learn" },
   { href: "/blog", key: "blog" },
+  { href: "/check", key: "check" },
   { href: "/company-brain", key: "knowledge" },
-  { href: "/skilltree", key: "skilltree" },
-  { href: "/tree", key: "brainMap" },
   { href: "/wizard", key: "wizard" },
 ] as const;
 
 type SiteNavProps = {
   ctaHref?: string;
   ctaLabel?: string;
+  hideCta?: boolean;
 };
 
 function LocaleSwitch() {
@@ -36,10 +36,26 @@ function LocaleSwitch() {
   );
 }
 
-export function SiteNav({ ctaHref = "/wizard", ctaLabel }: SiteNavProps) {
+function CtaLink({ href, label, className }: { href: string; label: string; className: string }) {
+  if (href.startsWith("mailto:") || href.startsWith("http://") || href.startsWith("https://")) {
+    return (
+      <a className={className} href={href}>
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link className={className} href={href}>
+      {label}
+    </Link>
+  );
+}
+
+export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const href = ctaHref ?? "/wizard";
   const label = ctaLabel ?? t("tryWizard");
 
   useEffect(() => {
@@ -72,15 +88,11 @@ export function SiteNav({ ctaHref = "/wizard", ctaLabel }: SiteNavProps) {
           <a href="https://github.com/m-qm/project-brain" target="_blank" rel="noopener noreferrer">
             {t("github")}
           </a>
-          <Link className="btn nav-menu-cta" href={ctaHref}>
-            {label}
-          </Link>
+          {hideCta ? null : <CtaLink className="btn nav-menu-cta" href={href} label={label} />}
         </nav>
         <div className="nav-actions">
           <LocaleSwitch />
-          <Link className="btn" href={ctaHref}>
-            {label}
-          </Link>
+          {hideCta ? null : <CtaLink className="btn" href={href} label={label} />}
         </div>
       </div>
     </header>

@@ -1,52 +1,58 @@
-# How to stop your blog publishing prices that do not exist
+# How to stop my blog posting a price I do not charge
 
-If an AI writes the blog for your shop or studio, it can publish a price, a pack, or a deadline you will not honour. A client reads it and asks you for that offer.
+If an AI writes your blog, it can publish a price your page does not charge. A client reads it and asks for it.
 
-## What happened in one draft
+## What a draft did
 
-On the site the service is on request. The article said “from 99 €”. A client quoted that number. Someone then had to honour a price nobody had set.
+On the site the service is on request. The article wrote "from €99." A client quoted that figure. Someone had to honor a price nobody had set.
+
+## The line that gets marked
+
+That "from €99" was not in the notes. In the draft it stays like this:
+
+Price: `[CONFIRM]`
+
+The number is not published. You write the real price, or you leave it as on request.
 
 ## Before you publish
 
-Someone reads the draft and marks these five points. If one fails, the draft stays put. It takes about a minute.
+Someone reads the draft and checks five points. If one fails, the draft stays put. It fits in a minute.
 
-1. The title is a problem a shop or studio owner would search, in their own words.
-2. Every price, pack, or deadline is in your facts. If it is missing, cut it.
-3. A ranking, a visit count, or a client name stays in only when you can open it on a page.
-4. You can see where each fact came from: your site, your service list, or your notes.
-5. The close asks for a conversation or the waitlist: no invoices, no passwords, and no personal phone.
+1. The title is a shop or studio problem, in the owner's words.
+2. Every price, pack, or deadline is in your notes. If it is missing, it is cut.
+3. A ranking, a visit count, or a client name gets in only if you can open it on a page.
+4. Each fact shows where it came from: your site, your service list, or your notes.
+5. The close asks them to write. No invoices, no passwords, and no personal mobile.
 
-The list is public: [agentkbase.com/company-brain](/company-brain).
+The five checks are on [agentkbase.com/company-brain](https://agentkbase.com/company-brain).
 
-## How we do it here
+## Where the notes live
 
-Agent KBase keeps the offer in git. One worker writes the article and leaves it in a queue. The LinkedIn draft comes after the article is published. This piece went through that review before it came out here.
+Agent KBase keeps the offer in git. Git is the history of each change to those notes. An agent (a program that drafts from those notes) writes the article and leaves it waiting. The LinkedIn draft comes after the article is published.
 
 The first readers arrive from LinkedIn and from conversations.
 
 ## Who it is for
 
-A business with a website and no marketing team. A shop, a studio, or a one or two person consultancy.
+A business with a site and no marketing team. A shop, a studio, or a small consultancy.
 
-## Five checks, one post each
+## The other checks
 
-Each check gets its own post. The reader stays a shop or a studio. This one is the price.
+1. [How to title a blog post for your shop](/blog/title-a-shop-owner-would-search).
+2. [How to stop my blog posting a price I do not charge](/blog/stop-fake-prices).
+3. [How to remove a ranking or a client my blog cannot show](/blog/ranking-you-cannot-show).
+4. How to see where each line of a draft came from.
+5. How to close a draft without asking for a personal phone.
 
-1. [How to title a post a shop owner would actually search](/blog/title-a-shop-owner-would-search).
-2. [How to stop your blog publishing prices that do not exist](/blog/stop-fake-prices).
-3. [How to stop your blog claiming a ranking you cannot show](/blog/ranking-you-cannot-show).
-4. How to see where each line in a draft came from.
-5. How to close a draft with no personal phone.
-
-The other three are drafts. They stay unlinked until a person approves them. The list they share is [agentkbase.com/company-brain](/company-brain).
+Points 4 and 5 still have no page.
 
 ## Next step
 
-If the loop fits, join the [waitlist](/company-brain). The open-source brain is free. A person still says yes before anything goes live.
+If you want the same cut on your blog, write to [hello@agentkbase.com](mailto:hello@agentkbase.com).
 
 ## Sources
 
-* `brain/facts/offers.md` — the open-source brain is free. Done-for-you is quoted separately, with no number in the post.
-* `brain/facts/project.md` — what we can say in public.
-* `brain/content/review-checklist.md` — the five checks.
-* [agentkbase.com/company-brain](/company-brain) — the public list.
+* `brain/facts/offers.md`. The open-source folder is free. Custom work is quoted separately. This article has no fee.
+* `brain/facts/project.md`. What can be said in public.
+* `brain/content/review-checklist.md`. The five checks.
+* [agentkbase.com/company-brain](https://agentkbase.com/company-brain).

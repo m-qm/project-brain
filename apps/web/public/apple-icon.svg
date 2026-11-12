@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none" role="img" aria-label="Agent KBase">
+  <rect width="180" height="180" rx="40" fill="#111114"/>
+  <circle cx="90" cy="90" r="16" fill="#f4f4f5"/>
+  <circle cx="90" cy="38" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="126" cy="54" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="142" cy="90" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="126" cy="126" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="90" cy="142" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="54" cy="126" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="38" cy="90" r="10" fill="#f4f4f5" opacity="0.95"/>
+  <circle cx="54" cy="54" r="10" fill="#f4f4f5" opacity="0.95"/>
+</svg>

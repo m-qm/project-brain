@@ -14,6 +14,8 @@
     "brain": "node ./packages/cli/dist/index.js",
     "brain:extract": "sh -c 'set -a; [ -f apps/web/.env.local ] && . apps/web/.env.local; set +a; node ./packages/cli/dist/index.js extract-url \"$@\"' sh",
     "validate:example": "node ./packages/cli/dist/index.js validate --dir ./examples/fictional-saas-brain",
+    "validate:brain": "node ./packages/cli/dist/index.js validate --dir .",
+    "brain:sync-learn": "node scripts/sync-learn-stories.mjs",
     "eval:content": "pnpm --filter @agentkbase/core build && node examples/content-ads-brain/evals/run.mjs"
   },
   "engines": {

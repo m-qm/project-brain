@@ -1,0 +1,14 @@
+{
+  "name": "@agentkbase/mastra-example",
+  "private": true,
+  "type": "module",
+  "description": "Mastra agent that reads an Agent KBase brain over stdio. Outside the pnpm workspace.",
+  "scripts": {
+    "test:reviews": "node --test test/review-loop.test.ts",
+    "try:local": "BRAIN_DIR=../fictional-saas-brain node try-local.ts"
+  },
+  "dependencies": {
+    "@mastra/core": "1.82.0",
+    "@mastra/mcp": "2.8.0"
+  }
+}

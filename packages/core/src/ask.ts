@@ -1,12 +1,13 @@
 import { listBrainFiles, readBrainFile, searchBrainFiles } from "./brain-files.js";
 import { allowedAmounts, evalDraft, inventedPrices, type EvalCheck } from "./eval-draft.js";
+import { isRefusalPath, normalizeDraftText, readRefusalTexts } from "./refused.js";
 
 export type AskRoute = "facts" | "story" | "draft";
 export type AskDecision = "pass" | "ask_human";
 export type LoopAction = AskDecision | "retrieve_again" | "revise";
 
 export type AskGap = {
-  code: "missing_price" | "uncovered" | "no_story" | "confirm";
+  code: "missing_price" | "uncovered" | "no_story" | "confirm" | "refused";
   detail: string;
 };
 
@@ -143,7 +144,7 @@ export function planTask(question: string): BrainPlan {
   };
 }
 
-const HARD_GAP = new Set(["missing_price", "confirm"]);
+const HARD_GAP = new Set(["missing_price", "confirm", "refused"]);
 const MISS_GAP = new Set(["uncovered", "no_story"]);
 const REVISABLE = new Set(["invented_proof", "unsafe_cta"]);
 
@@ -194,7 +195,8 @@ export async function askFromDir(dir: string, question: string): Promise<AskResu
   if (!plan.question) throw new Error("Question is empty.");
 
   const files = await listBrainFiles(dir);
-  const factsPaths = files.filter((path) => path.startsWith("brain/facts/"));
+  const factsPaths = files.filter((path) => path.startsWith("brain/facts/") && !isRefusalPath(path));
+  const refused = await readRefusalTexts(dir);
   const factsText = (
     await Promise.all(factsPaths.map(async (path) => readBrainFile(dir, path)))
   ).join("\n\n");
@@ -219,10 +221,13 @@ export async function askFromDir(dir: string, question: string): Promise<AskResu
   let revisesUsed = 0;
   const loops: LoopAction[] = [];
 
+  const mergedGaps = () =>
+    filterConfirmGapsWhenFactsAnswer(plan.question, [...hardGaps, ...softGaps], evidence);
+
   while (loops.length < 4) {
     const action = decideLoop({
       route: plan.route,
-      gaps: [...hardGaps, ...softGaps],
+      gaps: mergedGaps(),
       evalCodes: issues.map((issue) => issue.code),
       retrievesUsed,
       revisesUsed,
@@ -246,10 +251,28 @@ export async function askFromDir(dir: string, question: string): Promise<AskResu
       revisesUsed += 1;
       continue;
     }
-    return finish(dir, plan, reads, evidence, [...hardGaps, ...softGaps], issues, loops, action);
+    return holdIfRefused(
+      finish(dir, plan, reads, evidence, mergedGaps(), issues, loops, action),
+      refused,
+    );
   }
 
-  return finish(dir, plan, reads, evidence, [...hardGaps, ...softGaps], issues, loops, "ask_human");
+  return holdIfRefused(
+    finish(dir, plan, reads, evidence, mergedGaps(), issues, loops, "ask_human"),
+    refused,
+  );
+}
+
+function holdIfRefused<T extends AskResult>(result: T, refused: string[]): T {
+  if (result.draft.status !== "ready") return result;
+  if (!refused.includes(normalizeDraftText(result.draft.text))) return result;
+  const held = draftFromAsk({ ...result, decision: "ask_human", evidence: [] });
+  return {
+    ...result,
+    decision: "ask_human",
+    gaps: [...result.gaps, { code: "refused", detail: "The owner already said no to this draft." }],
+    draft: held,
+  };
 }
 
 function finish(
@@ -264,6 +287,31 @@ function finish(
 ): AskResult & { dir: string } {
   const base = { dir, plan, reads, evidence, gaps, issues, loops, decision };
   return { ...base, draft: draftFromAsk(base) };
+}
+
+const SHIPPED_QUESTION_RE =
+  /\b(is|are|was|were|has|have)\b[\s\S]*\b(shipped|shipping|live|available|released)\b/i;
+const SHIPPED_STATUS_RE =
+  /\b(not shipped|not shipped yet|shipped|waitlist only|in progress|not automated)\b/i;
+
+/**
+ * When facts already answer a yes/no "is X shipped?" question, do not block on unrelated
+ * open-questions (npm version, submit dates, pilot scope).
+ */
+export function filterConfirmGapsWhenFactsAnswer(
+  question: string,
+  gaps: AskGap[],
+  evidence: AskEvidence[],
+): AskGap[] {
+  if (!SHIPPED_QUESTION_RE.test(question)) return gaps;
+  const factEvidence = evidence.filter((item) => item.path.startsWith("brain/facts/"));
+  const hasStatus = factEvidence.some((item) => SHIPPED_STATUS_RE.test(item.text));
+  if (!hasStatus) return gaps;
+  return gaps.filter((gap) => {
+    if (gap.code !== "confirm") return true;
+    if (/\b(npm|AK-\d|submit date|fee|pilot|SLA|revision rounds)\b/i.test(gap.detail)) return false;
+    return true;
+  });
 }
 
 function hardStops(question: string, factsText: string, confirms: Array<{ text: string }>, terms: string[]): AskGap[] {
@@ -323,7 +371,7 @@ async function searchTerms(dir: string, terms: string[], prefix: string): Promis
   for (const term of terms) {
     const result = await searchBrainFiles(dir, term);
     for (const hit of result.hits) {
-      if (!hit.path.startsWith(prefix)) continue;
+      if (!hit.path.startsWith(prefix) || isRefusalPath(hit.path)) continue;
       const key = `${hit.path}:${hit.line}`;
       if (seen.has(key)) continue;
       seen.add(key);

@@ -13,6 +13,7 @@ This policy covers the **website and hosted wizard**, not code you run locally o
 ## What we collect
 
 * **Waitlist and contact:** If you submit the content and ads workers waitlist or email us, we receive the address you provide and basic metadata (timestamp, source page). Notifications are sent via [Resend](https://resend.com) to the site operator.
+* **Onboarding guide:** If you ask for the one-page guide, we store that email in Resend Contacts. You join the mailing list only if you tick that box. Without the tick, the address is kept for the request and marked unsubscribed, so it does not receive the list.
 * **Analytics:** We use [Vercel Web Analytics](https://vercel.com/docs/analytics) on this site for aggregated page views and custom events (for example wizard export or waitlist submit). The default setup does not use advertising cookies.
 * **Server logs:** Hosting providers may log IP addresses, user agents, and request paths for security and debugging.
 
@@ -25,11 +26,11 @@ We do **not** sell personal data. We do not run third-party ad trackers on agent
 
 ## Legal bases (EEA visitors)
 
-Where GDPR applies, we process waitlist email on **consent** (you submit the form) and **legitimate interest** for security logs and aggregate analytics.
+Where GDPR applies, we process waitlist and guide email on **consent** (you submit the form). The mailing list is a separate tick. **Legitimate interest** covers security logs and aggregate analytics.
 
 ## Retention
 
-Waitlist entries live in operator email and logs until removed on request. Analytics aggregates are retained per Vercel’s product terms.
+Waitlist notices live in operator email until removed on request. Guide emails live in Resend Contacts until you ask us to delete them, or you unsubscribe from the list. Analytics aggregates are retained per Vercel’s product terms.
 
 ## Your rights
 
