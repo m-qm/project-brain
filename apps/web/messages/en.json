@@ -61,7 +61,7 @@
     "channelMessage": "iMessage",
     "channelWhatsapp": "WhatsApp",
     "channelTelegram": "Telegram",
-    "startHint": "Scan with your phone's camera or open the link. Tap Start. The chat asks your name, your site, and your email.",
+    "startHint": "Scan with your phone's camera or open the link. The message is already written: Hey Agent KBase!",
     "openTelegram": "Open Telegram",
     "ctaSite": "Paste your site in the browser instead",
     "forDevelopers": "Developers",

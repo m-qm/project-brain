@@ -9,19 +9,16 @@ export function telegramBotUsername(): string {
   return fromEnv || DEFAULT_BOT;
 }
 
-/** What /start stands for. A bot link cannot prefill a sentence, so Start sends this hello. */
+/** Sentence already written in the message box. People send this, not a slash command. */
 export function telegramOpeningLine(locale: string): string {
   return locale === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!";
 }
 
-/**
- * Opens @agentkbase_bot. Telegram shows Start; the tap delivers /start hey or /start hola
- * and the webhook answers. Start payloads cannot contain spaces.
- */
+/** Opens @agentkbase_bot with that sentence filled in. */
 export function telegramChatUrl(locale: string): string {
   const bot = telegramBotUsername();
-  const start = locale === "es" ? "hola" : "hey";
-  return `https://t.me/${bot}?start=${start}`;
+  const text = encodeURIComponent(telegramOpeningLine(locale));
+  return `https://t.me/${bot}?text=${text}`;
 }
 
 type TelegramMessage = {
