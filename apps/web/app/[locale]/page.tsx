@@ -62,19 +62,8 @@ export default async function HomePage() {
                 <SiteButton href="/wizard" variant="primary">
                   {t("paste")}
                 </SiteButton>
-                <SiteButton
-                  href="https://github.com/m-qm/project-brain"
-                  variant="secondary"
-                  external
-                >
-                  {t("github")}
-                </SiteButton>
-                <SiteButton
-                  href="https://www.npmjs.com/package/@agentkbase/cli"
-                  variant="secondary"
-                  external
-                >
-                  npm
+                <SiteButton href="/check" variant="secondary">
+                  {t("checkDraft")}
                 </SiteButton>
               </div>
               <div className="hero-install learn-code-block" aria-label={t("installLabel")}>
@@ -84,8 +73,12 @@ export default async function HomePage() {
                 </pre>
               </div>
               <p className="hero-meta">
-                {t("browsing")} <Link href="/learn/12-what-you-sell">{t("fiveSteps")}</Link>
+                {t("browsing")}{" "}
+                <Link href="/company-brain">{t("fiveSteps")}</Link>
+                {" · "}
+                <Link href="/learn/14-claude-mcp">{t("mcpGuide")}</Link>
               </p>
+              <p className="hero-meta hero-meta--muted">{t("antiPosition")}</p>
             </div>
           </div>
           <div className="perk-box">
@@ -93,8 +86,6 @@ export default async function HomePage() {
               <li>{t("perkCut")}</li>
               <li>{t("perkYes")}</li>
               <li>{t("perkAfter")}</li>
-              <li>{t("perkSame")}</li>
-              <li>{t("perkSkills")}</li>
             </ul>
           </div>
         </div>

@@ -8,7 +8,6 @@ export async function BrainStorySection() {
     { kicker: t("band1Kicker"), title: t("step1Title"), body: t("step1Body") },
     { kicker: t("band2Kicker"), title: t("step2Title"), body: t("step2Body") },
     { kicker: t("band3Kicker"), title: t("step3Title"), body: t("step3Body") },
-    { kicker: t("band4Kicker"), title: t("step4Title"), body: t("step4Body") },
   ];
   const faqs = [
     { q: t("faqMcpQ"), a: t("faqMcpA") },

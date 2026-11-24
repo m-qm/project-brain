@@ -734,6 +734,12 @@ a.nav-menu-cta {
   color: var(--ivory);
 }
 
+.hero-meta--muted {
+  margin-top: 0.35rem;
+  color: var(--ink-3);
+  font-size: 0.88rem;
+}
+
 .hero-meta {
   font-size: 0.8rem;
   color: var(--ink-3);
