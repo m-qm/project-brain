@@ -65,6 +65,10 @@ export default async function HomePage() {
                   {t("ctaSecondary")}
                 </Link>
               </div>
+              <p className="hero-meta">
+                {t("mcpHint")}{" "}
+                <Link href="/learn/14-claude-mcp">{t("mcpHintLink")}</Link>
+              </p>
             </div>
           </div>
           <div className="perk-box">

@@ -53,6 +53,8 @@
     "lead": "Convierte tu web en hechos que posees. Pega un borrador en Comprobar y mira qué no puedes afirmar—sin terminal, sin autopublicar.",
     "ctaPrimary": "Empezar con el asistente",
     "ctaSecondary": "Comprobar un borrador",
+    "mcpHint": "¿Usas Claude?",
+    "mcpHintLink": "MCP remoto (llave bearer)",
     "paste": "Empezar con el asistente",
     "github": "Ver en GitHub",
     "installLabel": "Instalar",

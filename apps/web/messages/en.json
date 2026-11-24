@@ -53,6 +53,8 @@
     "lead": "Turn your public site into facts you own. Paste any draft in Check and see what you cannot claim—no terminal, no auto-publish.",
     "ctaPrimary": "Start with the wizard",
     "ctaSecondary": "Check a draft",
+    "mcpHint": "Using Claude?",
+    "mcpHintLink": "Remote MCP setup (bearer key)",
     "paste": "Start with the wizard",
     "github": "View on GitHub",
     "installLabel": "Install",
