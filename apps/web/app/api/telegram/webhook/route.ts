@@ -15,16 +15,20 @@ export async function POST(req: Request) {
   }
 
   const inbound = telegramInbound(body);
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  if (!inbound || !token) return Response.json({ ok: true });
+  if (!inbound) return Response.json({ ok: true });
 
   const previous = await readTelegramChat(inbound.from);
   const turn = await replyToTelegramLead(previous, {
     from: inbound.from,
     text: inbound.text,
     localeHint: inbound.localeHint,
+    start: inbound.start,
   });
   await writeTelegramChat(turn.chat);
-  await sendTelegramText(token, inbound.from, turn.reply).catch(() => undefined);
-  return Response.json({ ok: true });
+
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  if (token) await sendTelegramText(token, inbound.from, turn.reply).catch(() => undefined);
+
+  if (process.env.NODE_ENV === "production") return Response.json({ ok: true });
+  return Response.json({ ok: true, reply: turn.reply, brain: turn.brain });
 }

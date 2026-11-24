@@ -1,3 +1,5 @@
+import { normalizeBrainId } from "./brain-id";
+
 /** Public bot. Override with TELEGRAM_BOT_NAME (or TELEGRAM_BOT_USERNAME). */
 const DEFAULT_BOT = "agentkbase_bot";
 
@@ -21,11 +23,19 @@ export function telegramOpeningLine(locale: string): string {
   return locale === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!";
 }
 
-/** Opens @agentkbase_bot with that sentence filled in. */
+/** Opens @agentkbase_bot with that sentence filled in. Public lead chat: no start id. */
 export function telegramChatUrl(locale: string): string {
   const bot = telegramBotUsername();
   const text = encodeURIComponent(telegramOpeningLine(locale));
   return `https://t.me/${bot}?text=${text}`;
+}
+
+/** One bot. The id picks a folder under storage/telegram-brains. */
+export function telegramShowcaseUrl(brainId: string): string {
+  const bot = telegramBotUsername();
+  const id = normalizeBrainId(brainId);
+  if (!id) return `https://t.me/${bot}`;
+  return `https://t.me/${bot}?start=${id}`;
 }
 
 type TelegramMessage = {
@@ -34,9 +44,14 @@ type TelegramMessage = {
   chat?: { id?: number };
 };
 
-export function telegramInbound(
-  body: unknown,
-): { from: string; text: string; localeHint?: "en" | "es"; profileName?: string } | null {
+export function telegramInbound(body: unknown): {
+  from: string;
+  text: string;
+  localeHint?: "en" | "es";
+  profileName?: string;
+  /** Present only for /start. brainId null keeps the public company chat. */
+  start?: { brainId: string | null };
+} | null {
   const message = (body as { message?: TelegramMessage })?.message;
   const from = message?.from?.id ?? message?.chat?.id;
   const raw = message?.text?.trim() ?? "";
@@ -52,12 +67,16 @@ export function telegramInbound(
   const profileName = (message?.from?.first_name ?? "").replace(/\s+/g, " ").trim().slice(0, 40) || undefined;
 
   let text = raw;
+  let start: { brainId: string | null } | undefined;
   if (/^\/start(?:@\w+)?(?:\s|$)/i.test(raw)) {
     const payload = raw.replace(/^\/start(?:@\w+)?/i, "").trim();
-    text = payload || (localeHint === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!");
+    const brainId = normalizeBrainId(payload);
+    start = { brainId };
+    if (brainId) text = localeHint === "es" ? "Hola" : "Hello";
+    else text = localeHint === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!";
   }
 
-  return { from: String(from), text, localeHint, profileName };
+  return { from: String(from), text, localeHint, profileName, ...(start ? { start } : {}) };
 }
 
 export async function sendTelegramText(token: string, chatId: string, text: string): Promise<void> {

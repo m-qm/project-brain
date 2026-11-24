@@ -2,6 +2,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { extractBrainFromWebsiteUrl } from "@agentkbase/core";
 import { loadCompanyBrain } from "@/lib/company-brain";
+import clientSnapshot from "@/lib/client-brains.snapshot.json";
+import { clientTitle, replySupportedByBrain, resolveShowcaseBrain, scriptClientReply } from "@/lib/client-brains";
 import { notifyOnboardingLead, type OnboardingSession } from "@/lib/whatsapp-onboarding";
 
 type Locale = "en" | "es";
@@ -24,6 +26,8 @@ export type TelegramChat = {
   leadEmailed?: boolean;
   siteFor?: string;
   siteSheet?: string;
+  /** Set only for a client showcase. Absent means the public Agent KBase chat. */
+  brainId?: string;
 };
 
 const USER_CAP = 24;
@@ -48,6 +52,18 @@ Stay in the conversation language from the known block. A name, a website, or an
 Return JSON only, no markdown:
 {"reply":"...","name":"","website":"","email":"","summary":""}
 Use empty strings when unknown. summary is one line on what they want.`;
+
+const CLIENT_BEHAVIOR = `You are texting for the company in the notes below. This chat is bound to that folder. The public Agent KBase lead chat is a different chat.
+
+Sound like a person: short, warm, honest. At most two short paragraphs. No bullet list. No emoji.
+
+The notes are the only source. You may only say what they support. A line marked [CONFIRM] is not a fact. If a price, date, client name, ranking, SLA, or feature is missing or marked [CONFIRM], say it is not in the notes. Do not invent a number. A from-price printed in the facts may be repeated as a from-price, and you say it is not a closed quote. Do not mention Agent KBase unless those words are in the notes. Do not ask for their name, website, or email.
+
+On a hello, the first sentence names the company in the notes. Answer in the language they write.
+
+Return JSON only, no markdown:
+{"reply":"...","name":"","website":"","email":"","summary":""}
+Use empty strings for name, website, and email. summary is one line.`;
 
 /** Language of a real sentence. A name, a site, or an email does not switch the chat. */
 export function detectedLocale(text: string): Locale | null {
@@ -247,9 +263,8 @@ async function ensureSiteSheet(chat: TelegramChat): Promise<void> {
   chat.siteSheet = await siteSheet(website);
 }
 
-async function complete(messages: ChatMessage[]): Promise<string | null> {
-  const brain = await loadCompanyBrain();
-  const system = `${BEHAVIOR}\n\n${brain}`;
+async function complete(messages: ChatMessage[], brain: string, behavior = BEHAVIOR): Promise<string | null> {
+  const system = `${behavior}\n\n${brain}`;
   const anthropic = process.env.ANTHROPIC_API_KEY?.trim();
   if (anthropic) {
     const model =
@@ -341,25 +356,78 @@ function knownBlock(chat: TelegramChat): string {
   ].join("\n");
 }
 
+function groundedClientReply(locale: Locale, userText: string, brain: string, drafted: string): string {
+  const script = scriptClientReply(locale, brain, userText);
+  if (!replySupportedByBrain(drafted, brain)) return script;
+  const hello = /^(hey|hi|hello|hola|buenas)\b/i.test(userText.trim());
+  const title = clientTitle(brain);
+  if (hello && title && !drafted.includes(title)) return script;
+  return drafted;
+}
+
+async function replyFromClientBrain(
+  current: TelegramChat,
+  text: string,
+  brain: string,
+  brainId: string,
+): Promise<{ chat: TelegramChat; reply: string; brain: string }> {
+  const locale = current.locale;
+  const userCount = current.messages.filter((message) => message.role === "user").length;
+  let reply = "";
+  if (userCount >= USER_CAP) {
+    reply =
+      locale === "es"
+        ? "Sigo solo con lo que está en las notas."
+        : "I'll stay with what is in the notes.";
+  } else {
+    const history = [
+      ...current.messages,
+      { role: "user" as const, text: `Language: ${locale}\n\nThey just wrote:\n${text}` },
+    ];
+    const raw = await complete(history, brain, CLIENT_BEHAVIOR).catch(() => null);
+    const parsed = raw ? parseLeadJson(raw) : null;
+    reply = groundedClientReply(locale, text, brain, parsed?.reply ?? "");
+    if (parsed?.summary) current.summary = parsed.summary;
+  }
+
+  current.brainId = brainId;
+  current.messages = [
+    ...current.messages,
+    { role: "user" as const, text },
+    { role: "assistant" as const, text: reply },
+  ].slice(-HISTORY_CAP);
+  return { chat: current, reply, brain: brainId };
+}
+
 export async function replyToTelegramLead(
   chat: TelegramChat | null,
-  input: { from: string; text: string; localeHint?: Locale },
-): Promise<{ chat: TelegramChat; reply: string }> {
-  const locale = localeOf(input.text, chat?.locale ?? input.localeHint);
-  const current: TelegramChat = chat ?? {
-    from: input.from,
-    locale,
-    messages: [],
-    answers: {},
-    summary: "",
-    emailed: false,
-  };
+  input: { from: string; text: string; localeHint?: Locale; start?: { brainId: string | null } },
+): Promise<{ chat: TelegramChat; reply: string; brain: string }> {
+  const showcase = await resolveShowcaseBrain(input.start, chat?.brainId, { snapshot: clientSnapshot });
+  const switched = (chat?.brainId ?? "company") !== showcase.brain;
+  const locale = localeOf(input.text, switched ? input.localeHint : (chat?.locale ?? input.localeHint));
+  const current: TelegramChat =
+    !chat || switched
+      ? {
+          from: input.from,
+          locale,
+          messages: [],
+          answers: {},
+          summary: "",
+          emailed: false,
+        }
+      : chat;
   current.locale = locale;
+  if (showcase.brain === "company") delete current.brainId;
+  else current.brainId = showcase.brain;
+
+  if (showcase.text) return replyFromClientBrain(current, input.text, showcase.text, showcase.brain);
 
   const userCount = current.messages.filter((message) => message.role === "user").length;
   const fromText = answersFromText(input.text, current.answers);
   let reply = "";
   let summary = current.summary;
+  let readSite = false;
 
   if (userCount >= USER_CAP) {
     current.answers = fromText;
@@ -371,12 +439,14 @@ export async function replyToTelegramLead(
     const previousWebsite = current.answers.website ?? "";
     current.answers = fromText;
     await ensureSiteSheet(current);
-    const readSite = Boolean(current.answers.website && current.answers.website !== previousWebsite);
+    readSite = Boolean(current.answers.website && current.answers.website !== previousWebsite);
     const history = [
       ...current.messages,
       { role: "user" as const, text: `${knownBlock(current)}\n\nThey just wrote:\n${input.text}` },
     ];
-    const raw = await complete(history).catch(() => null);
+    const raw = await loadCompanyBrain()
+      .then((brain) => complete(history, brain))
+      .catch(() => null);
     const parsed = raw ? parseLeadJson(raw) : null;
     const nextField = missing(parsed ? mergeLead(fromText, parsed.answers) : current.answers);
     const question = nextField ? ask(locale, nextField) : "";
@@ -413,6 +483,13 @@ export async function replyToTelegramLead(
     reply = scripted.reply;
   }
 
+  const hello = /^(hey|hi|hello|hola|buenas)\b/i.test(input.text.trim());
+  if (userCount < USER_CAP && !readSite && hello && !/Agent KBase/i.test(reply)) {
+    const scripted = scriptLeadReply(locale, input.text, current.answers);
+    current.answers = scripted.answers;
+    reply = scripted.reply;
+  }
+
   current.summary = summary;
   current.messages = [
     ...current.messages,
@@ -444,5 +521,5 @@ export async function replyToTelegramLead(
     if (sent.lead) current.leadEmailed = true;
   }
 
-  return { chat: current, reply };
+  return { chat: current, reply, brain: "company" };
 }
