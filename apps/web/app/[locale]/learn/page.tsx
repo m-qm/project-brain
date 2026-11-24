@@ -5,6 +5,7 @@ import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { LearnDocAnalytics } from "../../components/LearnDocAnalytics";
 import { SiteNav } from "../../components/SiteNav";
+import { SiteButton } from "../../components/ui/site-button";
 import { LEARN_DOCS, LEARN_GROUPS, learnText } from "./learn-docs";
 
 export async function generateMetadata({
@@ -31,9 +32,9 @@ export default async function LearnIndexPage() {
           <h1 className="learn-title">{t("title")}</h1>
           <p className="learn-lead">{t("lead")}</p>
           <div className="learn-hero-actions">
-            <Link className="btn" href="/learn/12-what-you-sell">
+            <SiteButton href="/learn/12-what-you-sell" variant="primary">
               {t("forOwner")}
-            </Link>
+            </SiteButton>
           </div>
         </div>
       </header>

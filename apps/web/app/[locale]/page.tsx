@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { SiteButton } from "../components/ui/site-button";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { BrainStorySection } from "../components/BrainStorySection";
@@ -58,25 +59,23 @@ export default async function HomePage() {
             <div className="hero-actions">
               <p className="hero-lead">{t("lead")}</p>
               <div className="hero-cta-row">
-                <Link className="btn" href="/wizard">
+                <SiteButton href="/wizard" variant="primary">
                   {t("paste")}
-                </Link>
-                <a
-                  className="btn secondary"
+                </SiteButton>
+                <SiteButton
                   href="https://github.com/m-qm/project-brain"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  variant="secondary"
+                  external
                 >
                   {t("github")}
-                </a>
-                <a
-                  className="btn secondary"
+                </SiteButton>
+                <SiteButton
                   href="https://www.npmjs.com/package/@agentkbase/cli"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  variant="secondary"
+                  external
                 >
                   npm
-                </a>
+                </SiteButton>
               </div>
               <div className="hero-install learn-code-block" aria-label={t("installLabel")}>
                 <div className="learn-code-label">{t("installLabel")}</div>

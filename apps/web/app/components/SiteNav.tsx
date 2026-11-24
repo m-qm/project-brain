@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Button } from "@ui-sdk/react/button";
+import {
+  SegmentedControl,
+  SegmentedControlIndicator,
+  SegmentedControlItem,
+} from "@ui-sdk/react/segmented-control";
+import { SiteButton } from "./ui/site-button";
 
 const LINK_DEFS = [
   { href: "/learn", key: "learn" },
@@ -20,34 +27,23 @@ type SiteNavProps = {
 
 function LocaleSwitch() {
   const t = useTranslations("nav");
-  const locale = useLocale();
+  const locale = useLocale() as "en" | "es";
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
-    <div className="locale-switch" role="group" aria-label={t("language")}>
-      <Link href={pathname} locale="en" hrefLang="en" aria-current={locale === "en" ? "true" : undefined}>
-        EN
-      </Link>
-      <span aria-hidden>·</span>
-      <Link href={pathname} locale="es" hrefLang="es" aria-current={locale === "es" ? "true" : undefined}>
-        ES
-      </Link>
-    </div>
-  );
-}
-
-function CtaLink({ href, label, className }: { href: string; label: string; className: string }) {
-  if (href.startsWith("mailto:") || href.startsWith("http://") || href.startsWith("https://")) {
-    return (
-      <a className={className} href={href}>
-        {label}
-      </a>
-    );
-  }
-  return (
-    <Link className={className} href={href}>
-      {label}
-    </Link>
+    <SegmentedControl
+      className="locale-switch-ui"
+      value={locale}
+      onValueChange={(next) => {
+        if (next === "en" || next === "es") router.replace(pathname, { locale: next });
+      }}
+      aria-label={t("language")}
+    >
+      <SegmentedControlIndicator />
+      <SegmentedControlItem value="en">EN</SegmentedControlItem>
+      <SegmentedControlItem value="es">ES</SegmentedControlItem>
+    </SegmentedControl>
   );
 }
 
@@ -69,7 +65,7 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
           <img src="/brand-mark.svg" alt="" className="brand-mark" width={28} height={28} />
           Agent KBase
         </Link>
-        <button
+        <Button
           type="button"
           className="nav-toggle"
           aria-expanded={open}
@@ -77,7 +73,7 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
           onClick={() => setOpen((value) => !value)}
         >
           {open ? t("close") : t("menu")}
-        </button>
+        </Button>
         <nav id="site-nav" className={`nav-links${open ? " is-open" : ""}`} aria-label={t("primary")}>
           <LocaleSwitch />
           {LINK_DEFS.map((item) => (
@@ -88,11 +84,11 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
           <a href="https://github.com/m-qm/project-brain" target="_blank" rel="noopener noreferrer">
             {t("github")}
           </a>
-          {hideCta ? null : <CtaLink className="btn nav-menu-cta" href={href} label={label} />}
+          {hideCta ? null : <SiteButton className="nav-menu-cta" href={href} variant="primary">{label}</SiteButton>}
         </nav>
         <div className="nav-actions">
           <LocaleSwitch />
-          {hideCta ? null : <CtaLink className="btn" href={href} label={label} />}
+          {hideCta ? null : <SiteButton href={href} variant="primary">{label}</SiteButton>}
         </div>
       </div>
     </header>

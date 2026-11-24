@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { SiteButton } from "./ui/site-button";
 import { BrainTreeGraph } from "./BrainTreeGraph";
 
 export async function BrainStorySection() {
@@ -25,9 +25,9 @@ export async function BrainStorySection() {
             <h2 className="story-title">{t.rich("title", { em: (chunks) => <em>{chunks}</em> })}</h2>
             <p className="story-lead">{t("lead1")}</p>
             <p className="story-lead">{t("lead2")}</p>
-            <Link className="btn" href="/wizard">
+            <SiteButton href="/wizard" variant="primary">
               {t("start")}
-            </Link>
+            </SiteButton>
           </div>
           <div className="story-visual">
             <BrainTreeGraph live />
@@ -55,12 +55,12 @@ export async function BrainStorySection() {
             <p className="story-lead">{t("extractLead")}</p>
             <p className="story-lead muted">{t("extractMuted")}</p>
             <div className="btn-row" style={{ marginTop: "0.75rem" }}>
-              <Link className="btn secondary" href="/learn/07-extract-from-website">
+              <SiteButton href="/learn/07-extract-from-website" variant="secondary">
                 {t("extractGuide")}
-              </Link>
-              <Link className="btn secondary" href="/company-brain">
+              </SiteButton>
+              <SiteButton href="/company-brain" variant="secondary">
                 {t("knowledge")}
-              </Link>
+              </SiteButton>
             </div>
           </div>
           <div className="audit-visual">

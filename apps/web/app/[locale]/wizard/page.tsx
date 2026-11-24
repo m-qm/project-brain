@@ -21,7 +21,10 @@ import {
   CLI_LLM_GAP_HINT,
   wizardHostedLlmEnabled,
 } from "@/lib/wizard-llm-ui";
-import { Link } from "@/i18n/navigation";
+import { Checkbox, CheckboxIndicator } from "@ui-sdk/react/checkbox";
+import { Field, FieldLabel } from "@ui-sdk/react/field";
+import { SiteButton } from "../../components/ui/site-button";
+import { SiteInput, SiteTextarea } from "../../components/ui/site-text-control";
 import {
   defaultWizardState,
   loadWizardHostedProfileId,
@@ -214,25 +217,27 @@ export default function WizardPage() {
 
         {step === 0 && (
           <div className="card">
-            <label htmlFor="site">{t("siteLabel")}</label>
-            <input
-              id="site"
-              type="text"
-              inputMode="url"
-              autoComplete="url"
-              value={siteUrl}
-              onChange={(e) => {
-                setSiteUrl(e.target.value);
-                saveWizardSiteUrl(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && extractReady && !extracting) {
-                  e.preventDefault();
-                  void runExtract();
-                }
-              }}
-              placeholder={t("sitePlaceholder")}
-            />
+            <Field>
+              <FieldLabel htmlFor="site">{t("siteLabel")}</FieldLabel>
+              <SiteInput
+                id="site"
+                type="text"
+                inputMode="url"
+                autoComplete="url"
+                value={siteUrl}
+                onValueChange={(value) => {
+                  setSiteUrl(value);
+                  saveWizardSiteUrl(value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && extractReady && !extracting) {
+                    e.preventDefault();
+                    void runExtract();
+                  }
+                }}
+                placeholder={t("sitePlaceholder")}
+              />
+            </Field>
             <p className="field-hint">
               {extractReady ? t("ready") : t("needUrl")}
             </p>
@@ -246,12 +251,13 @@ export default function WizardPage() {
                       : ""
                   }`}
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     className="extract-mode-input"
                     checked={extractMode === "multipage" || extractMode === "deep"}
-                    onChange={(e) => setExtractMode(e.target.checked ? "multipage" : "single")}
-                  />
+                    onCheckedChange={(checked) => setExtractMode(checked === true ? "multipage" : "single")}
+                  >
+                    <CheckboxIndicator />
+                  </Checkbox>
                   <span className="extract-mode-control" aria-hidden />
                   <span className="extract-mode-copy">
                     <span className="extract-mode-title">{t("scanTitle")}</span>
@@ -264,13 +270,14 @@ export default function WizardPage() {
                       extractMode === "deep" ? " extract-mode-option--on" : ""
                     }${extractMode === "single" ? " extract-mode-option--disabled" : ""}`}
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       className="extract-mode-input"
                       checked={extractMode === "deep"}
-                      onChange={(e) => setExtractMode(e.target.checked ? "deep" : "multipage")}
+                      onCheckedChange={(checked) => setExtractMode(checked === true ? "deep" : "multipage")}
                       disabled={extractMode === "single"}
-                    />
+                    >
+                      <CheckboxIndicator />
+                    </Checkbox>
                     <span className="extract-mode-control" aria-hidden />
                     <span className="extract-mode-copy">
                       <span className="extract-mode-title">{t("deepTitle")}</span>
@@ -289,16 +296,15 @@ export default function WizardPage() {
               </div>
             </fieldset>
             <div className="btn-row" style={{ marginTop: 0 }}>
-              <button
+              <SiteButton
                 type="button"
-                className="btn"
+                variant="primary"
                 onClick={runExtract}
                 disabled={extracting || !extractReady}
-                aria-disabled={extracting || !extractReady}
                 title={extractReady ? undefined : t("needUrlFirst")}
               >
                 {extracting ? t("extracting") : t("extract")}
-              </button>
+              </SiteButton>
             </div>
             <ExtractScanLogPanel entries={extractScanLog} loading={extracting} />
             {extractNotes.length > 0 && (
@@ -308,24 +314,28 @@ export default function WizardPage() {
                 ))}
               </ul>
             )}
-            <label htmlFor="name">{t("projectName")}</label>
-            <input
-              id="name"
-              value={input.projectName}
-              onChange={(e) => update({ projectName: e.target.value })}
-              placeholder={t("projectPlaceholder")}
-            />
-            <label htmlFor="desc">{t("mission")}</label>
-            <textarea
-              id="desc"
-              value={input.projectDescription}
-              onChange={(e) => update({ projectDescription: e.target.value })}
-              placeholder={t("missionPlaceholder")}
-            />
+            <Field>
+              <FieldLabel htmlFor="name">{t("projectName")}</FieldLabel>
+              <SiteInput
+                id="name"
+                value={input.projectName}
+                onValueChange={(value) => update({ projectName: value })}
+                placeholder={t("projectPlaceholder")}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="desc">{t("mission")}</FieldLabel>
+              <SiteTextarea
+                id="desc"
+                value={input.projectDescription}
+                onValueChange={(value) => update({ projectDescription: value })}
+                placeholder={t("missionPlaceholder")}
+              />
+            </Field>
             <div className="btn-row">
-              <button type="button" className="btn" onClick={next}>
+              <SiteButton type="button" variant="primary" onClick={next}>
                 {t("continue")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}
@@ -336,68 +346,76 @@ export default function WizardPage() {
               {t("factsLead")}
             </p>
             {input.factBullets.map((fact, i) => (
-              <input
+              <SiteInput
                 key={`fact-${i}`}
                 value={fact}
-                onChange={(e) => {
+                onValueChange={(value) => {
                   const factBullets = [...input.factBullets];
-                  factBullets[i] = e.target.value;
+                  factBullets[i] = value;
                   update({ factBullets });
                 }}
                 placeholder={t("factPlaceholder", { n: i + 1 })}
               />
             ))}
-            <button
+            <SiteButton
               type="button"
-              className="btn secondary"
+              variant="secondary"
               onClick={() => update({ factBullets: [...input.factBullets, ""] })}
             >
               {t("addFact")}
-            </button>
+            </SiteButton>
             <div className="btn-row">
-              <button type="button" className="btn secondary" onClick={back}>
+              <SiteButton type="button" variant="secondary" onClick={back}>
                 {t("back")}
-              </button>
-              <button type="button" className="btn" onClick={next}>
+              </SiteButton>
+              <SiteButton type="button" variant="primary" onClick={next}>
                 {t("continue")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}
 
         {step === 2 && (
           <div className="card">
-            <label htmlFor="stitle">{t("storyTitle")}</label>
-            <input
-              id="stitle"
-              value={input.storyTitle}
-              onChange={(e) => update({ storyTitle: e.target.value })}
-            />
-            <label htmlFor="sprob">{t("problem")}</label>
-            <textarea
-              id="sprob"
-              value={input.storyProblem}
-              onChange={(e) => update({ storyProblem: e.target.value })}
-            />
-            <label htmlFor="sbuilt">{t("built")}</label>
-            <textarea
-              id="sbuilt"
-              value={input.storyBuilt}
-              onChange={(e) => update({ storyBuilt: e.target.value })}
-            />
-            <label htmlFor="sproof">{t("proof")}</label>
-            <textarea
-              id="sproof"
-              value={input.storyProof}
-              onChange={(e) => update({ storyProof: e.target.value })}
-            />
+            <Field>
+              <FieldLabel htmlFor="stitle">{t("storyTitle")}</FieldLabel>
+              <SiteInput
+                id="stitle"
+                value={input.storyTitle}
+                onValueChange={(value) => update({ storyTitle: value })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="sprob">{t("problem")}</FieldLabel>
+              <SiteTextarea
+                id="sprob"
+                value={input.storyProblem}
+                onValueChange={(value) => update({ storyProblem: value })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="sbuilt">{t("built")}</FieldLabel>
+              <SiteTextarea
+                id="sbuilt"
+                value={input.storyBuilt}
+                onValueChange={(value) => update({ storyBuilt: value })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="sproof">{t("proof")}</FieldLabel>
+              <SiteTextarea
+                id="sproof"
+                value={input.storyProof}
+                onValueChange={(value) => update({ storyProof: value })}
+              />
+            </Field>
             <div className="btn-row">
-              <button type="button" className="btn secondary" onClick={back}>
+              <SiteButton type="button" variant="secondary" onClick={back}>
                 {t("back")}
-              </button>
-              <button type="button" className="btn" onClick={next}>
+              </SiteButton>
+              <SiteButton type="button" variant="primary" onClick={next}>
                 {t("continue")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}
@@ -408,24 +426,24 @@ export default function WizardPage() {
               {t("gapsLead")}
             </p>
             {input.openQuestions.map((q, i) => (
-              <input
+              <SiteInput
                 key={`oq-${i}`}
                 value={q}
-                onChange={(e) => {
+                onValueChange={(value) => {
                   const openQuestions = [...input.openQuestions];
-                  openQuestions[i] = e.target.value;
+                  openQuestions[i] = value;
                   update({ openQuestions });
                 }}
                 placeholder={t("gapPlaceholder")}
               />
             ))}
-            <button
+            <SiteButton
               type="button"
-              className="btn secondary"
+              variant="secondary"
               onClick={() => update({ openQuestions: [...input.openQuestions, ""] })}
             >
               {t("addQuestion")}
-            </button>
+            </SiteButton>
             {!wizardHostedLlmEnabled && (
               <div className="extract-mode-callout" style={{ marginTop: "0.75rem" }}>
                 <p className="extract-mode-callout-title">{t("draftTitle")}</p>
@@ -434,15 +452,11 @@ export default function WizardPage() {
               </div>
             )}
             <div className="btn-row">
-              <button
+              <SiteButton
                 type="button"
-                className="btn secondary"
+                variant="secondary"
                 disabled={gapLoading || !wizardHostedLlmEnabled}
-                title={
-                  wizardHostedLlmEnabled
-                    ? undefined
-                    : t("gapDisabled")
-                }
+                title={wizardHostedLlmEnabled ? undefined : t("gapDisabled")}
                 onClick={async () => {
                   setGapLoading(true);
                   setGapNotes([]);
@@ -471,7 +485,7 @@ export default function WizardPage() {
                 }}
               >
                 {gapLoading ? t("suggesting") : t("suggest")}
-              </button>
+              </SiteButton>
             </div>
             {gapNotes.length > 0 && (
               <ul className="error" style={{ color: "var(--ink-2)", listStyle: "disc" }}>
@@ -487,9 +501,9 @@ export default function WizardPage() {
                     <strong>{s.question}</strong>
                     <p>{s.draftAnswer}</p>
                     <span className="field-hint">{t("source", { source: s.source })}</span>
-                    <button
+                    <SiteButton
                       type="button"
-                      className="btn ghost"
+                      variant="ghost"
                       onClick={() => {
                         const openQuestions = [...input.openQuestions];
                         const idx = openQuestions.findIndex(
@@ -502,18 +516,18 @@ export default function WizardPage() {
                       }}
                     >
                       {t("apply")}
-                    </button>
+                    </SiteButton>
                   </li>
                 ))}
               </ul>
             )}
             <div className="btn-row">
-              <button type="button" className="btn secondary" onClick={back}>
+              <SiteButton type="button" variant="secondary" onClick={back}>
                 {t("back")}
-              </button>
-              <button type="button" className="btn" onClick={next}>
+              </SiteButton>
+              <SiteButton type="button" variant="primary" onClick={next}>
                 {t("continue")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}
@@ -534,12 +548,12 @@ export default function WizardPage() {
             <h2>brain/AGENTS.md</h2>
             <pre className="preview">{agentsPreview}</pre>
             <div className="btn-row">
-              <button type="button" className="btn secondary" onClick={back}>
+              <SiteButton type="button" variant="secondary" onClick={back}>
                 {t("back")}
-              </button>
-              <button type="button" className="btn" onClick={next} disabled={!validation.ok}>
+              </SiteButton>
+              <SiteButton type="button" variant="primary" onClick={next} disabled={!validation.ok}>
                 {t("continueExport")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}
@@ -556,71 +570,63 @@ export default function WizardPage() {
                 ))}
               </ul>
             )}
-            <button
+            <SiteButton
               type="button"
-              className="btn"
+              variant="primary"
               onClick={runExport}
               disabled={exporting || !validation.ok}
             >
               {exporting
                 ? t("building")
                 : t("download", { name: slugify(input.projectName || "project") })}
-            </button>
+            </SiteButton>
             <p className="field-hint" style={{ marginTop: "1rem" }}>
               {t("exportAlso")}
             </p>
-            <button
+            <SiteButton
               type="button"
-              className="btn secondary"
+              variant="secondary"
               onClick={runSaveHosted}
               disabled={hosting || !validation.ok}
             >
               {hosting ? t("hosting") : t("saveOnline")}
-            </button>
+            </SiteButton>
             {hostedProfileId && (
               <div className="hosted-card">
                 <p className="field-hint">{t("sheetId")}</p>
                 <code className="hosted-id">{hostedProfileId}</code>
                 <div className="btn-row" style={{ marginTop: "0.75rem" }}>
-                  <button
+                  <SiteButton
                     type="button"
-                    className="btn ghost"
+                    variant="ghost"
                     onClick={() => navigator.clipboard.writeText(hostedProfileId)}
                   >
                     {t("copyId")}
-                  </button>
-                  <Link className="btn ghost" href={`/check?id=${encodeURIComponent(hostedProfileId)}`}>
+                  </SiteButton>
+                  <SiteButton variant="ghost" href={`/check?id=${encodeURIComponent(hostedProfileId)}`}>
                     {t("openCheck")}
-                  </Link>
+                  </SiteButton>
                 </div>
                 <p className="field-hint">{t("checkHint")}</p>
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={() => navigator.clipboard.writeText(claudeSnippet)}
-                >
+                <SiteButton type="button" variant="ghost" onClick={() => navigator.clipboard.writeText(claudeSnippet)}>
                   {t("copyClaude")}
-                </button>
+                </SiteButton>
                 <pre className="preview hosted-snippet">{claudeSnippet}</pre>
               </div>
             )}
             {brief && (
               <>
                 <h2 style={{ marginTop: "1.5rem" }}>{t("brief")}</h2>
-                <button
-                  type="button"
-                  className="btn secondary"
-                  onClick={() => navigator.clipboard.writeText(brief)}
-                >
+                <SiteButton type="button" variant="secondary" onClick={() => navigator.clipboard.writeText(brief)}>
                   {t("copy")}
-                </button>
+                </SiteButton>
                 <pre className="preview">{brief}</pre>
               </>
             )}
             <div className="btn-row">
-              <button type="button" className="btn secondary" onClick={back}>
+              <SiteButton type="button" variant="secondary" onClick={back}>
                 {t("back")}
-              </button>
+              </SiteButton>
             </div>
           </div>
         )}

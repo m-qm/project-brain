@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Progress, ProgressIndicator, ProgressTrack } from "@ui-sdk/react/progress";
+import { SiteButton } from "./ui/site-button";
 
 type WizardStepperProps = {
   steps: readonly string[];
@@ -22,14 +24,15 @@ export function WizardStepper({ steps, current, onStepChange }: WizardStepperPro
         <span className="wizard-stepper-current">{steps[current]}</span>
       </div>
 
-      <div className="wizard-progress-track" aria-hidden>
-        <div className="wizard-progress-fill" style={{ width: `${progress}%` }} />
-      </div>
+      <Progress value={progress} aria-hidden className="wizard-progress">
+        <ProgressTrack className="wizard-progress-track">
+          <ProgressIndicator className="wizard-progress-fill" />
+        </ProgressTrack>
+      </Progress>
 
       <ol className="wizard-stepper-list">
         {steps.map((label, i) => {
-          const state =
-            i < current ? "done" : i === current ? "active" : "upcoming";
+          const state = i < current ? "done" : i === current ? "active" : "upcoming";
           const canJump = onStepChange && i <= current;
 
           return (
@@ -39,8 +42,8 @@ export function WizardStepper({ steps, current, onStepChange }: WizardStepperPro
               aria-current={i === current ? "step" : undefined}
             >
               {canJump ? (
-                <button
-                  type="button"
+                <SiteButton
+                  variant="ghost"
                   className="wizard-step-button"
                   onClick={() => onStepChange(i)}
                   title={t("goTo", { label })}
@@ -62,7 +65,7 @@ export function WizardStepper({ steps, current, onStepChange }: WizardStepperPro
                     )}
                   </span>
                   <span className="wizard-step-label">{label}</span>
-                </button>
+                </SiteButton>
               ) : (
                 <span className="wizard-step-static">
                   <span className="wizard-step-marker">{i + 1}</span>

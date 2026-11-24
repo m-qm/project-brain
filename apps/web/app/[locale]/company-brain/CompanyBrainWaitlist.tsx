@@ -3,6 +3,9 @@
 import { track } from "@vercel/analytics";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { Field, FieldLabel } from "@ui-sdk/react/field";
+import { Input } from "@ui-sdk/react/input";
+import { SiteButton } from "../../components/ui/site-button";
 
 const SETUP_CALL_URL =
   process.env.NEXT_PUBLIC_SETUP_CALL_URL?.trim() || "mailto:hello@agentkbase.com?subject=Company%20Brain%20setup";
@@ -58,37 +61,38 @@ export function CompanyBrainWaitlist({ source }: Props) {
   return (
     <div className="company-brain-cta">
       <form className="company-brain-form" onSubmit={onSubmit}>
-        <label htmlFor="waitlist-email" className="company-brain-form-label">
-          {t("label")}
-        </label>
-        <div className="company-brain-form-row">
-          <input
-            id="waitlist-email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder={t("placeholder")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={status === "loading"}
-          />
-          <button type="submit" className="btn" disabled={status === "loading"}>
-            {status === "loading" ? t("sending") : t("join")}
-          </button>
-        </div>
-        {message && (
-          <p className={`company-brain-form-msg${status === "error" ? " company-brain-form-msg--error" : ""}`}>
-            {message}
-          </p>
-        )}
+        <Field>
+          <FieldLabel htmlFor="waitlist-email">{t("label")}</FieldLabel>
+          <div className="company-brain-form-row">
+            <Input
+              id="waitlist-email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder={t("placeholder")}
+              value={email}
+              onValueChange={setEmail}
+              disabled={status === "loading"}
+            />
+            <SiteButton type="submit" variant="primary" disabled={status === "loading"}>
+              {status === "loading" ? t("sending") : t("join")}
+            </SiteButton>
+          </div>
+          {message ? (
+            <p className={`company-brain-form-msg${status === "error" ? " company-brain-form-msg--error" : ""}`}>
+              {message}
+            </p>
+          ) : null}
+        </Field>
       </form>
-      <a
-        className="btn secondary company-brain-setup-call"
+      <SiteButton
+        variant="secondary"
+        className="company-brain-setup-call"
         href={SETUP_CALL_URL}
         onClick={() => track("company_brain_setup_call", { source })}
       >
         {t("book")}
-      </a>
+      </SiteButton>
     </div>
   );
 }

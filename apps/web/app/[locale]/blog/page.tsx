@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../../components/SiteNav";
+import { SiteButton } from "../../components/ui/site-button";
 import { BLOG_POSTS, blogText } from "./blog-docs";
 
 export async function generateMetadata({
@@ -31,9 +32,9 @@ export default async function BlogIndexPage() {
           <h1 className="learn-title">{t("title")}</h1>
           <p className="learn-lead">{t("lead")}</p>
           <div className="learn-hero-actions">
-            <a className="btn" href={mailto}>
+            <SiteButton href={mailto} variant="primary">
               {t("write")}
-            </a>
+            </SiteButton>
           </div>
         </div>
       </header>
