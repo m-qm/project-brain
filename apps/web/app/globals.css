@@ -326,6 +326,79 @@ a.nav-menu-cta {
   max-width: 40rem;
 }
 
+.get-started {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: min(28rem, 100%);
+  margin: 1.5rem auto 0;
+}
+
+.get-started-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.6rem;
+}
+
+.get-started-lead {
+  margin: 0 0 1.75rem;
+  color: var(--ink-2);
+  font-size: 1.05rem;
+}
+
+.get-started-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.75rem;
+}
+
+.get-started-tab {
+  padding: 0.65rem 0.4rem 0.8rem;
+  color: var(--ink-2);
+  font-size: 1rem;
+}
+
+.get-started-tab.is-selected {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.get-started-qr {
+  background: #fff;
+  border-radius: 18px;
+  padding: 0.85rem;
+  box-shadow: 0 10px 30px rgba(40, 30, 20, 0.06);
+  line-height: 0;
+}
+
+.get-started-qr svg {
+  width: 196px;
+  height: 196px;
+}
+
+.get-started-hint {
+  margin: 1.6rem 0 0.9rem;
+  color: var(--ink-2);
+  font-size: 0.98rem;
+}
+
+.get-started-link {
+  display: block;
+  width: 100%;
+  padding: 0.95rem 1.2rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
 .wa-start {
   display: flex;
   flex-direction: column;
