@@ -1,12 +1,11 @@
 import QRCode from "qrcode";
 import { getLocale, getTranslations } from "next-intl/server";
-import { businessWhatsAppNumber, whatsAppChatUrl } from "@/lib/whatsapp-onboarding";
+import { telegramChatUrl } from "@/lib/telegram-onboarding";
 
 export async function GetStarted() {
   const t = await getTranslations("home");
   const locale = await getLocale();
-  const chatUrl = whatsAppChatUrl(locale);
-  const label = `wa.me/${businessWhatsAppNumber()}`;
+  const chatUrl = telegramChatUrl(locale);
   const svg = await QRCode.toString(chatUrl, {
     type: "svg",
     margin: 1,
@@ -22,17 +21,17 @@ export async function GetStarted() {
         <span className="get-started-tab" role="tab" aria-selected="false">
           {t("channelMessage")}
         </span>
-        <span className="get-started-tab is-selected" role="tab" aria-selected="true">
+        <span className="get-started-tab" role="tab" aria-selected="false">
           {t("channelWhatsapp")}
         </span>
-        <span className="get-started-tab" role="tab" aria-selected="false">
+        <span className="get-started-tab is-selected" role="tab" aria-selected="true">
           {t("channelTelegram")}
         </span>
       </div>
       <div className="get-started-qr" dangerouslySetInnerHTML={{ __html: svg }} />
       <p className="get-started-hint">{t("startHint")}</p>
       <a className="get-started-link" href={chatUrl}>
-        {label}
+        {t("openTelegram")}
       </a>
     </div>
   );

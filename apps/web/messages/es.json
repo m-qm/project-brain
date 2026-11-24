@@ -33,8 +33,8 @@
     "home": "Inicio"
   },
   "meta": {
-    "homeTitle": "Agent KBase · Escríbele por WhatsApp",
-    "homeDescription": "Un asistente de empresa al que escribes por WhatsApp. Mandas tu web. Redacta desde esa web. Tú das el sí antes de publicar.",
+    "homeTitle": "Agent KBase · Escríbele por Telegram",
+    "homeDescription": "Un asistente de empresa al que escribes por Telegram. Mandas tu web. Redacta desde esa web. Tú das el sí antes de publicar.",
     "companyTitle": "Notas, artículo y post · Agent KBase",
     "companyDescription": "Montamos las notas de tu negocio y los borradores del artículo y de LinkedIn. Tú das el sí. El precio del montaje se cotiza.",
     "learnTitle": "Guías · Agent KBase",
@@ -51,7 +51,7 @@
   },
   "home": {
     "badge": "",
-    "title": "Agent KBase es un asistente de empresa al que escribes por WhatsApp.",
+    "title": "Agent KBase es un asistente de empresa al que escribes por Telegram.",
     "interface": "No hay app. Mandas tu web. Escribe a partir de esa web.",
     "examples": "Puede redactar un post de LinkedIn, frenar un precio que no cobras, o esperar a que digas sí.",
     "textCta": "Escribe a Agent KBase",
@@ -62,6 +62,7 @@
     "channelWhatsapp": "WhatsApp",
     "channelTelegram": "Telegram",
     "startHint": "Escanea con la cámara del móvil o abre el enlace. El chat hace las preguntas. Te contactamos ahí.",
+    "openTelegram": "Abrir Telegram",
     "ctaSite": "O pega tu web en el navegador",
     "forDevelopers": "Desarrolladores",
     "titleLegacy": "La capa de conocimiento <em>que lee cada agente.</em>",

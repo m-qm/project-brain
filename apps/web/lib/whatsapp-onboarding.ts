@@ -50,12 +50,15 @@ const QUESTIONS: Record<"en" | "es", string[]> = {
   ],
 };
 
+export type OnboardingChannel = "whatsapp" | "telegram";
+
 export type OnboardingSession = {
   from: string;
   locale: "en" | "es";
   step: number;
   answers: Partial<Record<AnswerKey, string>>;
   done: boolean;
+  channel?: OnboardingChannel;
 };
 
 export type OnboardingTurn = {
@@ -69,25 +72,39 @@ function detectLocale(text: string): "en" | "es" {
 }
 
 function isOpener(text: string): boolean {
-  return /^(hi|hello|hey|hola|buenas|start|empezar)\b/i.test(text.trim()) || /this chat is the setup|este chat es el alta/i.test(text);
+  return (
+    /^(hi|hello|hey|hola|buenas|start|empezar|\/start)\b/i.test(text.trim()) ||
+    /this chat is the setup|este chat es el alta/i.test(text)
+  );
 }
 
-function thanks(locale: "en" | "es"): string {
+function thanks(locale: "en" | "es", channel: OnboardingChannel = "whatsapp"): string {
+  if (channel === "telegram") {
+    return locale === "es"
+      ? "Gracias. Ya tenemos tus respuestas y este chat de Telegram. Te contactamos por aquí."
+      : "Thanks. We have your answers and this Telegram chat. We will contact you here.";
+  }
   return locale === "es"
     ? "Gracias. Ya tenemos tus respuestas y este WhatsApp. Te contactamos por aquí."
     : "Thanks. We have your answers and this WhatsApp. We will contact you here.";
 }
 
 /** One question at a time. The first hello does not count as an answer. */
-export function nextOnboarding(session: OnboardingSession | null, text: string, from: string): OnboardingTurn {
+export function nextOnboarding(
+  session: OnboardingSession | null,
+  text: string,
+  from: string,
+  options?: { channel?: OnboardingChannel; localeHint?: "en" | "es" },
+): OnboardingTurn {
   const trimmed = text.trim();
+  const channel = options?.channel ?? session?.channel ?? "whatsapp";
   if (session?.done) {
-    return { session, reply: thanks(session.locale), finished: false };
+    return { session, reply: thanks(session.locale, session.channel ?? channel), finished: false };
   }
 
   if (!session || (session.step === 0 && Object.keys(session.answers).length === 0 && isOpener(trimmed))) {
-    const locale = session?.locale ?? detectLocale(trimmed);
-    const fresh: OnboardingSession = { from, locale, step: 0, answers: {}, done: false };
+    const locale = options?.localeHint ?? session?.locale ?? detectLocale(trimmed);
+    const fresh: OnboardingSession = { from, locale, step: 0, answers: {}, done: false, channel };
     return { session: fresh, reply: QUESTIONS[locale][0], finished: false };
   }
 
@@ -104,8 +121,8 @@ export function nextOnboarding(session: OnboardingSession | null, text: string, 
   const answers = { ...current.answers, [key]: trimmed };
   const step = current.step + 1;
   if (step >= QUESTION_KEYS.length) {
-    const done: OnboardingSession = { ...current, answers, step, done: true };
-    return { session: done, reply: thanks(current.locale), finished: true };
+    const done: OnboardingSession = { ...current, answers, step, done: true, channel: current.channel ?? channel };
+    return { session: done, reply: thanks(current.locale, done.channel), finished: true };
   }
   return {
     session: { ...current, answers, step, done: false },
@@ -136,14 +153,20 @@ export function inboundText(body: unknown): { from: string; text: string } | nul
   return { from, text };
 }
 
-function sessionFile(): string {
-  const dir = process.env.WHATSAPP_ONBOARDING_DIR || "/tmp/agentkbase-whatsapp";
+function sessionFile(channel: OnboardingChannel = "whatsapp"): string {
+  const dir =
+    channel === "telegram"
+      ? process.env.TELEGRAM_ONBOARDING_DIR || "/tmp/agentkbase-telegram"
+      : process.env.WHATSAPP_ONBOARDING_DIR || "/tmp/agentkbase-whatsapp";
   return path.join(dir, "sessions.json");
 }
 
-export async function readOnboardingSession(from: string): Promise<OnboardingSession | null> {
+export async function readOnboardingSession(
+  from: string,
+  channel: OnboardingChannel = "whatsapp",
+): Promise<OnboardingSession | null> {
   try {
-    const raw = await readFile(sessionFile(), "utf8");
+    const raw = await readFile(sessionFile(channel), "utf8");
     const all = JSON.parse(raw) as Record<string, OnboardingSession>;
     return all[from] ?? null;
   } catch {
@@ -152,7 +175,7 @@ export async function readOnboardingSession(from: string): Promise<OnboardingSes
 }
 
 export async function writeOnboardingSession(session: OnboardingSession): Promise<void> {
-  const file = sessionFile();
+  const file = sessionFile(session.channel ?? "whatsapp");
   await mkdir(path.dirname(file), { recursive: true });
   let all: Record<string, OnboardingSession> = {};
   try {
@@ -164,15 +187,18 @@ export async function writeOnboardingSession(session: OnboardingSession): Promis
   await writeFile(file, JSON.stringify(all, null, 2));
 }
 
-/** Email the finished answers so a person can reply on WhatsApp. */
+/** Email the finished answers so a person can reply in the same chat. */
 export async function notifyOnboardingLead(session: OnboardingSession): Promise<void> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
   const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@agentkbase.com";
   const from = process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
+  const channel = session.channel ?? "whatsapp";
+  const channelName = channel === "telegram" ? "Telegram" : "WhatsApp";
+  const contact = channel === "telegram" ? `Telegram id: ${session.from}` : `WhatsApp: +${session.from}`;
   const lines = [
-    "WhatsApp onboarding finished",
+    `${channelName} onboarding finished`,
     "",
-    `WhatsApp: +${session.from}`,
+    contact,
     `Name: ${session.answers.name ?? ""}`,
     `Website: ${session.answers.website ?? ""}`,
     `Sells: ${session.answers.offer ?? ""}`,
@@ -189,7 +215,7 @@ export async function notifyOnboardingLead(session: OnboardingSession): Promise<
     body: JSON.stringify({
       from,
       to: [notifyTo],
-      subject: `WhatsApp lead: ${session.answers.name ?? session.from}`,
+      subject: `${channelName} lead: ${session.answers.name ?? session.from}`,
       text: lines.join("\n"),
       ...(session.answers.email ? { reply_to: session.answers.email } : {}),
     }),

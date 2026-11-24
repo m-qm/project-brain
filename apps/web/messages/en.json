@@ -33,8 +33,8 @@
     "home": "Home"
   },
   "meta": {
-    "homeTitle": "Agent KBase · Text it on WhatsApp",
-    "homeDescription": "A company assistant you text on WhatsApp. Send your website. It drafts from that site. You say yes before anything goes live.",
+    "homeTitle": "Agent KBase · Text it on Telegram",
+    "homeDescription": "A company assistant you text on Telegram. Send your website. It drafts from that site. You say yes before anything goes live.",
     "companyTitle": "Notes, article, and post · Agent KBase",
     "companyDescription": "We set up your business notes and the drafts for the article and LinkedIn. You say yes. Setup is quoted.",
     "learnTitle": "Guides · Agent KBase",
@@ -51,7 +51,7 @@
   },
   "home": {
     "badge": "",
-    "title": "Agent KBase is a company assistant you text on WhatsApp.",
+    "title": "Agent KBase is a company assistant you text on Telegram.",
     "interface": "There is no app. Send your website. It writes from that site.",
     "examples": "It can draft a LinkedIn post, stop a price you do not charge, or wait until you say yes.",
     "textCta": "Text Agent KBase",
@@ -62,6 +62,7 @@
     "channelWhatsapp": "WhatsApp",
     "channelTelegram": "Telegram",
     "startHint": "Scan with your phone's camera or visit the link. The chat asks the questions. We contact you there.",
+    "openTelegram": "Open Telegram",
     "ctaSite": "Paste your site in the browser instead",
     "forDevelopers": "Developers",
     "titleLegacy": "The knowledge layer <em>every agent reads.</em>",

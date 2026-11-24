@@ -14,7 +14,7 @@ We do not sync the whole company — we make sure what you publish about **what 
 
 ## Owner-facing surface (minimal)
 
-One Instinct-style paragraph on the home page: company assistant on **WhatsApp**, no new interfaces, concrete jobs (prices you may claim, LinkedIn draft, catch invented prices, client answer, draft for your yes). MCP and git stay under **For developers**. Project copy spec: store `docs/positioning-minimal-whatsapp.md`.
+One Instinct-style paragraph on the home page: company assistant on **Telegram** first (WhatsApp later), no new interfaces, concrete jobs (LinkedIn draft, stop a price you do not charge, wait for your yes). MCP and git stay under **For developers**. Project copy spec: store `docs/positioning-minimal-whatsapp.md`.
 
 ## How we know it works
 
