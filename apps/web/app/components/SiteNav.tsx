@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { Button } from "@ui-sdk/react/button";
 import {
   SegmentedControl,
   SegmentedControlIndicator,
   SegmentedControlItem,
 } from "@ui-sdk/react/segmented-control";
+import { HeaderMenuToggle } from "./HeaderMenuToggle";
 import { SiteButton } from "./ui/site-button";
 
 const LINK_DEFS = [
@@ -65,15 +65,13 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
           <img src="/brand-mark.svg" alt="" className="brand-mark" width={28} height={28} />
           Agent KBase
         </Link>
-        <Button
-          type="button"
-          className="nav-toggle"
-          aria-expanded={open}
-          aria-controls="site-nav"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? t("close") : t("menu")}
-        </Button>
+        <HeaderMenuToggle
+          open={open}
+          onToggle={() => setOpen((value) => !value)}
+          menuLabel={t("menu")}
+          closeLabel={t("close")}
+          controlsId="site-nav"
+        />
         <nav id="site-nav" className={`nav-links${open ? " is-open" : ""}`} aria-label={t("primary")}>
           <LocaleSwitch />
           {LINK_DEFS.map((item) => (
