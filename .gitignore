@@ -18,9 +18,14 @@ docs-local/
 # Tutorials stay on agentkbase.com/learn. This folder is a local editing copy.
 docs/
 
-# Offer, not the open core: configured brain, workers, prompts, review rules.
-# Files stay on disk. They are not part of the public repo.
-examples/content-ads-brain/
+# Offer, not the open core: operator brain state stays local; worker prompts are versioned.
+examples/content-ads-brain/**
+!examples/content-ads-brain/README.md
+!examples/content-ads-brain/brain/
+!examples/content-ads-brain/brain/agents/
+!examples/content-ads-brain/brain/agents/**
+!examples/content-ads-brain/brain/content/
+!examples/content-ads-brain/brain/content/article-slate.md
 scripts/company-brain-skeleton.mjs
 
 # Local agent state. .agents holds a SkillTree token.
@@ -29,3 +34,4 @@ scripts/company-brain-skeleton.mjs
 .codex/
 .engram/
 .env*
+!apps/web/.env.example

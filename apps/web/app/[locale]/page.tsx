@@ -59,43 +59,29 @@ export default async function HomePage() {
               <p className="hero-lead">{t("lead")}</p>
               <div className="hero-cta-row">
                 <Link className="btn" href="/wizard">
-                  {t("paste")}
+                  {t("ctaPrimary")}
                 </Link>
-                <a
-                  className="btn secondary"
-                  href="https://github.com/m-qm/project-brain"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("github")}
-                </a>
-                <a
-                  className="btn secondary"
-                  href="https://www.npmjs.com/package/@agentkbase/cli"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  npm
-                </a>
-              </div>
-              <div className="hero-install learn-code-block" aria-label={t("installLabel")}>
-                <div className="learn-code-label">{t("installLabel")}</div>
-                <pre className="learn-code">
-                  <code>npm install -g @agentkbase/cli</code>
-                </pre>
+                <Link className="btn secondary" href="/check">
+                  {t("ctaSecondary")}
+                </Link>
               </div>
               <p className="hero-meta">
-                {t("browsing")} <Link href="/learn/12-what-you-sell">{t("fiveSteps")}</Link>
+                {t("mcpHint")}{" "}
+                <Link href="/learn/14-claude-mcp">{t("mcpHintLink")}</Link>
               </p>
             </div>
           </div>
           <div className="perk-box">
             <ul>
-              <li>{t("perkCut")}</li>
-              <li>{t("perkYes")}</li>
-              <li>{t("perkAfter")}</li>
-              <li>{t("perkSame")}</li>
-              <li>{t("perkSkills")}</li>
+              <li>
+                <strong>{t("pillar1Title")}</strong> {t("pillar1Body")}
+              </li>
+              <li>
+                <strong>{t("pillar2Title")}</strong> {t("pillar2Body")}
+              </li>
+              <li>
+                <strong>{t("pillar3Title")}</strong> {t("pillar3Body")}
+              </li>
             </ul>
           </div>
         </div>

@@ -155,7 +155,7 @@ export async function applyTelegramUpdate(input: {
       decision: parsed.decision,
       now: input.now,
     });
-    const line = item.status === "approved" ? "Publicado." : "No se publica.";
+    const line = item.status === "approved" ? "Aprobado en cola (no publica solo)." : "No se publica.";
     await answer(line);
     if (messageId !== undefined) {
       await postJson(
