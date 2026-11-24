@@ -9,4 +9,5 @@ The agent must **not** guess answers here. Ask the human or mark `[CONFIRM]` in 
 * [CONFIRM] `@agentkbase/mcp` npm publish version aligned with CLI 0.1.2 (AK-8).
 * [CONFIRM] Remote MCP OAuth / Claude directory submit date.
 * [CONFIRM] **`MCP_API_KEY` in production:** who mints and rotates the bearer for agentkbase.com (Vercel env); clients get it out-of-band until OAuth ships.
-* [CONFIRM] **Remote `/mcp` rate limits (H-11c):** Vercel Firewall vs edge middleware vs per-key quota — not implemented in `route.ts`.
+* **H-11c edge (decided):** **A — Cloudflare** in front of agentkbase.com (rate limit + WAF on `POST /mcp`; keep app Bearer). [CONFIRM] CF account rules applied. Optional later: **C** `mcp.agentkbase.com` if MCP needs its own hostname.
+* [CONFIRM] **Remote MCP public directory:** semi-private until OAuth — do not market as “connect without operator key.”

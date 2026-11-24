@@ -9,12 +9,16 @@ Use Agent KBase from **Claude** (or any MCP client with Streamable HTTP) before 
 
 **Local dev:** `http://localhost:3000/mcp`
 
+## Who this is for
+
+**Owners without a terminal** should start on the [wizard](/wizard) and [check](/check). Remote MCP is **semi-private**: your operator gives you a bearer key; it is not a public open API. We rate-limit abuse at the edge (Cloudflare) plus app auth.
+
 ## Authentication (required)
 
 `POST /mcp` expects a shared secret. The server **fails closed**: if `MCP_API_KEY` is not set on the host, every request gets **401 Unauthorized**.
 
 1. **Server:** set `MCP_API_KEY` in Vercel (Production + Preview as needed) or in `apps/web/.env.local` for dev. See `apps/web/.env.example`.
-2. **Client:** send `Authorization: Bearer <MCP_API_KEY>` on every MCP HTTP request.
+2. **Client:** send `Authorization: Bearer <MCP_API_KEY>` on every MCP HTTP request. **Get the key from your operator** — we do not publish a shared catalog key.
 
 ### Claude Code
 

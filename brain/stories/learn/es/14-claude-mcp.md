@@ -9,12 +9,16 @@ Usa Agent KBase desde **Claude** (o cualquier cliente MCP con Streamable HTTP) a
 
 **Dev local:** `http://localhost:3000/mcp`
 
+## Para quién es
+
+Si no usas terminal, empieza en el [asistente](/wizard) y en [comprobar](/check). El MCP remoto es **semi-privado**: tu operador te da una llave bearer; no es una API pública abierta. Limitamos abuso en el borde (Cloudflare) y con auth en la app.
+
 ## Autenticación (obligatoria)
 
 `POST /mcp` exige un secreto compartido. El servidor **falla cerrado**: si `MCP_API_KEY` no está definida en el host, todas las peticiones reciben **401 Unauthorized**.
 
 1. **Servidor:** define `MCP_API_KEY` en Vercel (Producción y Preview si aplica) o en `apps/web/.env.local` en local. Plantilla: `apps/web/.env.example`.
-2. **Cliente:** envía `Authorization: Bearer <MCP_API_KEY>` en cada petición MCP HTTP.
+2. **Cliente:** envía `Authorization: Bearer <MCP_API_KEY>` en cada petición MCP HTTP. **Pide la llave a tu operador** — no hay clave pública de catálogo.
 
 ### Claude Code
 
