@@ -83,7 +83,7 @@ Each finding is tagged **`[código]`**, **`[configuración]`**, or **`[proceso]`
 | ID | Tag | Sev | Location | Description | Test | Mitigation |
 | --- | --- | --- | --- | --- | --- | --- |
 | H-01 | `[proceso]` | Medium | `.gitignore` (historical) | Worker prompts lived only on disk; audit drift from `.mdc`. | — | Version `brain/agents/**` (this PR). |
-| H-02 | `[código]` | **High** | `blog-search-gap.mdc:3` (before fix) | Glob included `apps/web/public/blog/**` → agent could edit production markdown; deploy = publish without queue. | **T03** | **Fixed:** removed live blog from globs; read-only instruction. |
+| H-02 | `[código]` | **High** (historical) | `blog-search-gap.mdc:3` | Historically glob included `apps/web/public/blog/**`. **Verificado 2025-11-24:** not confirmed in current tree; glob is examples-only; residual **process** risk (no CI hook on `public/blog` writes). | **T03** | Mitigated in tree; no code hook for live blog writes. |
 | H-03 | `[proceso]` | Medium | `article-agent.mdc:9` | “Queue as pending” is policy, not enforcement. | T01–T02 | Mandatory frontmatter `status: pending`; CI on `public/blog` changes. |
 | H-04 | `[código]` | Medium | `telegram-approval.ts:158` | UI string “Publicado.” after approve; queue does not publish. | **T05** | Rename copy to “Aprobado en cola”; doc link here. |
 | H-05 | `[código]` | Control | `queue.ts`, CLI | Approve/reject never calls external publish APIs. | **T05** | Keep Act connectors out of core. |
@@ -92,7 +92,9 @@ Each finding is tagged **`[código]`**, **`[configuración]`**, or **`[proceso]`
 | H-08 | `[código]` | Control | `eval-draft.ts` | Invented price fails against facts. | **T06** | Run `brain eval --all` before human copy. |
 | H-09 | `[código]` | Medium | `extract-with-llm.ts` | Untrusted HTML in LLM prompt (indirect injection). | T08 | Human validate extract; don’t merge to facts unattended. |
 | H-10 | `[configuración]` | High (if on) | `observe.ts` + `LANGFUSE_TRACE_CONTENT` | Brief/tool payloads may leave the host. | **T10** | Default off; redact in prod. |
-| H-11 | `[configuración]` | Medium | Remote `/mcp` | No auth in v0; scan + hosted profile. | — | OAuth + rate limits (open question). |
+| H-11 | `[código]` | Medium | `apps/web/app/mcp/route.ts` | Remote `POST /mcp` without auth; `scan_business_website` persists hosted profiles + fetches arbitrary URLs. | **T11** | **Mitigated:** `Authorization: Bearer <MCP_API_KEY>`; fail closed if unset. Tests: `apps/web/app/mcp/route.test.ts`. |
+| H-11b | `[código]` | Low | `remote-mcp-server.ts` | `scan_business_website` annotated `readOnly` while writing profiles. | — | **Mitigated:** `readOnlyHint: false`. |
+| H-11c | `[configuración]` | Medium | Remote `/mcp` | No rate limit on authenticated traffic (abuse / cost). | — | **Open:** needs Vercel Firewall, edge middleware, or external WAF (out of scope for route-only fix). |
 | H-12 | `[proceso]` | Medium | Deploy pipeline | Human merges `public/blog` → site live. | — | PR review; separate approver from drafter. |
 
 ---
@@ -113,8 +115,9 @@ Each finding is tagged **`[código]`**, **`[configuración]`**, or **`[proceso]`
 | **T08** | Extract | Hostile HTML in extract prompt | No unattended merge to facts | **Manual** / policy |
 | **T09** | Mastra | `review-loop.test.ts` without `approved` | `posted: false` | **Pass** |
 | **T10** | Langfuse | Prod with trace content on | Policy review | **N/A** in this VM |
+| **T11** | MCP auth | `node --experimental-strip-types --test apps/web/app/mcp/route.test.ts` | No Bearer → 401; valid Bearer passes gate | **Pass** 4/4 (after `pnpm run build:packages`) |
 
-Automated run summary: **34 tests passed** (core queue/telegram/eval, brain-files, MCP, mastra).
+Automated run summary: **38 tests passed** (core queue/telegram/eval, brain-files, MCP, mastra, web MCP auth).
 
 ---
 
@@ -124,7 +127,11 @@ Automated run summary: **34 tests passed** (core queue/telegram/eval, brain-file
 globs: examples/content-ads-brain/brain/content/article-slate.md,examples/content-ads-brain/brain/content/articles/**/*.md
 ```
 
-Live blog comparison is **read-only by instruction**, not by glob write scope.
+Live blog comparison is **read-only by instruction**, not by glob write scope. **Re-verification (H-02):** current line 3 does not include `apps/web/public/blog/**`; finding not reproduced; enforcement remains policy/operator, not repository hooks.
+
+## Remote MCP auth (H-11)
+
+Set `MCP_API_KEY` in the deployment environment (e.g. Vercel project env). Clients must send `Authorization: Bearer <MCP_API_KEY>`. Without the variable, `POST /mcp` returns **401** (fail closed).
 
 ---
 
