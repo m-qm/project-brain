@@ -17,9 +17,10 @@
   "footer": {
     "product": "open source",
     "legal": "Legal and trust",
-    "copyright": "Agent KBase project",
-    "privacy": "Privacy",
-    "terms": "Terms",
+    "copyrightLine": "Copyright © 2026 Agent KBase",
+    "blog": "Blog",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service",
     "trust": "Trust Center",
     "status": "Status",
     "sla": "SLA",

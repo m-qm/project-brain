@@ -17,9 +17,10 @@
   "footer": {
     "product": "código abierto",
     "legal": "Legal y confianza",
-    "copyright": "proyecto Agent KBase",
-    "privacy": "Privacidad",
-    "terms": "Términos",
+    "copyrightLine": "Copyright © 2026 Agent KBase",
+    "blog": "Blog",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfService": "Términos del servicio",
     "trust": "Centro de confianza",
     "status": "Estado",
     "sla": "SLA",
