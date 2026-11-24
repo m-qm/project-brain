@@ -1,12 +1,19 @@
-/** Public bot. Override with TELEGRAM_BOT_USERNAME if the handle changes. */
+/** Public bot. Override with TELEGRAM_BOT_NAME (or TELEGRAM_BOT_USERNAME). */
 const DEFAULT_BOT = "agentkbase_bot";
 
+function readBotName(): string {
+  const raw = (
+    process.env.TELEGRAM_BOT_NAME ??
+    process.env.TELEGRAM_BOT_USERNAME ??
+    process.env.NEXT_PUBLIC_TELEGRAM_BOT ??
+    ""
+  ).trim();
+  if (!raw || /\s/.test(raw)) return "";
+  return raw.replace(/^@/, "").replace(/[^A-Za-z0-9_]/g, "");
+}
+
 export function telegramBotUsername(): string {
-  const fromEnv = (process.env.NEXT_PUBLIC_TELEGRAM_BOT ?? process.env.TELEGRAM_BOT_USERNAME ?? "")
-    .trim()
-    .replace(/^@/, "")
-    .replace(/[^A-Za-z0-9_]/g, "");
-  return fromEnv || DEFAULT_BOT;
+  return readBotName() || DEFAULT_BOT;
 }
 
 /** Sentence already written in the message box. People send this, not a slash command. */
