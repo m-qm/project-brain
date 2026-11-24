@@ -54,7 +54,7 @@ export default async function LegalDocPage({
 
   return (
     <div className="page-shell">
-      <SiteNav ctaHref="/wizard" ctaLabel={t("cta")} />
+      <SiteNav />
       <main className="learn-doc-shell container-narrow">
         <nav className="learn-doc-nav" aria-label={t("breadcrumb")}>
           <Link href="/">{t("home")}</Link>

@@ -22,18 +22,14 @@ export function SiteFooter() {
       <div className="site-footer-inner">
         <p className="site-footer-product">
           <Link href="/">agentkbase.com</Link>
-          {" · "}
-          Agent KBase · {t("product")}
-          {" · "}
-          <a href="https://www.npmjs.com/package/@agentkbase/cli">npm</a>
-          {" · "}
-          <a href="https://github.com/m-qm/project-brain">GitHub</a>
         </p>
         <nav className="site-footer-legal" aria-label={t("legal")}>
           <span className="site-footer-copy">
             © {year} {t("copyright")}
           </span>
-          {FOOTER_LEGAL_LINKS.map((link) => {
+          {FOOTER_LEGAL_LINKS.filter(
+            (link) => link.href === "/legal/privacy" || link.href === "/legal/terms",
+          ).map((link) => {
             const key = LABEL_KEYS[link.href as keyof typeof LABEL_KEYS];
             const label = key ? t(key) : link.label;
             return link.external ? (

@@ -1,24 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-
-const LINK_DEFS = [
-  { href: "/learn", key: "learn" },
-  { href: "/blog", key: "blog" },
-  { href: "/check", key: "check" },
-  { href: "/company-brain", key: "knowledge" },
-  { href: "/wizard", key: "wizard" },
-] as const;
-
-type SiteNavProps = {
-  ctaHref?: string;
-  ctaLabel?: string;
-  hideCta?: boolean;
-  /** Home: brand and language only. */
-  hideLinks?: boolean;
-};
 
 function LocaleSwitch() {
   const t = useTranslations("nav");
@@ -38,32 +21,7 @@ function LocaleSwitch() {
   );
 }
 
-function CtaLink({ href, label, className }: { href: string; label: string; className: string }) {
-  if (href.startsWith("mailto:") || href.startsWith("http://") || href.startsWith("https://")) {
-    return (
-      <a className={className} href={href}>
-        {label}
-      </a>
-    );
-  }
-  return (
-    <Link className={className} href={href}>
-      {label}
-    </Link>
-  );
-}
-
-export function SiteNav({ ctaHref, ctaLabel, hideCta = false, hideLinks = false }: SiteNavProps) {
-  const t = useTranslations("nav");
-  const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const href = ctaHref ?? "/wizard";
-  const label = ctaLabel ?? t("tryWizard");
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
+export function SiteNav() {
   return (
     <header className="site-header">
       <div className="site-header-inner">
@@ -71,34 +29,8 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false, hideLinks = false 
           <img src="/brand-mark.svg" alt="" className="brand-mark" width={28} height={28} />
           Agent KBase
         </Link>
-        <button
-          type="button"
-          className="nav-toggle"
-          aria-expanded={open}
-          aria-controls="site-nav"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? t("close") : t("menu")}
-        </button>
-        <nav id="site-nav" className={`nav-links${open ? " is-open" : ""}`} aria-label={t("primary")}>
-          <LocaleSwitch />
-          {hideLinks
-            ? null
-            : LINK_DEFS.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  {t(item.key)}
-                </Link>
-              ))}
-          {hideLinks ? null : (
-            <a href="https://github.com/m-qm/project-brain" target="_blank" rel="noopener noreferrer">
-              {t("github")}
-            </a>
-          )}
-          {hideCta ? null : <CtaLink className="btn nav-menu-cta" href={href} label={label} />}
-        </nav>
         <div className="nav-actions">
           <LocaleSwitch />
-          {hideCta ? null : <CtaLink className="btn" href={href} label={label} />}
         </div>
       </div>
     </header>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
@@ -20,7 +19,7 @@ export default async function HomePage() {
 
   return (
     <div className="page-shell page-shell-minimal">
-      <SiteNav hideLinks hideCta />
+      <SiteNav />
       <section className="hero hero-minimal">
         <div className="hero-inner hero-inner-narrow">
           <h1 className="hero-title hero-title-plain">{t("title")}</h1>
@@ -28,9 +27,9 @@ export default async function HomePage() {
           <p className="hero-examples">{t("examples")}</p>
           <p className="hero-pricing-note">{t("pricingNote")}</p>
           <div className="hero-cta-row">
-            <Link className="btn" href="/company-brain">
+            <a className="btn" href="mailto:hello@agentkbase.com">
               {t("ctaPrimary")}
-            </Link>
+            </a>
           </div>
         </div>
       </section>
