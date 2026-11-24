@@ -211,6 +211,35 @@ async function siteSheet(url: string): Promise<string> {
   }
 }
 
+/** What the person sees when they send a public site. Only what the page says. */
+export function showcaseReply(locale: Locale, website: string, sheet: string, question: string): string {
+  const host = website.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  const says = sheet
+    .split("\n")
+    .filter((line) => /^(Name|Says|On the page):/i.test(line))
+    .map((line) => line.replace(/^(Name|Says|On the page):\s*/i, "").trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .slice(0, 320);
+  const next = question ? `\n\n${question}` : "";
+  if (!says) {
+    return locale === "es"
+      ? `No he podido leer ${host} desde aquí. Si es pública, mándala otra vez con https.${next}`
+      : `I couldn't read ${host} from here. If it is public, send it again with https.${next}`;
+  }
+  if (locale === "es") {
+    return `He leído ${host}.\n\nLa página dice: ${says}\n\nNo añadiría un precio, un cliente o un resultado que no esté en esa página.${next}`;
+  }
+  return `I read ${host}.\n\nThe page says: ${says}\n\nI would not add a price, a client, or a result that is not on that page.${next}`;
+}
+
+function mentionsSite(reply: string, website: string): boolean {
+  const host = website.replace(/^https?:\/\//i, "").replace(/^www\./i, "").split("/")[0].toLowerCase();
+  return Boolean(host && reply.toLowerCase().includes(host));
+}
+
 async function ensureSiteSheet(chat: TelegramChat): Promise<void> {
   const website = chat.answers.website;
   if (!website || chat.siteFor === website) return;
@@ -339,18 +368,35 @@ export async function replyToTelegramLead(
         ? "Te escribiré aquí. No tienes que hacer nada más."
         : "I'll write to you here. You don't need to do anything else.";
   } else {
+    const previousWebsite = current.answers.website ?? "";
     current.answers = fromText;
     await ensureSiteSheet(current);
+    const readSite = Boolean(current.answers.website && current.answers.website !== previousWebsite);
     const history = [
       ...current.messages,
       { role: "user" as const, text: `${knownBlock(current)}\n\nThey just wrote:\n${input.text}` },
     ];
     const raw = await complete(history).catch(() => null);
     const parsed = raw ? parseLeadJson(raw) : null;
-    if (parsed) {
+    const nextField = missing(parsed ? mergeLead(fromText, parsed.answers) : current.answers);
+    const question = nextField ? ask(locale, nextField) : "";
+    const shown =
+      readSite && current.answers.website
+        ? showcaseReply(locale, current.answers.website, current.siteSheet ?? "", question)
+        : "";
+    const modelShowsSite = Boolean(
+      parsed && current.answers.website && mentionsSite(parsed.reply, current.answers.website),
+    );
+    if (parsed && (!readSite || modelShowsSite)) {
       reply = parsed.reply;
       current.answers = mergeLead(fromText, parsed.answers);
       summary = parsed.summary || summary;
+    } else if (shown) {
+      reply = shown;
+      if (parsed) {
+        current.answers = mergeLead(fromText, parsed.answers);
+        summary = parsed.summary || summary;
+      }
     } else {
       const scripted = scriptLeadReply(locale, input.text, current.answers);
       current.answers = scripted.answers;
