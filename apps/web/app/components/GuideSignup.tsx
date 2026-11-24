@@ -2,8 +2,20 @@
 
 import { track } from "@vercel/analytics";
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useRef, useState } from "react";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@ui-sdk/react/dialog";
+import { Checkbox, CheckboxIndicator } from "@ui-sdk/react/checkbox";
+import { Field, FieldDescription, FieldLabel } from "@ui-sdk/react/field";
+import { Input } from "@ui-sdk/react/input";
 import { onboardingGuide, onboardingPdfPath } from "@/lib/onboarding-guide";
+import { Button } from "@ui-sdk/react/button";
+import { SiteButton } from "./ui/site-button";
 
 type Props = {
   source: string;
@@ -15,28 +27,23 @@ export function GuideSignup({ source, appearance = "card", label }: Props) {
   const t = useTranslations("guideSignup");
   const locale = useLocale();
   const guide = onboardingGuide(locale);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const titleId = useId();
-  const emailId = useId();
-  const tickId = useId();
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [mailingList, setMailingList] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
   const buttonLabel = label ?? t("open");
 
-  function open() {
+  function resetForm() {
     setEmail("");
     setMailingList(false);
     setStatus("idle");
     setMessage("");
-    dialogRef.current?.showModal();
-    emailRef.current?.focus();
   }
 
-  function close() {
-    dialogRef.current?.close();
+  function openDialog() {
+    resetForm();
+    setOpen(true);
   }
 
   async function onSubmit(event: React.FormEvent) {
@@ -65,81 +72,86 @@ export function GuideSignup({ source, appearance = "card", label }: Props) {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      close();
+      setOpen(false);
+      resetForm();
     } catch {
       setStatus("error");
       setMessage(t("network"));
     }
   }
 
+  const trigger =
+    appearance === "card" ? (
+      <Button type="button" className="guide-cta" onClick={openDialog}>
+        <span className="guide-cta-kicker">{t("kicker")}</span>
+        <span className="guide-cta-title">{buttonLabel}</span>
+        <span className="guide-cta-meta">{t("meta")}</span>
+      </Button>
+    ) : (
+      <SiteButton
+        variant={appearance === "secondary" ? "secondary" : "primary"}
+        onClick={openDialog}
+      >
+        {buttonLabel}
+      </SiteButton>
+    );
+
   return (
     <>
-      {appearance === "card" ? (
-        <button type="button" className="guide-cta" onClick={open}>
-          <span className="guide-cta-kicker">{t("kicker")}</span>
-          <span className="guide-cta-title">{buttonLabel}</span>
-          <span className="guide-cta-meta">{t("meta")}</span>
-        </button>
-      ) : (
-        <button
-          type="button"
-          className={appearance === "secondary" ? "btn secondary" : "btn"}
-          onClick={open}
-        >
-          {buttonLabel}
-        </button>
-      )}
-      <dialog
-        ref={dialogRef}
-        className="guide-dialog"
-        aria-labelledby={titleId}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) close();
-        }}
-      >
-        <form onSubmit={onSubmit}>
-          <h2 id={titleId}>{t.rich("ask", { em: (chunks) => <em>{chunks}</em> })}</h2>
-          <p className="guide-dialog-lead">{t("askLead")}</p>
-          <label htmlFor={emailId}>{t("email")}</label>
-          <input
-            ref={emailRef}
-            id={emailId}
-            type="email"
-            name="email"
-            autoComplete="email"
-            required
-            placeholder={t("placeholder")}
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            disabled={status === "loading"}
-          />
-          <label className="guide-signup-tick" htmlFor={tickId}>
-            <input
-              id={tickId}
-              type="checkbox"
-              name="mailingList"
-              checked={mailingList}
-              onChange={(event) => setMailingList(event.target.checked)}
-              disabled={status === "loading"}
-            />
-            <span>{t("tick")}</span>
-          </label>
-          {message ? (
-            <p className={`guide-signup-msg${status === "error" ? " is-error" : ""}`} role="status">
-              {message}
-            </p>
-          ) : null}
-          <div className="guide-dialog-actions">
-            <button type="submit" className="btn" disabled={status === "loading"}>
-              {status === "loading" ? t("sending") : t("submit")}
-            </button>
-            <button type="button" className="btn secondary" onClick={close} disabled={status === "loading"}>
-              {t("cancel")}
-            </button>
-          </div>
-          <p className="guide-signup-note">{t("note")}</p>
-        </form>
-      </dialog>
+      {trigger}
+      <Dialog open={open} onOpenChange={(next) => (next ? setOpen(true) : setOpen(false))}>
+        <DialogBackdrop />
+        <DialogContent className="guide-dialog">
+          <form onSubmit={onSubmit}>
+            <DialogTitle className="guide-dialog-title">
+              {t.rich("ask", { em: (chunks) => <em>{chunks}</em> })}
+            </DialogTitle>
+            <DialogDescription className="guide-dialog-lead">{t("askLead")}</DialogDescription>
+            <Field>
+              <FieldLabel>{t("email")}</FieldLabel>
+              <Input
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                placeholder={t("placeholder")}
+                value={email}
+                onValueChange={setEmail}
+                disabled={status === "loading"}
+              />
+            </Field>
+            <label className="guide-signup-tick">
+              <Checkbox
+                checked={mailingList}
+                onCheckedChange={(checked) => setMailingList(checked === true)}
+                disabled={status === "loading"}
+              >
+                <CheckboxIndicator />
+              </Checkbox>
+              <span>{t("tick")}</span>
+            </label>
+            {message ? (
+              <p className={`guide-signup-msg${status === "error" ? " is-error" : ""}`} role="status">
+                {message}
+              </p>
+            ) : null}
+            <div className="guide-dialog-actions">
+              <SiteButton type="submit" variant="primary" disabled={status === "loading"}>
+                {status === "loading" ? t("sending") : t("submit")}
+              </SiteButton>
+              <SiteButton
+                type="button"
+                variant="secondary"
+                disabled={status === "loading"}
+                onClick={() => setOpen(false)}
+              >
+                {t("cancel")}
+              </SiteButton>
+            </div>
+            <FieldDescription className="guide-signup-note">{t("note")}</FieldDescription>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

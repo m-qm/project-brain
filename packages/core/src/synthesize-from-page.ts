@@ -60,6 +60,8 @@ function extractConstraints(text: string): string[] {
     /sin entrar en[^.]+/gi,
     /no entramos en[^.]+/gi,
     /without access to[^.]+/gi,
+    /never log into[^.]+/gi,
+    /nunca entramos en[^.]+/gi,
   ];
   for (const p of patterns) {
     const m = text.match(p);
@@ -184,47 +186,10 @@ function missionLead(brand: string, signals: PageSignals): string {
   return `${brand} (confirm mission from the live site).`;
 }
 
+/** One sentence for AGENTS.md — process, sample, and privacy live in factBullets / openQuestions. */
 function buildMission(brand: string, signals: PageSignals): string {
-  const isEs = signals.lang === "es";
-  const privacyFromMeta =
-    signals.metaDescription?.match(/never log[^.]+/i)?.[0] ??
-    signals.metaDescription?.match(/no accedemos[^.]+/i)?.[0];
-  const privacyFromBody = paragraphMatching(
-    signals,
-    /do not log into|never log into|sin acceder|no entramos en cuentas/i,
-  );
-  const privacy = privacyFromMeta
-    ? firstSentence(privacyFromMeta)
-    : privacyFromBody
-      ? firstSentence(privacyFromBody)
-      : undefined;
-
-  const processHint = paragraphMatching(
-    signals,
-    /sample|muestra|hatchpad|first you see|primero ves/i,
-  );
-  const methodHint = paragraphMatching(
-    signals,
-    /classify spend|match each person|leemos la factura|read the period invoice/i,
-  );
-
-  let mission = missionLead(brand, signals);
-  const extras: string[] = [];
-  if (processHint) {
-    extras.push(firstSentence(processHint));
-  }
-  if (methodHint) {
-    extras.push(firstSentence(methodHint));
-  }
-  if (privacy) {
-    const p = privacy.replace(/\.$/, "");
-    extras.push(isEs ? p : p.replace(/^never/i, "We never"));
-  }
-  if (extras.length === 0) {
-    return mission.endsWith(".") ? mission : `${mission}.`;
-  }
-  mission = mission.replace(/\.$/, "");
-  return `${mission} (${extras.join("; ")}).`;
+  const mission = missionLead(brand, signals);
+  return mission.endsWith(".") ? mission : `${mission}.`;
 }
 
 export function scrubLegacyInvoiceMission(

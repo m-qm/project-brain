@@ -3,12 +3,16 @@
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { Field, FieldDescription, FieldLabel } from "@ui-sdk/react/field";
+import { Input } from "@ui-sdk/react/input";
+import { Textarea } from "@ui-sdk/react/textarea";
 import { Link } from "@/i18n/navigation";
 import { buildPublishCheckCard, type PublishCheckCard } from "@/lib/publish-check-card";
 import {
   loadWizardHostedProfileId,
   saveWizardHostedProfileId,
 } from "@/lib/wizard-state";
+import { SiteButton } from "./ui/site-button";
 
 export function PublishCheckForm() {
   const t = useTranslations("check");
@@ -77,45 +81,47 @@ export function PublishCheckForm() {
 
   return (
     <div className="card check-form">
-      <p className="field-hint">{t("profileHint")}</p>
-      <label htmlFor="check-profile">{t("profileLabel")}</label>
-      <input
-        id="check-profile"
-        type="text"
-        className="check-input"
-        value={profileId}
-        onChange={(e) => setProfileId(e.target.value)}
-        onBlur={onProfileBlur}
-        placeholder={t("profilePlaceholder")}
-        autoComplete="off"
-        spellCheck={false}
-      />
-      <p className="field-hint">
-        {t("noProfile")}{" "}
-        <Link href="/wizard">
-          {t("wizardLink")}
-        </Link>
-      </p>
+      <Field>
+        <FieldDescription className="field-hint">{t("profileHint")}</FieldDescription>
+        <FieldLabel htmlFor="check-profile">{t("profileLabel")}</FieldLabel>
+        <Input
+          id="check-profile"
+          className="check-input"
+          value={profileId}
+          onValueChange={setProfileId}
+          onBlur={onProfileBlur}
+          placeholder={t("profilePlaceholder")}
+          autoComplete="off"
+          spellCheck={false}
+        />
+        <FieldDescription className="field-hint">
+          {t("noProfile")}{" "}
+          <Link href="/wizard">{t("wizardLink")}</Link>
+        </FieldDescription>
+      </Field>
 
-      <label htmlFor="check-title">{t("titleLabel")}</label>
-      <input
-        id="check-title"
-        type="text"
-        className="check-input"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder={t("titlePlaceholder")}
-      />
+      <Field>
+        <FieldLabel htmlFor="check-title">{t("titleLabel")}</FieldLabel>
+        <Input
+          id="check-title"
+          className="check-input"
+          value={title}
+          onValueChange={setTitle}
+          placeholder={t("titlePlaceholder")}
+        />
+      </Field>
 
-      <label htmlFor="check-draft">{t("draftLabel")}</label>
-      <textarea
-        id="check-draft"
-        className="check-textarea"
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        placeholder={t("draftPlaceholder")}
-        rows={12}
-      />
+      <Field>
+        <FieldLabel htmlFor="check-draft">{t("draftLabel")}</FieldLabel>
+        <Textarea
+          id="check-draft"
+          className="check-textarea"
+          value={draft}
+          onValueChange={setDraft}
+          placeholder={t("draftPlaceholder")}
+          rows={12}
+        />
+      </Field>
 
       {error && (
         <ul className="error">
@@ -124,9 +130,9 @@ export function PublishCheckForm() {
       )}
 
       <div className="btn-row">
-        <button type="button" className="btn" onClick={runCheck} disabled={loading}>
+        <SiteButton variant="primary" onClick={runCheck} disabled={loading}>
           {loading ? t("checking") : t("run")}
-        </button>
+        </SiteButton>
       </div>
 
       {card && (

@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../../components/SiteNav";
+import { SiteButton } from "../../components/ui/site-button";
 
 export async function generateMetadata({
   params,
@@ -76,9 +77,9 @@ export default async function CompanyBrainPage() {
           </ul>
           <p className="field-hint">{t("price")}</p>
           <p className="field-hint">{t("connectors")}</p>
-          <a className="btn" href={mailto}>
+          <SiteButton href={mailto} variant="primary">
             {t("write")}
-          </a>
+          </SiteButton>
         </div>
       </main>
     </div>

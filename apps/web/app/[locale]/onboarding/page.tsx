@@ -5,6 +5,7 @@ import { isAppLocale } from "@/i18n/routing";
 import { onboardingGuide } from "@/lib/onboarding-guide";
 import { pageMeta } from "@/lib/site";
 import { GuideSignup } from "../../components/GuideSignup";
+import { SiteButton } from "../../components/ui/site-button";
 import { SiteNav } from "../../components/SiteNav";
 
 export async function generateMetadata({
@@ -39,9 +40,9 @@ export default async function OnboardingPage() {
           <p className="learn-lead">{guide.lead}</p>
           <div className="learn-hero-actions" id="guide">
             <GuideSignup source="onboarding" appearance="primary" label={t("download")} />
-            <Link className="btn secondary" href="/wizard">
+            <SiteButton href="/wizard" variant="secondary">
               {t("paste")}
-            </Link>
+            </SiteButton>
           </div>
         </div>
       </header>
