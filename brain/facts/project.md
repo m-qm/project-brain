@@ -6,6 +6,12 @@ Open-source **agent knowledge base**: curated business truth in git (`brain/`), 
 
 **Commercial layer (separate from open core):** done-for-you setup, draft review, publish workflow with human approval — quoted after a start call. Auto-publish connectors (WhatsApp, blog, LinkedIn Act) are waitlist / not shipped in OSS.
 
+## Current status
+
+* **Beta.** Onboarding the first customers.
+* The public Telegram chat can qualify a lead and describe a public page. It does not publish, post, or run the business yet.
+* Setup is quoted. There is no launch date.
+
 ## ICP
 
 Self-employed or small company with a **public website** and **no marketing team** (shop, studio, consultancy).

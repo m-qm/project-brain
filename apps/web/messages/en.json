@@ -34,7 +34,7 @@
   },
   "meta": {
     "homeTitle": "Agent KBase · Text it on Telegram",
-    "homeDescription": "A company assistant you text on Telegram. Send your website. It drafts from that site. You say yes before anything goes live.",
+    "homeDescription": "A company assistant you text on Telegram. We're in beta, onboarding our first customers. Setup is quoted.",
     "companyTitle": "Notes, article, and post · Agent KBase",
     "companyDescription": "We set up your business notes and the drafts for the article and LinkedIn. You say yes. Setup is quoted.",
     "learnTitle": "Guides · Agent KBase",
@@ -52,8 +52,8 @@
   "home": {
     "badge": "",
     "title": "Agent KBase is a company assistant you text on Telegram.",
-    "interface": "There is no app. Send your website. It writes from that site.",
-    "examples": "It can draft a LinkedIn post, stop a price you do not charge, or wait until you say yes.",
+    "interface": "We're in beta, onboarding our first customers.",
+    "examples": "Text it. It can read a public site and tell you what that page supports. Setup is quoted.",
     "textCta": "Text Agent KBase",
     "pricingNote": "Free. Setup is quoted.",
     "startTitle": "Let's get started",
