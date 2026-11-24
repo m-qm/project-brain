@@ -1,22 +1,27 @@
-/** Public bot username, without @. Empty until TELEGRAM_BOT_USERNAME is set. */
+/** Public bot. Override with TELEGRAM_BOT_USERNAME if the handle changes. */
+const DEFAULT_BOT = "agentkbase_bot";
+
 export function telegramBotUsername(): string {
-  return (process.env.NEXT_PUBLIC_TELEGRAM_BOT ?? process.env.TELEGRAM_BOT_USERNAME ?? "")
+  const fromEnv = (process.env.NEXT_PUBLIC_TELEGRAM_BOT ?? process.env.TELEGRAM_BOT_USERNAME ?? "")
     .trim()
     .replace(/^@/, "")
     .replace(/[^A-Za-z0-9_]/g, "");
+  return fromEnv || DEFAULT_BOT;
 }
 
-/** Phrase already sitting in the message box. The person still taps send. */
+/** What /start stands for. A bot link cannot prefill a sentence, so Start sends this hello. */
 export function telegramOpeningLine(locale: string): string {
   return locale === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!";
 }
 
-/** Opens the chat with that phrase filled in. No phone number in the link. */
+/**
+ * Opens @agentkbase_bot. Telegram shows Start; the tap delivers /start hey or /start hola
+ * and the webhook answers. Start payloads cannot contain spaces.
+ */
 export function telegramChatUrl(locale: string): string {
   const bot = telegramBotUsername();
-  const text = encodeURIComponent(telegramOpeningLine(locale));
-  if (!bot) return `https://t.me/?text=${text}`;
-  return `https://t.me/${bot}?text=${text}`;
+  const start = locale === "es" ? "hola" : "hey";
+  return `https://t.me/${bot}?start=${start}`;
 }
 
 type TelegramMessage = {

@@ -1,11 +1,12 @@
 import QRCode from "qrcode";
 import { getLocale, getTranslations } from "next-intl/server";
-import { telegramChatUrl } from "@/lib/telegram-onboarding";
+import { telegramBotUsername, telegramChatUrl } from "@/lib/telegram-onboarding";
 
 export async function GetStarted() {
   const t = await getTranslations("home");
   const locale = await getLocale();
   const chatUrl = telegramChatUrl(locale);
+  const label = `t.me/${telegramBotUsername()}`;
   const svg = await QRCode.toString(chatUrl, {
     type: "svg",
     margin: 1,
@@ -31,7 +32,7 @@ export async function GetStarted() {
       <div className="get-started-qr" dangerouslySetInnerHTML={{ __html: svg }} />
       <p className="get-started-hint">{t("startHint")}</p>
       <a className="get-started-link" href={chatUrl}>
-        {t("openTelegram")}
+        {label}
       </a>
     </div>
   );

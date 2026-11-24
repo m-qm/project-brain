@@ -61,7 +61,7 @@
     "channelMessage": "iMessage",
     "channelWhatsapp": "WhatsApp",
     "channelTelegram": "Telegram",
-    "startHint": "Escanea con la cámara del móvil o abre el enlace. El mensaje ya está escrito. Envíalo.",
+    "startHint": "Escanea con la cámara del móvil o abre el enlace. Pulsa Start. El chat pide tu nombre, tu web y tu email.",
     "openTelegram": "Abrir Telegram",
     "ctaSite": "O pega tu web en el navegador",
     "forDevelopers": "Desarrolladores",
