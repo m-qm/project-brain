@@ -21,6 +21,7 @@ export type TelegramChat = {
   answers: LeadAnswers;
   summary: string;
   emailed: boolean;
+  leadEmailed?: boolean;
   siteFor?: string;
   siteSheet?: string;
 };
@@ -42,16 +43,28 @@ When a site sheet is included, showcase the product in two sentences: what that 
 
 Qualify while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again.
 
-Reply in the language of their latest message.
+Stay in the conversation language from the known block. A name, a website, or an email is not a language change. The address hello@ is not the greeting hello.
 
 Return JSON only, no markdown:
 {"reply":"...","name":"","website":"","email":"","summary":""}
 Use empty strings when unknown. summary is one line on what they want.`;
 
+/** Language of a real sentence. A name, a site, or an email does not switch the chat. */
+export function detectedLocale(text: string): Locale | null {
+  const trimmed = text.trim();
+  if (!trimmed) return null;
+  if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmed)) return null;
+  if (!/\s/.test(trimmed) && cleanLeadWebsite(trimmed)) return null;
+
+  const spanish = /[áéíóúñ¿¡]|\b(hola|buenas|gracias|por favor|cómo|cuál|cuándo|también)\b/i;
+  if (/^(hey|hi|hello)\b/i.test(trimmed)) return "en";
+  if (spanish.test(trimmed)) return "es";
+  if (/\b(what|when|your|thanks|please|website|email|can't|cannot)\b/i.test(trimmed)) return "en";
+  return null;
+}
+
 function localeOf(text: string, hint?: Locale): Locale {
-  if (/^hey\b|^hi\b|^hello\b/i.test(text) && !/hola|buenas/i.test(text)) return "en";
-  if (/hola|buenas|[áéíóúñ¿¡]/i.test(text)) return "es";
-  return hint ?? "en";
+  return detectedLocale(text) ?? hint ?? "en";
 }
 
 export function cleanLeadName(value: string): string {
@@ -290,6 +303,7 @@ export async function writeTelegramChat(chat: TelegramChat): Promise<void> {
 
 function knownBlock(chat: TelegramChat): string {
   return [
+    `Language: ${chat.locale}`,
     `Known name: ${chat.answers.name ?? ""}`,
     `Known website: ${chat.answers.website ?? ""}`,
     `Known email: ${chat.answers.email ?? ""}`,
@@ -357,7 +371,7 @@ export async function replyToTelegramLead(
     { role: "assistant" as const, text: reply },
   ].slice(-HISTORY_CAP);
 
-  if (leadReady(current.answers) && !current.emailed) {
+  if (leadReady(current.answers) && (!current.emailed || !current.leadEmailed)) {
     const session: OnboardingSession = {
       from: current.from,
       locale,
@@ -367,7 +381,18 @@ export async function replyToTelegramLead(
       channel: "telegram",
     };
     const said = current.messages.filter((message) => message.role === "user").map((message) => message.text);
-    current.emailed = await notifyOnboardingLead(session, { summary: current.summary, said });
+    const sent = await notifyOnboardingLead(session, { summary: current.summary, said }, {
+      owner: !current.emailed,
+      lead: !current.leadEmailed,
+    });
+    if (sent.owner) current.emailed = true;
+    if (sent.lead && !current.leadEmailed) {
+      reply +=
+        locale === "es"
+          ? "\n\nTe he enviado un email para confirmar que hemos recibido tus datos."
+          : "\n\nI sent you an email to confirm we received your details.";
+    }
+    if (sent.lead) current.leadEmailed = true;
   }
 
   return { chat: current, reply };

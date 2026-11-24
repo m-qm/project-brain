@@ -234,14 +234,86 @@ export async function writeOnboardingSession(session: OnboardingSession): Promis
   await writeFile(file, JSON.stringify(all, null, 2));
 }
 
-/** Email the finished answers so a person can reply in the same chat. */
+function leadConfirmation(session: OnboardingSession): { subject: string; text: string } {
+  const name = session.answers.name?.trim() || "";
+  const website = session.answers.website?.trim() || "";
+  const hello = session.locale === "es" ? (name ? `Hola ${name},` : "Hola,") : name ? `Hi ${name},` : "Hi,";
+  const privacy =
+    session.locale === "es" ? "https://agentkbase.com/es/legal/privacy" : "https://agentkbase.com/legal/privacy";
+  if (session.locale === "es") {
+    return {
+      subject: "Hemos recibido tus datos",
+      text: [
+        hello,
+        "",
+        `Hemos recibido tu nombre${website ? `, tu web ${website}` : ""} y este email desde el chat de Agent KBase.`,
+        "",
+        "Estamos en beta, con los primeros clientes. Te escribiremos pronto. No tienes que hacer nada más.",
+        "",
+        "Si no nos escribiste, ignora este email. Para pedir que borremos estos datos, escribe a hello@agentkbase.com.",
+        "",
+        `Privacidad: ${privacy}`,
+        "",
+        "Agent KBase",
+      ].join("\n"),
+    };
+  }
+  return {
+    subject: "We received your details",
+    text: [
+      hello,
+      "",
+      `We received your name${website ? `, your website ${website}` : ""}, and this email from the Agent KBase chat.`,
+      "",
+      "We're in beta, onboarding our first customers. We'll write to you soon. You don't need to do anything else.",
+      "",
+      "If you did not message us, ignore this email. To ask us to delete these details, write to hello@agentkbase.com.",
+      "",
+      `Privacy: ${privacy}`,
+      "",
+      "Agent KBase",
+    ].join("\n"),
+  };
+}
+
+async function resendEmail(
+  apiKey: string,
+  from: string,
+  to: string,
+  subject: string,
+  text: string,
+  replyTo?: string,
+): Promise<boolean> {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      text,
+      ...(replyTo ? { reply_to: replyTo } : {}),
+    }),
+  }).catch(() => undefined);
+  return Boolean(response?.ok);
+}
+
+/** Email the operator, and send the person a short confirmation that we received their details. */
 export async function notifyOnboardingLead(
   session: OnboardingSession,
   notes?: { summary?: string; said?: string[] },
-): Promise<boolean> {
+  which: { owner?: boolean; lead?: boolean } = {},
+): Promise<{ owner: boolean; lead: boolean }> {
+  const sendOwner = which.owner !== false;
+  const sendLead = which.lead !== false;
   const resendKey = process.env.RESEND_API_KEY?.trim();
   const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@agentkbase.com";
   const from = process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
+  if (!resendKey) return { owner: false, lead: false };
+
   const channel = session.channel ?? "whatsapp";
   const channelName = channel === "telegram" ? "Telegram" : "WhatsApp";
   const contact = channel === "telegram" ? `Telegram id: ${session.from}` : `WhatsApp: +${session.from}`;
@@ -257,20 +329,24 @@ export async function notifyOnboardingLead(
     ...(notes?.summary ? ["", `Summary: ${notes.summary}`] : []),
     ...(notes?.said?.length ? ["", "They said:", ...notes.said.map((line) => `- ${line}`)] : []),
   ];
-  if (!resendKey) return false;
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [notifyTo],
-      subject: `${channelName} lead: ${session.answers.name ?? session.from}`,
-      text: lines.join("\n"),
-      ...(session.answers.email ? { reply_to: session.answers.email } : {}),
-    }),
-  }).catch(() => undefined);
-  return Boolean(response?.ok);
+
+  const owner = sendOwner
+    ? await resendEmail(
+        resendKey,
+        from,
+        notifyTo,
+        `${channelName} lead: ${session.answers.name ?? session.from}`,
+        lines.join("\n"),
+        session.answers.email,
+      )
+    : false;
+
+  const leadTo = session.answers.email?.trim() || "";
+  const confirmation = leadConfirmation(session);
+  const lead =
+    sendLead && leadTo
+      ? await resendEmail(resendKey, from, leadTo, confirmation.subject, confirmation.text, notifyTo)
+      : false;
+
+  return { owner, lead };
 }
