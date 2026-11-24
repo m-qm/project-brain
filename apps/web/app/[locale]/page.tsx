@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
+import { StartOnWhatsApp } from "../components/StartOnWhatsApp";
 
 export async function generateMetadata({
   params,
@@ -26,11 +27,15 @@ export default async function HomePage() {
           <p className="hero-lead">{t("interface")}</p>
           <p className="hero-examples">{t("examples")}</p>
           <p className="hero-pricing-note">{t("pricingNote")}</p>
-          <div className="hero-cta-row">
-            <a className="btn" href="mailto:hello@agentkbase.com">
-              {t("ctaPrimary")}
-            </a>
-          </div>
+          <StartOnWhatsApp
+            copy={{
+              cta: t("ctaPrimary"),
+              phoneLabel: t("phoneLabel"),
+              placeholder: t("phonePlaceholder"),
+              invalid: t("phoneInvalid"),
+              opening: t("openingChat"),
+            }}
+          />
         </div>
       </section>
     </div>

@@ -326,6 +326,29 @@ a.nav-menu-cta {
   max-width: 40rem;
 }
 
+.wa-start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  max-width: 22rem;
+}
+
+.wa-start-label {
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+
+.wa-start input {
+  width: 100%;
+}
+
+.wa-start-error {
+  margin: 0;
+  color: var(--danger, #9b2c2c);
+  font-size: 0.9rem;
+}
+
 .hero-how {
   margin: 0 0 1.5rem;
 }
