@@ -16,7 +16,8 @@
     "validate:example": "node ./packages/cli/dist/index.js validate --dir ./examples/fictional-saas-brain",
     "validate:brain": "node ./packages/cli/dist/index.js validate --dir .",
     "brain:sync-learn": "node scripts/sync-learn-stories.mjs",
-    "eval:content": "pnpm --filter @agentkbase/core build && node examples/content-ads-brain/evals/run.mjs"
+    "eval:content": "pnpm --filter @agentkbase/core build && node examples/content-ads-brain/evals/run.mjs",
+    "publish:npm": "bash scripts/publish-npm.sh"
   },
   "engines": {
     "node": ">=20"

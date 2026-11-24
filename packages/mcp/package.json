@@ -1,6 +1,6 @@
 {
   "name": "@agentkbase/mcp",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Read-only MCP server for an Agent KBase brain/ directory",
   "homepage": "https://agentkbase.com",
   "bugs": "https://github.com/m-qm/project-brain/issues",
