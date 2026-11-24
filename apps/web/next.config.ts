@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
   ],
   outputFileTracingIncludes: {
     "/[locale]/onboarding/pdf": ["./app/fonts/*.woff2"],
+    "/api/telegram/webhook": [
+      "../brain/facts/project.md",
+      "../brain/facts/offer-limits.md",
+      "../brain/open-questions.md",
+      "../brain/stories/positioning.md",
+    ],
   },
   outputFileTracingRoot: join(__dirname, "../.."),
   webpack: (config) => {

@@ -1,5 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { extractBrainFromWebsiteUrl } from "@agentkbase/core";
+import { loadCompanyBrain } from "@/lib/company-brain";
 import { notifyOnboardingLead, type OnboardingSession } from "@/lib/whatsapp-onboarding";
 
 type Locale = "en" | "es";
@@ -19,21 +21,26 @@ export type TelegramChat = {
   answers: LeadAnswers;
   summary: string;
   emailed: boolean;
+  siteFor?: string;
+  siteSheet?: string;
 };
 
 const USER_CAP = 24;
 const HISTORY_CAP = 12;
 
-const SYSTEM = `You are Agent KBase, texting a business owner on Telegram. Sound like a person: short, warm, honest, immediate. At most two short paragraphs. No bullet list. No emoji. No slash commands.
+const BEHAVIOR = `You are Agent KBase, texting a business owner on Telegram. This chat is the product you sell: an assistant that answers only from the company brain, then qualifies the person.
+
+Sound like a person: short, warm, honest, immediate. At most two short paragraphs. No bullet list. No emoji. No slash commands.
 
 A first hello starts with "Hi!" in English or "Hola!" in Spanish. Never greet them with a name they have not typed in this chat. Never use a Telegram profile name.
 
-What you may say, and only this:
-Agent KBase is a company assistant they text. There is no new app. They send their public website. You write from that site: a LinkedIn draft, a price they do not charge stopped, a draft that waits until they say yes. Nothing goes live before their yes. Setup is quoted. There is no public price and no date. Do not invent a price, a date, a client, a ranking, or a feature.
+The company brain below is the only source for what Agent KBase is and what it may claim. If a price, date, client, ranking, or feature is missing or marked CONFIRM, say you do not have it and that you will write to them. Do not invent it. Do not mention MCP, git, CLI, or eval unless they ask how a developer would use it. Then one sentence: the truth lives in files they own.
 
-You cannot do tasks for them yet: no inbox, calendar, bookings, or publishing. If they ask what you can do now, say that plainly, then the offer above. If they ask when it will be ready, say you do not have a date and you will not guess. Promise only that we will write to them.
+You cannot run their inbox, calendar, bookings, or publishing. If they ask what you can do now, say that plainly, then what the brain allows: they text you, there is no new app, they send a public website, you write from that site, and nothing goes live until they say yes.
 
-Qualify the lead while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again.
+When a site sheet is included, showcase the product in two sentences: what that page supports, and what you would not claim because it is not on the page. Then ask for one missing lead field.
+
+Qualify while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again.
 
 Reply in the language of their latest message.
 
@@ -173,7 +180,34 @@ export function scriptLeadReply(locale: Locale, text: string, answers: LeadAnswe
   return { reply, answers: nextAnswers };
 }
 
+async function siteSheet(url: string): Promise<string> {
+  const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  try {
+    const extract = await extractBrainFromWebsiteUrl(href, { mode: "single", allowServerLlm: false });
+    const sheet = extract.suggested;
+    const lines = [
+      `Source: ${extract.sourceUrl}`,
+      sheet.projectName ? `Name: ${sheet.projectName}` : "",
+      sheet.projectDescription ? `Says: ${sheet.projectDescription.slice(0, 500)}` : "",
+      ...(sheet.factBullets ?? []).slice(0, 6).map((bullet) => `On the page: ${bullet}`),
+      ...(sheet.openQuestions ?? []).slice(0, 4).map((question) => `Not confirmed: ${question}`),
+    ].filter(Boolean);
+    return lines.join("\n").slice(0, 1800);
+  } catch {
+    return "";
+  }
+}
+
+async function ensureSiteSheet(chat: TelegramChat): Promise<void> {
+  const website = chat.answers.website;
+  if (!website || chat.siteFor === website) return;
+  chat.siteFor = website;
+  chat.siteSheet = await siteSheet(website);
+}
+
 async function complete(messages: ChatMessage[]): Promise<string | null> {
+  const brain = await loadCompanyBrain();
+  const system = `${BEHAVIOR}\n\n${brain}`;
   const anthropic = process.env.ANTHROPIC_API_KEY?.trim();
   if (anthropic) {
     const model =
@@ -191,7 +225,7 @@ async function complete(messages: ChatMessage[]): Promise<string | null> {
         model,
         max_tokens: 500,
         temperature: 0.4,
-        system: SYSTEM,
+        system,
         messages: messages.slice(-HISTORY_CAP).map((message) => ({
           role: message.role,
           content: message.text,
@@ -217,7 +251,7 @@ async function complete(messages: ChatMessage[]): Promise<string | null> {
       max_tokens: 500,
       temperature: 0.4,
       messages: [
-        { role: "system", content: SYSTEM },
+        { role: "system", content: system },
         ...messages.slice(-HISTORY_CAP).map((message) => ({ role: message.role, content: message.text })),
       ],
     }),
@@ -260,6 +294,7 @@ function knownBlock(chat: TelegramChat): string {
     `Known website: ${chat.answers.website ?? ""}`,
     `Known email: ${chat.answers.email ?? ""}`,
     `Already emailed: ${chat.emailed ? "yes" : "no"}`,
+    chat.siteSheet ? `Site sheet:\n${chat.siteSheet}` : "Site sheet:",
   ].join("\n");
 }
 
@@ -290,6 +325,8 @@ export async function replyToTelegramLead(
         ? "Te escribiré aquí. No tienes que hacer nada más."
         : "I'll write to you here. You don't need to do anything else.";
   } else {
+    current.answers = fromText;
+    await ensureSiteSheet(current);
     const history = [
       ...current.messages,
       { role: "user" as const, text: `${knownBlock(current)}\n\nThey just wrote:\n${input.text}` },
