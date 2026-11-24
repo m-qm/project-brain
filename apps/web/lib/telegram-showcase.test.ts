@@ -10,6 +10,7 @@ import {
   resolveShowcaseBrain,
   scriptClientReply,
 } from "./client-brains";
+import { dropPriceRefusal, mergeLead, mergeModelLead } from "./lead-fields";
 import { telegramInbound, telegramShowcaseUrl } from "./telegram-onboarding";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "storage", "telegram-brains");
@@ -128,5 +129,40 @@ describe("telegram client brains", () => {
     });
     assert.deepEqual(escape?.start, { brainId: null });
     assert.equal(escape?.text, "Hey Agent KBase!");
+  });
+});
+
+describe("lead email is not a website", () => {
+  test("an email keeps the site already given", () => {
+    const current = { name: "Mireia", website: "dualperspective.digital" };
+    const next = mergeLead(current, { website: "mireiaquerol@gmail.com", email: "mireiaquerol@gmail.com" });
+    assert.equal(next.website, "dualperspective.digital");
+    assert.equal(next.email, "mireiaquerol@gmail.com");
+    assert.equal(next.name, "Mireia");
+  });
+
+  test("a model copy of gmail.com does not replace the site", () => {
+    const base = { name: "Mireia", website: "dualperspective.digital", email: "mireiaquerol@gmail.com" };
+    const next = mergeModelLead(base, "mireiaquerol@gmail.com", {
+      website: "gmail.com",
+      email: "mireiaquerol@gmail.com",
+    });
+    assert.equal(next.website, "dualperspective.digital");
+    assert.equal(next.email, "mireiaquerol@gmail.com");
+  });
+
+  test("a real site next to an email is kept", () => {
+    const next = mergeLead({}, { website: "web dualperspective.digital y hello@gmail.com", email: "hello@gmail.com" });
+    assert.equal(next.website, "dualperspective.digital");
+    assert.equal(next.email, "hello@gmail.com");
+  });
+
+  test("the draft-rule aside is not said to the person", () => {
+    const reply = dropPriceRefusal(
+      "He leído dualperspective.digital.\n\nLa página dice: estudio en Barcelona.\n\nNo añadiría un precio, un cliente o un resultado que no esté en esa página.\n\n¿A qué email te escribo?",
+    );
+    assert.match(reply, /dualperspective\.digital/);
+    assert.match(reply, /¿A qué email te escribo\?/);
+    assert.doesNotMatch(reply, /No añadiría un precio/);
   });
 });

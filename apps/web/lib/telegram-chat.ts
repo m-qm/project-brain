@@ -4,15 +4,22 @@ import { extractBrainFromWebsiteUrl } from "@agentkbase/core";
 import { loadCompanyBrain } from "@/lib/company-brain";
 import clientSnapshot from "@/lib/client-brains.snapshot.json";
 import { clientTitle, replySupportedByBrain, resolveShowcaseBrain, scriptClientReply } from "@/lib/client-brains";
+import {
+  cleanLeadEmail,
+  cleanLeadName,
+  cleanLeadWebsite,
+  dropPriceRefusal,
+  leadReady,
+  mergeLead,
+  mergeModelLead,
+  type LeadAnswers,
+} from "@/lib/lead-fields";
 import { notifyOnboardingLead, type OnboardingSession } from "@/lib/whatsapp-onboarding";
 
-type Locale = "en" | "es";
+export type { LeadAnswers };
+export { cleanLeadEmail, cleanLeadName, cleanLeadWebsite, leadReady, mergeLead };
 
-export type LeadAnswers = {
-  name?: string;
-  website?: string;
-  email?: string;
-};
+type Locale = "en" | "es";
 
 type ChatMessage = { role: "user" | "assistant"; text: string };
 
@@ -81,36 +88,6 @@ export function detectedLocale(text: string): Locale | null {
 
 function localeOf(text: string, hint?: Locale): Locale {
   return detectedLocale(text) ?? hint ?? "en";
-}
-
-export function cleanLeadName(value: string): string {
-  const name = value.replace(/\s+/g, " ").trim();
-  if (!name || name.length > 40 || /[?@!]|\bhttps?\b|\bwww\./i.test(name)) return "";
-  if (name.split(" ").length > 4) return "";
-  return name;
-}
-
-export function cleanLeadWebsite(value: string): string {
-  const found = value.match(/(?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/i)?.[0] ?? "";
-  if (!found || found.includes("@")) return "";
-  return found.replace(/[),.;]+$/, "");
-}
-
-export function cleanLeadEmail(value: string): string {
-  const found = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] ?? "";
-  return found;
-}
-
-export function mergeLead(current: LeadAnswers, incoming: LeadAnswers): LeadAnswers {
-  return {
-    name: cleanLeadName(incoming.name ?? "") || current.name,
-    website: cleanLeadWebsite(incoming.website ?? "") || current.website,
-    email: cleanLeadEmail(incoming.email ?? "") || current.email,
-  };
-}
-
-export function leadReady(answers: LeadAnswers): boolean {
-  return Boolean(answers.name && answers.website && answers.email);
 }
 
 export function parseLeadJson(raw: string): { reply: string; answers: LeadAnswers; summary: string } | null {
@@ -448,7 +425,7 @@ export async function replyToTelegramLead(
       .then((brain) => complete(history, brain))
       .catch(() => null);
     const parsed = raw ? parseLeadJson(raw) : null;
-    const nextField = missing(parsed ? mergeLead(fromText, parsed.answers) : current.answers);
+    const nextField = missing(parsed ? mergeModelLead(fromText, input.text, parsed.answers) : current.answers);
     const question = nextField ? ask(locale, nextField) : "";
     const shown =
       readSite && current.answers.website
@@ -462,12 +439,12 @@ export async function replyToTelegramLead(
     );
     if (parsed && (!readSite || modelShowsSite)) {
       reply = parsed.reply;
-      current.answers = mergeLead(fromText, parsed.answers);
+      current.answers = mergeModelLead(fromText, input.text, parsed.answers);
       summary = parsed.summary || summary;
     } else if (shown) {
       reply = shown;
       if (parsed) {
-        current.answers = mergeLead(fromText, parsed.answers);
+        current.answers = mergeModelLead(fromText, input.text, parsed.answers);
         summary = parsed.summary || summary;
       }
     } else {
@@ -477,6 +454,13 @@ export async function replyToTelegramLead(
     }
   }
 
+  if (!reply.trim()) {
+    const scripted = scriptLeadReply(locale, input.text, current.answers);
+    current.answers = scripted.answers;
+    reply = scripted.reply;
+  }
+
+  reply = dropPriceRefusal(reply);
   if (!reply.trim()) {
     const scripted = scriptLeadReply(locale, input.text, current.answers);
     current.answers = scripted.answers;
