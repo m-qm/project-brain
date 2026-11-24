@@ -320,7 +320,7 @@
     "openCheck": "Check a draft →",
     "checkHint": "Bookmark the check page with this id. Re-save after you edit facts in the wizard.",
     "copyClaude": "Copy Claude instructions",
-    "claudeSnippet": "My company sheet id: {id}\n\nClaude Desktop: add MCP connector https://agentkbase.com/mcp\nBefore each post:\n1. get_what_we_can_claim(profileId: {id})\n2. check_draft_before_publish(profileId: {id}, draft: ...)\n\nOr paste drafts at https://agentkbase.com/check?id={id}",
+    "claudeSnippet": "My company sheet id: {id}\n\nClaude: POST https://agentkbase.com/mcp with header Authorization: Bearer <MCP_API_KEY> (set on server — see learn/14-claude-mcp)\nBefore each post:\n1. get_what_we_can_claim(profileId: {id})\n2. check_draft_before_publish(profileId: {id}, draft: ...)\n\nOr paste drafts at https://agentkbase.com/check?id={id}",
     "exportFailed": "Export failed",
     "building": "Building…",
     "download": "Download {name}-brain.zip",

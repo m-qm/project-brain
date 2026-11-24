@@ -34,3 +34,4 @@ scripts/company-brain-skeleton.mjs
 .codex/
 .engram/
 .env*
+!apps/web/.env.example

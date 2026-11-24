@@ -133,6 +133,13 @@ Live blog comparison is **read-only by instruction**, not by glob write scope. *
 
 Set `MCP_API_KEY` in the deployment environment (e.g. Vercel project env). Clients must send `Authorization: Bearer <MCP_API_KEY>`. Without the variable, `POST /mcp` returns **401** (fail closed).
 
+**Operator checklist (pending outside git):**
+
+1. Vercel → Project → Environment Variables → `MCP_API_KEY` (Production; Preview if needed). Redeploy.
+2. Share the bearer with clients out-of-band; Claude Code: `claude mcp add ... --header "Authorization: Bearer $MCP_API_KEY"`.
+3. Local dev: copy `apps/web/.env.example` → `apps/web/.env.local` and set the same variable.
+4. Rate limit (H-11c): still open — see `brain/open-questions.md`.
+
 ---
 
 ## LinkedIn distribution (meta)
