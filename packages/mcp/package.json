@@ -4,9 +4,17 @@
   "description": "Read-only MCP server for an Agent KBase brain/ directory",
   "homepage": "https://agentkbase.com",
   "bugs": "https://github.com/m-qm/project-brain/issues",
-  "keywords": ["agent", "cursor", "mcp", "knowledge-base", "brain"],
+  "keywords": [
+    "agent",
+    "cursor",
+    "mcp",
+    "model-context-protocol",
+    "knowledge-base",
+    "brain",
+    "agentkbase"
+  ],
   "type": "module",
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
   "publishConfig": {
     "access": "public"
   },

@@ -6,7 +6,7 @@
   "bugs": "https://github.com/m-qm/project-brain/issues",
   "keywords": ["agent", "cursor", "knowledge-base", "brain", "cli", "engram"],
   "type": "module",
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
   "publishConfig": {
     "access": "public"
   },
