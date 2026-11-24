@@ -12,6 +12,10 @@ Agent KBase fills `brain/` from a public URL (wizard or CLI), human crosses out 
 
 We do not sync the whole company — we make sure what you publish about **what you sell** matches what is true, with sources and your yes. **Your brain is files you own;** hosted Claude profile is optional entry, not the only store.
 
+## Owner-facing surface (minimal)
+
+One Instinct-style paragraph on the home page: company assistant on **Telegram** first (WhatsApp later), no new interfaces, concrete jobs (LinkedIn draft, stop a price you do not charge, wait for your yes). MCP and git stay under **For developers**. Project copy spec: store `docs/positioning-minimal-whatsapp.md`.
+
 ## How we know it works
 
 Public page: https://agentkbase.com/learn/12-what-you-sell  

@@ -45,8 +45,8 @@ export default async function LegalDocPage({
   const t = await getTranslations("legal");
   const footer = await getTranslations("footer");
   const labels: Record<string, string> = {
-    "/legal/privacy": footer("privacy"),
-    "/legal/terms": footer("terms"),
+    "/legal/privacy": footer("privacyPolicy"),
+    "/legal/terms": footer("termsOfService"),
     "/legal/trust": footer("trust"),
     "/legal/sla": footer("sla"),
     "/legal/acknowledgements": footer("acknowledgements"),
@@ -54,7 +54,7 @@ export default async function LegalDocPage({
 
   return (
     <div className="page-shell">
-      <SiteNav ctaHref="/wizard" ctaLabel={t("cta")} />
+      <SiteNav />
       <main className="learn-doc-shell container-narrow">
         <nav className="learn-doc-nav" aria-label={t("breadcrumb")}>
           <Link href="/">{t("home")}</Link>
