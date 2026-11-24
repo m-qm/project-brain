@@ -3307,7 +3307,11 @@ pre.preview {
   color: var(--ivory);
 }
 
-.site-footer {
+.nav-login {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
   border-top: 1px solid var(--line);
   padding: 2rem 1.5rem 2.25rem;
   font-size: 0.8rem;
@@ -3371,7 +3375,7 @@ pre.preview {
   }
 
   .nav-actions {
-    display: none;
+    display: flex;
   }
 
   .nav-toggle {

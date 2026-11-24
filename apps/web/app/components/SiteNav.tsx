@@ -22,6 +22,7 @@ function LocaleSwitch() {
 }
 
 export function SiteNav() {
+  const t = useTranslations("nav");
   return (
     <header className="site-header">
       <div className="site-header-inner">
@@ -31,6 +32,9 @@ export function SiteNav() {
         </Link>
         <div className="nav-actions">
           <LocaleSwitch />
+          <Link className="nav-login" href="/login">
+            {t("login")}
+          </Link>
         </div>
       </div>
     </header>

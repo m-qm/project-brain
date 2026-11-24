@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
-import { GetStarted } from "../components/GetStarted";
 
 export async function generateMetadata({
   params,
@@ -16,12 +15,16 @@ export async function generateMetadata({
 }
 
 export default async function HomePage() {
+  const t = await getTranslations("home");
+
   return (
     <div className="page-shell page-shell-minimal">
       <SiteNav />
       <section className="hero hero-minimal">
         <div className="hero-inner hero-inner-narrow">
-          <GetStarted />
+          <h1 className="hero-title hero-title-plain">{t("title")}</h1>
+          <p className="hero-lead">{t("interface")}</p>
+          <p className="hero-examples">{t("examples")}</p>
         </div>
       </section>
     </div>
