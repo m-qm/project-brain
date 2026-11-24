@@ -6,6 +6,7 @@
 * New client volume or hours saved as a deliverable.
 * Auto-publish without human approval on the OSS path.
 * A hosted-only brain with no export to files you own (we offer both: hosted session + `brain.zip` / git).
+* A running publishing service. The product is in beta, onboarding first customers. The Telegram chat does not publish for them.
 
 ## Positioning wedge
 

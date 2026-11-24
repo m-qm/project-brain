@@ -34,7 +34,7 @@
   },
   "meta": {
     "homeTitle": "Agent KBase · Escríbele por Telegram",
-    "homeDescription": "Un asistente de empresa al que escribes por Telegram. Mandas tu web. Redacta desde esa web. Tú das el sí antes de publicar.",
+    "homeDescription": "Un asistente de empresa al que escribes por Telegram. Estamos en beta, con los primeros clientes. El montaje se cotiza.",
     "companyTitle": "Notas, artículo y post · Agent KBase",
     "companyDescription": "Montamos las notas de tu negocio y los borradores del artículo y de LinkedIn. Tú das el sí. El precio del montaje se cotiza.",
     "learnTitle": "Guías · Agent KBase",
@@ -52,8 +52,8 @@
   "home": {
     "badge": "",
     "title": "Agent KBase es un asistente de empresa al que escribes por Telegram.",
-    "interface": "No hay app. Mandas tu web. Escribe a partir de esa web.",
-    "examples": "Puede redactar un post de LinkedIn, frenar un precio que no cobras, o esperar a que digas sí.",
+    "interface": "Estamos en beta, con los primeros clientes.",
+    "examples": "Escríbele. Puede leer una web pública y decir qué sostiene esa página. El montaje se cotiza.",
     "textCta": "Escribe a Agent KBase",
     "pricingNote": "Gratis. El montaje se cotiza.",
     "startTitle": "Empecemos",

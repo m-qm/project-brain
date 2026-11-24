@@ -97,9 +97,9 @@ function thanks(locale: "en" | "es", channel: OnboardingChannel = "whatsapp", na
 
 function telegramWelcome(locale: "en" | "es"): string {
   if (locale === "es") {
-    return "Hola!\n\nSoy Agent KBase. Me escribes. No hay app. Mandas tu web y escribo a partir de esa web. Tú das el sí antes de que salga nada.\n\n¿Cómo te llamas?";
+    return "Hola!\n\nSoy Agent KBase. Estamos en beta, con los primeros clientes.\n\nPuedo leer una web pública y decirte qué sostiene esa página. Todavía no publico por ti, y no te invento una fecha. El montaje se cotiza.\n\n¿Cómo te llamas?";
   }
-  return "Hi!\n\nI'm Agent KBase. You text me. There is no app. Send your website and I write from that site. You say yes before anything goes live.\n\nWhat's your name?";
+  return "Hi!\n\nI'm Agent KBase. We're in beta, onboarding our first customers.\n\nI can read a public site and tell you what that page supports. I can't publish for you yet, and I won't invent a date. Setup is quoted.\n\nWhat's your name?";
 }
 
 function telegramFollowUp(locale: "en" | "es", key: AnswerKey, name?: string): string {
