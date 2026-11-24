@@ -5,8 +5,15 @@ export function normalizeMobile(input: string): string {
   return digits;
 }
 
+/** Interim line until a dedicated business number exists. Spain mobile 601 334 941. */
+const INTERIM_WHATSAPP_E164 = "34601334941";
+
 export function businessWhatsAppNumber(): string {
-  return (process.env.NEXT_PUBLIC_WHATSAPP_E164 ?? process.env.WHATSAPP_E164 ?? "").replace(/[^\d]/g, "");
+  const fromEnv = (process.env.NEXT_PUBLIC_WHATSAPP_E164 ?? process.env.WHATSAPP_E164 ?? "").replace(
+    /[^\d]/g,
+    "",
+  );
+  return fromEnv || INTERIM_WHATSAPP_E164;
 }
 
 /** The new client is already in the thread. The first line is the setup. */
