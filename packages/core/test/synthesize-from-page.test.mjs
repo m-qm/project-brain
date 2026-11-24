@@ -69,6 +69,34 @@ test("sanitize strips LLM-style Hatchpad mission for unrelated sites", () => {
   assert.match(clean.projectMission, /Search the world's information/i);
 });
 
+test("auditamia-style pages keep mission short; sample and method go to facts", () => {
+  const out = synthesizeBrainFromPage({
+    lang: "es",
+    sourceUrl: "https://auditamia.com/es",
+    title: "Auditamia · Informe 99 € en 48 h",
+    metaDescription:
+      "Auditoría de gasto en herramientas antes de renovar. Sin entrar en cuentas de proveedores.",
+    h1: ["Controla el gasto en IA antes de renovar"],
+    h2: [],
+    h3: [],
+    paragraphs: [
+      "Primero ves una muestra Hatchpad ficticia; después pides el informe real.",
+      "Leemos la factura del periodo y, cuando llega, el export de miembros.",
+      "Nunca entramos en tus cuentas de proveedor.",
+    ],
+    listItems: [],
+  });
+  assert.doesNotMatch(out.projectMission, /;/);
+  assert.doesNotMatch(out.projectMission, /hatchpad/i);
+  assert.doesNotMatch(out.projectMission, /leemos la factura/i);
+  const facts = (out.factBullets ?? []).join("\n");
+  assert.match(facts, /muestra|hatchpad|sample/i);
+  assert.ok(
+    (out.openQuestions ?? []).some((q) => /fictici|muestra|sample/i.test(q)),
+    "expected sample vs live open question",
+  );
+});
+
 test("Spanish pages without invoice-audit copy avoid Hatchpad mission boilerplate", () => {
   const out = synthesizeBrainFromPage({
     lang: "es",
