@@ -41,7 +41,7 @@ Current status, say this when you introduce yourself and when they ask what you 
 
 When a site sheet is included, say what the page says, then that from this we build their company knowledge base. Say you cannot set it up in this chat yet, and that you will text them here when a spot opens. Do not say you would not add a price, a client, or a result. Then ask for one missing lead field.
 
-Qualify while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again.
+Qualify while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again. If you already asked and they did not answer, do not repeat the beta paragraph. Ask once more in one short line, then stop and say you will text them here.
 
 Stay in the conversation language from the known block. A name, a website, or an email is not a language change. The address hello@ is not the greeting hello.
 
@@ -153,41 +153,65 @@ function answersFromText(text: string, current: LeadAnswers): LeadAnswers {
   return name ? { ...withContact, name } : withContact;
 }
 
-/** Honest replies when no model key is set. Still qualifies the lead. */
-export function scriptLeadReply(locale: Locale, text: string, answers: LeadAnswers): { reply: string; answers: LeadAnswers } {
+function timesAsked(prior: string[], question: string): number {
+  if (!question) return 0;
+  return prior.filter((line) => line.includes(question)).length;
+}
+
+function closeLine(locale: Locale): string {
+  return locale === "es"
+    ? "Te escribo aquí. No tienes que hacer nada más."
+    : "I'll write to you here. You don't need to do anything else.";
+}
+
+/** Honest replies when no model key is set. Ask once, nudge once, then stop. */
+export function scriptLeadReply(
+  locale: Locale,
+  text: string,
+  answers: LeadAnswers,
+  priorAssistant: string[] = [],
+): { reply: string; answers: LeadAnswers } {
   const nextAnswers = answersFromText(text, answers);
   const next = missing(nextAnswers);
   const question = next ? ask(locale, next) : "";
+  const asked = timesAsked(priorAssistant, question);
+  const introduced = priorAssistant.length > 0;
   const timeline = /timeline|when|fecha|plazo|cu[aá]ndo|how long|date/i.test(text);
   const capability = /what can you|qu[eé] puedes|what do you do|para qu[eé]|for me now/i.test(text);
   const hello = /^(hi|hello|hey|hola|buenas)\b/i.test(text.trim());
 
+  const nudge =
+    asked === 1
+      ? locale === "es"
+        ? `Sigo con ese dato.\n\n${question}`
+        : `I still need that.\n\n${question}`
+      : question;
+
   const reply = (() => {
+    if (!next || asked >= 2) return closeLine(locale);
     if (locale === "es") {
-      if (hello && !nextAnswers.name) {
+      if (hello && !nextAnswers.name && !introduced) {
         return `Hola!\n\nSoy Agent KBase. Estamos en beta, con los primeros clientes.\n\nAhora mismo, poco más que este chat. Con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando haya un sitio.\n\n${question}`;
       }
-      if (timeline) {
+      if (timeline && asked === 0) {
         return `La verdad, no tengo una fecha que darte. El montaje se cotiza, y prefiero no inventar un plazo.\n\nTe escribiré aquí. ${question}`.trim();
       }
-      if (capability) {
+      if (capability && asked === 0) {
         return `Buena pregunta. Ahora mismo, poco más que este chat. Estamos en beta, con los primeros clientes, así que no puedo hacerte tareas.\n\nCuando haya un sitio, con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando pase. ${question}`.trim();
       }
-      if (!next) return "Te escribiré aquí. No tienes que hacer nada más.";
-      return `Estamos en beta, con los primeros clientes. Con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando haya un sitio.\n\n${question}`;
+      return nudge;
     }
 
-    if (hello && !nextAnswers.name) {
+    if (hello && !nextAnswers.name && !introduced) {
       return `Hi!\n\nI'm Agent KBase. We're in beta, onboarding our first customers.\n\nRight now, not much beyond this chat. From your website we build your company's knowledge base. I'll text you here when a spot opens.\n\n${question}`;
     }
-    if (timeline) {
+    if (timeline && asked === 0) {
       return `Honestly, I don't have a date I can give you. Setup is quoted, and I'd rather not guess.\n\nI'll write to you here. ${question}`.trim();
     }
-    if (capability) {
+    if (capability && asked === 0) {
       return `Fair question. Right now, not much beyond this chat. We're in beta, onboarding our first customers, so I can't take on tasks for you.\n\nOnce a spot opens, we build your company's knowledge base from your website. I'll text you here when that happens. ${question}`.trim();
     }
-    if (!next) return "I'll write to you here. You don't need to do anything else.";
-    return `We're in beta, onboarding our first customers. From your website we build your company's knowledge base. I'll text you here when a spot opens.\n\n${question}`;
+    return nudge;
   })();
 
   return { reply, answers: nextAnswers };
@@ -235,6 +259,13 @@ export function showcaseReply(locale: Locale, website: string, sheet: string, qu
   return `I read ${host}.\n\nThe page says: ${says}\n\nFrom this we build your company's knowledge base. Right now we're in beta, so I can't set it up in this chat.\n\nI'll text you here when a spot opens.${next}`;
 }
 
+function asksKnownField(reply: string, answers: LeadAnswers): boolean {
+  if (answers.name && /what'?s your name|c[oó]mo te llamas/i.test(reply)) return true;
+  if (answers.website && /what'?s your website|cu[aá]l es tu web/i.test(reply)) return true;
+  if (answers.email && /what email|a qu[eé] email/i.test(reply)) return true;
+  return false;
+}
+
 function mentionsSite(reply: string, website: string): boolean {
   const host = website.replace(/^https?:\/\//i, "").replace(/^www\./i, "").split("/")[0].toLowerCase();
   return Boolean(host && reply.toLowerCase().includes(host));
@@ -274,13 +305,19 @@ async function complete(messages: ChatMessage[]): Promise<string | null> {
         })),
       }),
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.error("[telegram] anthropic reply failed", response.status);
+      return null;
+    }
     const data = (await response.json()) as { content?: { type: string; text?: string }[] };
     return data.content?.find((block) => block.type === "text")?.text ?? null;
   }
 
   const openai = process.env.OPENAI_API_KEY?.trim();
-  if (!openai) return null;
+  if (!openai) {
+    console.error("[telegram] no ANTHROPIC_API_KEY or OPENAI_API_KEY");
+    return null;
+  }
   const model = process.env.TELEGRAM_CHAT_MODEL?.trim() || process.env.OPENAI_EXTRACT_MODEL?.trim() || "gpt-4o-mini";
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -298,7 +335,10 @@ async function complete(messages: ChatMessage[]): Promise<string | null> {
       ],
     }),
   });
-  if (!response.ok) return null;
+  if (!response.ok) {
+      console.error("[telegram] openai reply failed", response.status);
+      return null;
+    }
   const data = (await response.json()) as { choices?: { message?: { content?: string } }[] };
   return data.choices?.[0]?.message?.content ?? null;
 }
@@ -390,7 +430,9 @@ export async function replyToTelegramLead(
         mentionsSite(parsed.reply, current.answers.website) &&
         !/no añadiría un precio|would not add a price/i.test(parsed.reply),
     );
-    if (parsed && (!readSite || modelShowsSite)) {
+    const merged = parsed ? mergeLead(fromText, parsed.answers) : current.answers;
+    const prior = current.messages.filter((message) => message.role === "assistant").map((message) => message.text);
+    if (parsed && (!readSite || modelShowsSite) && !asksKnownField(parsed.reply, merged)) {
       reply = parsed.reply;
       current.answers = mergeLead(fromText, parsed.answers);
       summary = parsed.summary || summary;
@@ -401,14 +443,19 @@ export async function replyToTelegramLead(
         summary = parsed.summary || summary;
       }
     } else {
-      const scripted = scriptLeadReply(locale, input.text, current.answers);
+      const scripted = scriptLeadReply(locale, input.text, current.answers, prior);
       current.answers = scripted.answers;
       reply = scripted.reply;
     }
   }
 
   if (!reply.trim()) {
-    const scripted = scriptLeadReply(locale, input.text, current.answers);
+    const scripted = scriptLeadReply(
+      locale,
+      input.text,
+      current.answers,
+      current.messages.filter((message) => message.role === "assistant").map((message) => message.text),
+    );
     current.answers = scripted.answers;
     reply = scripted.reply;
   }
