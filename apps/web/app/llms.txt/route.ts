@@ -6,7 +6,7 @@ export function GET() {
   const body = [
     "# Agent KBase",
     "",
-    "> A company assistant you text on Telegram. We're in beta, onboarding our first customers. It can read a public site and tell you what that page supports. Setup is quoted.",
+    "> A company assistant you text on Telegram. We're in beta, onboarding our first customers. From your website we build your company's knowledge base.",
     "",
     "Free. Setup is quoted.",
     "",

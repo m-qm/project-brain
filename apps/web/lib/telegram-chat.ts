@@ -37,9 +37,9 @@ A first hello starts with "Hi!" in English or "Hola!" in Spanish. Never greet th
 
 The company brain below is the only source for what Agent KBase is and what it may claim. If a price, date, client, ranking, or feature is missing or marked CONFIRM, say you do not have it and that you will write to them. Do not invent it. Do not mention MCP, git, CLI, or eval unless they ask how a developer would use it. Then one sentence: the truth lives in files they own.
 
-Current status, say this when you introduce yourself and when they ask what you can do now: Agent KBase is in beta and onboarding its first customers. You can read a public page they send and say what that page supports. You cannot publish, post, or run their business yet. Setup is quoted. You do not have a date. Do not say you already write their marketing, or that nothing goes live until they say yes, as if that service is running.
+Current status, say this when you introduce yourself and when they ask what you can do now: right now, not much beyond this chat. Agent KBase is in beta, onboarding its first customers, so you cannot take on tasks. Once a spot opens, you build their company knowledge base from their public website, and you text them here when that happens. Do not promise email, calendar, bookings, publishing, or a date. Setup is quoted if they ask about price or timing.
 
-When a site sheet is included, showcase the product in two sentences: what that page supports, and what you would not claim because it is not on the page. Then ask for one missing lead field.
+When a site sheet is included, say what the page says, then that from this we build their company knowledge base. Say you cannot set it up in this chat yet, and that you will text them here when a spot opens. Do not say you would not add a price, a client, or a result. Then ask for one missing lead field.
 
 Qualify while you answer. You need the name they want used, their public website, and the email where we write. Ask for one missing piece only. If you already have it, do not ask again.
 
@@ -165,29 +165,29 @@ export function scriptLeadReply(locale: Locale, text: string, answers: LeadAnswe
   const reply = (() => {
     if (locale === "es") {
       if (hello && !nextAnswers.name) {
-        return `Hola!\n\nSoy Agent KBase. Estamos en beta, con los primeros clientes.\n\nPuedo leer una web pública y decirte qué sostiene esa página. Todavía no publico por ti, y no te invento una fecha. El montaje se cotiza.\n\n${question}`;
+        return `Hola!\n\nSoy Agent KBase. Estamos en beta, con los primeros clientes.\n\nAhora mismo, poco más que este chat. Con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando haya un sitio.\n\n${question}`;
       }
       if (timeline) {
         return `La verdad, no tengo una fecha que darte. El montaje se cotiza, y prefiero no inventar un plazo.\n\nTe escribiré aquí. ${question}`.trim();
       }
       if (capability) {
-        return `Buena pregunta. Estamos en beta, con los primeros clientes. Ahora mismo no puedo hacerte tareas ni publicar por ti.\n\nPuedo leer una web pública y decirte qué sostiene esa página. El montaje se cotiza. ${question}`.trim();
+        return `Buena pregunta. Ahora mismo, poco más que este chat. Estamos en beta, con los primeros clientes, así que no puedo hacerte tareas.\n\nCuando haya un sitio, con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando pase. ${question}`.trim();
       }
       if (!next) return "Te escribiré aquí. No tienes que hacer nada más.";
-      return `Estamos en beta, con los primeros clientes. Puedo leer una web pública y decirte qué sostiene. El montaje se cotiza.\n\n${question}`;
+      return `Estamos en beta, con los primeros clientes. Con tu web construimos la base de conocimiento de tu empresa. Te escribo aquí cuando haya un sitio.\n\n${question}`;
     }
 
     if (hello && !nextAnswers.name) {
-      return `Hi!\n\nI'm Agent KBase. We're in beta, onboarding our first customers.\n\nI can read a public site and tell you what that page supports. I can't publish for you yet, and I won't invent a date. Setup is quoted.\n\n${question}`;
+      return `Hi!\n\nI'm Agent KBase. We're in beta, onboarding our first customers.\n\nRight now, not much beyond this chat. From your website we build your company's knowledge base. I'll text you here when a spot opens.\n\n${question}`;
     }
     if (timeline) {
       return `Honestly, I don't have a date I can give you. Setup is quoted, and I'd rather not guess.\n\nI'll write to you here. ${question}`.trim();
     }
     if (capability) {
-      return `Fair question. We're in beta, with our first customers. Right now I can't take on tasks or publish for you.\n\nI can read a public site and tell you what that page supports. Setup is quoted. ${question}`.trim();
+      return `Fair question. Right now, not much beyond this chat. We're in beta, onboarding our first customers, so I can't take on tasks for you.\n\nOnce a spot opens, we build your company's knowledge base from your website. I'll text you here when that happens. ${question}`.trim();
     }
     if (!next) return "I'll write to you here. You don't need to do anything else.";
-    return `We're in beta, onboarding our first customers. I can read a public site and tell you what it supports. Setup is quoted.\n\n${question}`;
+    return `We're in beta, onboarding our first customers. From your website we build your company's knowledge base. I'll text you here when a spot opens.\n\n${question}`;
   })();
 
   return { reply, answers: nextAnswers };
@@ -230,9 +230,9 @@ export function showcaseReply(locale: Locale, website: string, sheet: string, qu
       : `I couldn't read ${host} from here. If it is public, send it again with https.${next}`;
   }
   if (locale === "es") {
-    return `He leído ${host}.\n\nLa página dice: ${says}\n\nNo añadiría un precio, un cliente o un resultado que no esté en esa página.${next}`;
+    return `He leído ${host}.\n\nLa página dice: ${says}\n\nCon esto construimos la base de conocimiento de tu empresa. Ahora mismo estamos en beta, así que todavía no puedo montarla en este chat.\n\nTe escribo aquí cuando haya un sitio.${next}`;
   }
-  return `I read ${host}.\n\nThe page says: ${says}\n\nI would not add a price, a client, or a result that is not on that page.${next}`;
+  return `I read ${host}.\n\nThe page says: ${says}\n\nFrom this we build your company's knowledge base. Right now we're in beta, so I can't set it up in this chat.\n\nI'll text you here when a spot opens.${next}`;
 }
 
 function mentionsSite(reply: string, website: string): boolean {
@@ -385,7 +385,10 @@ export async function replyToTelegramLead(
         ? showcaseReply(locale, current.answers.website, current.siteSheet ?? "", question)
         : "";
     const modelShowsSite = Boolean(
-      parsed && current.answers.website && mentionsSite(parsed.reply, current.answers.website),
+      parsed &&
+        current.answers.website &&
+        mentionsSite(parsed.reply, current.answers.website) &&
+        !/no añadiría un precio|would not add a price/i.test(parsed.reply),
     );
     if (parsed && (!readSite || modelShowsSite)) {
       reply = parsed.reply;
