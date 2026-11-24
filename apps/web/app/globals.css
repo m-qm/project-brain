@@ -303,6 +303,25 @@ a.nav-menu-cta {
   line-height: 1.6;
 }
 
+.hero-minimal {
+  padding: 3.5rem 0 4rem;
+}
+
+.hero-minimal .hero-title-plain {
+  max-width: 22ch;
+  font-size: clamp(2rem, 3.6vw, 3.15rem);
+  line-height: 1.08;
+  margin-bottom: 1.25rem;
+}
+
+.hero-examples {
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  color: var(--ink);
+  max-width: 42rem;
+  margin: 0 0 1.75rem;
+  line-height: 1.65;
+}
+
 .job-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
