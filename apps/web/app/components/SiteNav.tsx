@@ -16,6 +16,8 @@ type SiteNavProps = {
   ctaHref?: string;
   ctaLabel?: string;
   hideCta?: boolean;
+  /** Home: brand and language only. */
+  hideLinks?: boolean;
 };
 
 function LocaleSwitch() {
@@ -51,7 +53,7 @@ function CtaLink({ href, label, className }: { href: string; label: string; clas
   );
 }
 
-export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
+export function SiteNav({ ctaHref, ctaLabel, hideCta = false, hideLinks = false }: SiteNavProps) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -80,14 +82,18 @@ export function SiteNav({ ctaHref, ctaLabel, hideCta = false }: SiteNavProps) {
         </button>
         <nav id="site-nav" className={`nav-links${open ? " is-open" : ""}`} aria-label={t("primary")}>
           <LocaleSwitch />
-          {LINK_DEFS.map((item) => (
-            <Link key={item.href} href={item.href}>
-              {t(item.key)}
-            </Link>
-          ))}
-          <a href="https://github.com/m-qm/project-brain" target="_blank" rel="noopener noreferrer">
-            {t("github")}
-          </a>
+          {hideLinks
+            ? null
+            : LINK_DEFS.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  {t(item.key)}
+                </Link>
+              ))}
+          {hideLinks ? null : (
+            <a href="https://github.com/m-qm/project-brain" target="_blank" rel="noopener noreferrer">
+              {t("github")}
+            </a>
+          )}
           {hideCta ? null : <CtaLink className="btn nav-menu-cta" href={href} label={label} />}
         </nav>
         <div className="nav-actions">

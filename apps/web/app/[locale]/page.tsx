@@ -20,21 +20,11 @@ export default async function HomePage() {
 
   return (
     <div className="page-shell page-shell-minimal">
-      <SiteNav />
+      <SiteNav hideLinks hideCta />
       <section className="hero hero-minimal">
         <div className="hero-inner hero-inner-narrow">
           <h1 className="hero-title hero-title-plain">{t("title")}</h1>
           <p className="hero-lead">{t("interface")}</p>
-          <div className="hero-how" aria-labelledby="home-how-title">
-            <p id="home-how-title" className="hero-how-title">
-              {t("howTitle")}
-            </p>
-            <ol className="hero-how-list">
-              <li>{t("how1")}</li>
-              <li>{t("how2")}</li>
-              <li>{t("how3")}</li>
-            </ol>
-          </div>
           <p className="hero-examples">{t("examples")}</p>
           <p className="hero-pricing-note">{t("pricingNote")}</p>
           <div className="hero-cta-row">
@@ -42,11 +32,6 @@ export default async function HomePage() {
               {t("ctaPrimary")}
             </Link>
           </div>
-          <p className="hero-meta">
-            <Link href="/wizard">{t("ctaSite")}</Link>
-            {" · "}
-            <Link href="/learn">{t("forDevelopers")}</Link>
-          </p>
         </div>
       </section>
     </div>
