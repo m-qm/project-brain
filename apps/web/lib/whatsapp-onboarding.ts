@@ -1,4 +1,6 @@
 /** Digits only, country code included. Empty when the number is not usable. */
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 export function normalizeMobile(input: string): string {
   const digits = input.replace(/[^\d]/g, "");
   if (digits.length < 8 || digits.length > 15) return "";
@@ -16,12 +18,9 @@ export function businessWhatsAppNumber(): string {
   return fromEnv || INTERIM_WHATSAPP_E164;
 }
 
-/** The new client is already in the thread. The first line is the setup. */
+/** The new client only says hello. The bot asks the rest. */
 export function openingLine(locale: string): string {
-  if (locale === "es") {
-    return "Hola. Este chat es el alta. No hay formulario. Mi web es ";
-  }
-  return "Hi. This chat is the setup. There is no form. My website is ";
+  return locale === "es" ? "Hola" : "Hi";
 }
 
 export function whatsAppChatUrl(locale: string): string {
@@ -31,17 +30,92 @@ export function whatsAppChatUrl(locale: string): string {
   return `https://wa.me/${business}?text=${text}`;
 }
 
-export function onboardingReply(text: string): string {
-  const spanish = /alta|hola|mi web|formulario/i.test(text);
-  const hasSite = /https?:\/\/|www\.|\b[a-z0-9-]+\.[a-z]{2,}\b/i.test(text);
-  if (!hasSite) {
-    return spanish
-      ? "Este chat es el alta. No hay formulario. Mándame la dirección pública de tu web."
-      : "This chat is the setup. There is no form. Send the public address of your website.";
+const QUESTION_KEYS = ["name", "website", "offer", "never", "email"] as const;
+type AnswerKey = (typeof QUESTION_KEYS)[number];
+
+const QUESTIONS: Record<"en" | "es", string[]> = {
+  en: [
+    "What is your name?",
+    "What is the public address of your website?",
+    "In one line, what do you sell?",
+    "What must we never claim? A price, a client, or a deadline is enough.",
+    "What email should we use when we contact you?",
+  ],
+  es: [
+    "¿Cómo te llamas?",
+    "¿Cuál es la dirección pública de tu web?",
+    "En una línea, ¿qué vendes?",
+    "¿Qué no debemos afirmar nunca? Vale un precio, un cliente o un plazo.",
+    "¿A qué email te escribimos?",
+  ],
+};
+
+export type OnboardingSession = {
+  from: string;
+  locale: "en" | "es";
+  step: number;
+  answers: Partial<Record<AnswerKey, string>>;
+  done: boolean;
+};
+
+export type OnboardingTurn = {
+  session: OnboardingSession;
+  reply: string;
+  finished: boolean;
+};
+
+function detectLocale(text: string): "en" | "es" {
+  return /[áéíóúñ¿¡]|hola|buenas|empez|web|vendo|llamo/i.test(text) ? "es" : "en";
+}
+
+function isOpener(text: string): boolean {
+  return /^(hi|hello|hey|hola|buenas|start|empezar)\b/i.test(text.trim()) || /this chat is the setup|este chat es el alta/i.test(text);
+}
+
+function thanks(locale: "en" | "es"): string {
+  return locale === "es"
+    ? "Gracias. Ya tenemos tus respuestas y este WhatsApp. Te contactamos por aquí."
+    : "Thanks. We have your answers and this WhatsApp. We will contact you here.";
+}
+
+/** One question at a time. The first hello does not count as an answer. */
+export function nextOnboarding(session: OnboardingSession | null, text: string, from: string): OnboardingTurn {
+  const trimmed = text.trim();
+  if (session?.done) {
+    return { session, reply: thanks(session.locale), finished: false };
   }
-  return spanish
-    ? "La leo. Respóndeme qué servicios, precios o plazos de esa página no vendes. Nada se publica hasta que digas sí."
-    : "I'll read it. Reply with any service, price, or deadline on that page you do not sell. Nothing goes live until you say yes.";
+
+  if (!session || (session.step === 0 && Object.keys(session.answers).length === 0 && isOpener(trimmed))) {
+    const locale = session?.locale ?? detectLocale(trimmed);
+    const fresh: OnboardingSession = { from, locale, step: 0, answers: {}, done: false };
+    return { session: fresh, reply: QUESTIONS[locale][0], finished: false };
+  }
+
+  const current = session;
+  const key = QUESTION_KEYS[current.step];
+  if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    return {
+      session: current,
+      reply: current.locale === "es" ? "Ese email no vale. ¿A qué email te escribimos?" : "That email does not work. What email should we use when we contact you?",
+      finished: false,
+    };
+  }
+
+  const answers = { ...current.answers, [key]: trimmed };
+  const step = current.step + 1;
+  if (step >= QUESTION_KEYS.length) {
+    const done: OnboardingSession = { ...current, answers, step, done: true };
+    return { session: done, reply: thanks(current.locale), finished: true };
+  }
+  return {
+    session: { ...current, answers, step, done: false },
+    reply: QUESTIONS[current.locale][step],
+    finished: false,
+  };
+}
+
+export function onboardingReply(text: string): string {
+  return nextOnboarding(null, text, "").reply;
 }
 
 type GraphMessage = {
@@ -60,4 +134,64 @@ export function inboundText(body: unknown): { from: string; text: string } | nul
   const text = message?.text?.body?.trim() ?? "";
   if (!from || !text) return null;
   return { from, text };
+}
+
+function sessionFile(): string {
+  const dir = process.env.WHATSAPP_ONBOARDING_DIR || "/tmp/agentkbase-whatsapp";
+  return path.join(dir, "sessions.json");
+}
+
+export async function readOnboardingSession(from: string): Promise<OnboardingSession | null> {
+  try {
+    const raw = await readFile(sessionFile(), "utf8");
+    const all = JSON.parse(raw) as Record<string, OnboardingSession>;
+    return all[from] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writeOnboardingSession(session: OnboardingSession): Promise<void> {
+  const file = sessionFile();
+  await mkdir(path.dirname(file), { recursive: true });
+  let all: Record<string, OnboardingSession> = {};
+  try {
+    all = JSON.parse(await readFile(file, "utf8")) as Record<string, OnboardingSession>;
+  } catch {
+    all = {};
+  }
+  all[session.from] = session;
+  await writeFile(file, JSON.stringify(all, null, 2));
+}
+
+/** Email the finished answers so a person can reply on WhatsApp. */
+export async function notifyOnboardingLead(session: OnboardingSession): Promise<void> {
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@agentkbase.com";
+  const from = process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
+  const lines = [
+    "WhatsApp onboarding finished",
+    "",
+    `WhatsApp: +${session.from}`,
+    `Name: ${session.answers.name ?? ""}`,
+    `Website: ${session.answers.website ?? ""}`,
+    `Sells: ${session.answers.offer ?? ""}`,
+    `Never claim: ${session.answers.never ?? ""}`,
+    `Email: ${session.answers.email ?? ""}`,
+  ];
+  if (!resendKey) return;
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [notifyTo],
+      subject: `WhatsApp lead: ${session.answers.name ?? session.from}`,
+      text: lines.join("\n"),
+      ...(session.answers.email ? { reply_to: session.answers.email } : {}),
+    }),
+  }).catch(() => undefined);
 }

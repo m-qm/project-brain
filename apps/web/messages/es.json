@@ -59,7 +59,7 @@
     "channelMessage": "iMessage",
     "channelWhatsapp": "WhatsApp",
     "channelTelegram": "Telegram",
-    "startHint": "Escanea con la cámara del móvil o abre el enlace",
+    "startHint": "Escanea con la cámara del móvil o abre el enlace. El chat hace las preguntas. Te contactamos ahí.",
     "ctaSite": "O pega tu web en el navegador",
     "forDevelopers": "Desarrolladores",
     "titleLegacy": "La capa de conocimiento <em>que lee cada agente.</em>",
