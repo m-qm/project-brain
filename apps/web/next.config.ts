@@ -31,6 +31,8 @@ const nextConfig: NextConfig = {
       "../brain/facts/offer-limits.md",
       "../brain/open-questions.md",
       "../brain/stories/positioning.md",
+      "./storage/telegram-brains/**/*.md",
+      "./lib/client-brains.snapshot.json",
     ],
   },
   outputFileTracingRoot: join(__dirname, "../.."),
