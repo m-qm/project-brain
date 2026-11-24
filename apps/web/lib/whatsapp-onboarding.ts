@@ -30,8 +30,13 @@ export function whatsAppChatUrl(locale: string): string {
   return `https://wa.me/${business}?text=${text}`;
 }
 
-const QUESTION_KEYS = ["name", "website", "offer", "never", "email"] as const;
-type AnswerKey = (typeof QUESTION_KEYS)[number];
+const WHATSAPP_KEYS = ["name", "website", "offer", "never", "email"] as const;
+const TELEGRAM_KEYS = ["name", "website", "email"] as const;
+type AnswerKey = (typeof WHATSAPP_KEYS)[number];
+
+function keysFor(channel: OnboardingChannel): readonly AnswerKey[] {
+  return channel === "telegram" ? TELEGRAM_KEYS : WHATSAPP_KEYS;
+}
 
 const QUESTIONS: Record<"en" | "es", string[]> = {
   en: [
@@ -78,15 +83,39 @@ function isOpener(text: string): boolean {
   );
 }
 
-function thanks(locale: "en" | "es", channel: OnboardingChannel = "whatsapp"): string {
+function thanks(locale: "en" | "es", channel: OnboardingChannel = "whatsapp", name = ""): string {
   if (channel === "telegram") {
+    const who = name ? `, ${name}` : "";
     return locale === "es"
-      ? "Gracias. Ya tenemos tus respuestas y este chat de Telegram. Te contactamos por aquí."
-      : "Thanks. We have your answers and this Telegram chat. We will contact you here.";
+      ? `Gracias${who}. Ya tengo tu web y tu email.\n\nTe escribiré aquí. No tienes que hacer nada más.`
+      : `Thanks${who}. I have your site and your email.\n\nI'll write to you here. You don't need to do anything else.`;
   }
   return locale === "es"
     ? "Gracias. Ya tenemos tus respuestas y este WhatsApp. Te contactamos por aquí."
     : "Thanks. We have your answers and this WhatsApp. We will contact you here.";
+}
+
+function telegramWelcome(locale: "en" | "es", profileName?: string): string {
+  if (locale === "es") {
+    const hello = profileName
+      ? `Hola ${profileName}, me alegra que estés aquí.`
+      : "Hola, me alegra que estés aquí.";
+    return `${hello}\n\nTe escribiré aquí. ¿Cómo te llamas?`;
+  }
+  const hello = profileName
+    ? `Hi ${profileName}, welcome. I'm really glad you're here.`
+    : "Hi, welcome. I'm really glad you're here.";
+  return `${hello}\n\nI'll write to you here. What's your name?`;
+}
+
+function telegramFollowUp(locale: "en" | "es", key: AnswerKey, name?: string): string {
+  if (key === "website" && name) {
+    return locale === "es" ? `Hola ${name}. ¿Cuál es tu web?` : `Hi ${name}. What's your website?`;
+  }
+  if (key === "email") {
+    return locale === "es" ? "¿A qué email te escribo?" : "What email should I use when I write to you?";
+  }
+  return locale === "es" ? "¿Cómo te llamas?" : "What's your name?";
 }
 
 /** One question at a time. The first hello does not count as an answer. */
@@ -94,39 +123,65 @@ export function nextOnboarding(
   session: OnboardingSession | null,
   text: string,
   from: string,
-  options?: { channel?: OnboardingChannel; localeHint?: "en" | "es" },
+  options?: { channel?: OnboardingChannel; localeHint?: "en" | "es"; profileName?: string },
 ): OnboardingTurn {
   const trimmed = text.trim();
   const channel = options?.channel ?? session?.channel ?? "whatsapp";
+  const keys = keysFor(channel);
   if (session?.done) {
-    return { session, reply: thanks(session.locale, session.channel ?? channel), finished: false };
-  }
-
-  if (!session || (session.step === 0 && Object.keys(session.answers).length === 0 && isOpener(trimmed))) {
-    const locale = options?.localeHint ?? session?.locale ?? detectLocale(trimmed);
-    const fresh: OnboardingSession = { from, locale, step: 0, answers: {}, done: false, channel };
-    return { session: fresh, reply: QUESTIONS[locale][0], finished: false };
-  }
-
-  const current = session;
-  const key = QUESTION_KEYS[current.step];
-  if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
     return {
-      session: current,
-      reply: current.locale === "es" ? "Ese email no vale. ¿A qué email te escribimos?" : "That email does not work. What email should we use when we contact you?",
+      session,
+      reply: thanks(session.locale, session.channel ?? channel, session.answers.name ?? ""),
       finished: false,
     };
   }
 
+  if (!session || (session.step === 0 && Object.keys(session.answers).length === 0 && isOpener(trimmed))) {
+    const locale =
+      /^hey\b|^hi\b|^hello\b/i.test(trimmed) && !/hola|buenas/i.test(trimmed)
+        ? "en"
+        : /hola|buenas|[áéíóúñ¿¡]/i.test(trimmed)
+          ? "es"
+          : (options?.localeHint ?? detectLocale(trimmed));
+    const profileName = (options?.profileName ?? "").replace(/\s+/g, " ").trim();
+    const fresh: OnboardingSession = {
+      from,
+      locale,
+      step: 0,
+      answers: {},
+      done: false,
+      channel,
+    };
+    const reply =
+      channel === "telegram" ? telegramWelcome(locale, profileName || undefined) : QUESTIONS[locale][0];
+    return { session: fresh, reply, finished: false };
+  }
+
+  const current = session;
+  const key = keys[current.step];
+  if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    const reply =
+      channel === "telegram"
+        ? current.locale === "es"
+          ? "Ese email no parece correcto. ¿A qué email te escribo?"
+          : "That email doesn't look right. What email should I use when I write to you?"
+        : current.locale === "es"
+          ? "Ese email no vale. ¿A qué email te escribimos?"
+          : "That email does not work. What email should we use when we contact you?";
+    return { session: current, reply, finished: false };
+  }
+
   const answers = { ...current.answers, [key]: trimmed };
   const step = current.step + 1;
-  if (step >= QUESTION_KEYS.length) {
+  if (step >= keys.length) {
     const done: OnboardingSession = { ...current, answers, step, done: true, channel: current.channel ?? channel };
-    return { session: done, reply: thanks(current.locale, done.channel), finished: true };
+    return { session: done, reply: thanks(current.locale, done.channel, answers.name ?? ""), finished: true };
   }
+  const reply =
+    channel === "telegram" ? telegramFollowUp(current.locale, keys[step], answers.name) : QUESTIONS[current.locale][step];
   return {
     session: { ...current, answers, step, done: false },
-    reply: QUESTIONS[current.locale][step],
+    reply,
     finished: false,
   };
 }
@@ -201,8 +256,8 @@ export async function notifyOnboardingLead(session: OnboardingSession): Promise<
     contact,
     `Name: ${session.answers.name ?? ""}`,
     `Website: ${session.answers.website ?? ""}`,
-    `Sells: ${session.answers.offer ?? ""}`,
-    `Never claim: ${session.answers.never ?? ""}`,
+    ...(session.answers.offer ? [`Sells: ${session.answers.offer}`] : []),
+    ...(session.answers.never ? [`Never claim: ${session.answers.never}`] : []),
     `Email: ${session.answers.email ?? ""}`,
   ];
   if (!resendKey) return;

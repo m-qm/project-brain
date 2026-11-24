@@ -6,21 +6,28 @@ export function telegramBotUsername(): string {
     .replace(/[^A-Za-z0-9_]/g, "");
 }
 
-/** Opens the setup bot. The visible label stays generic; the number is not part of this link. */
+/** Phrase already sitting in the message box. The person still taps send. */
+export function telegramOpeningLine(locale: string): string {
+  return locale === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!";
+}
+
+/** Opens the chat with that phrase filled in. No phone number in the link. */
 export function telegramChatUrl(locale: string): string {
   const bot = telegramBotUsername();
-  const start = locale === "es" ? "hola" : "hi";
-  if (!bot) return "https://t.me/";
-  return `https://t.me/${bot}?start=${start}`;
+  const text = encodeURIComponent(telegramOpeningLine(locale));
+  if (!bot) return `https://t.me/?text=${text}`;
+  return `https://t.me/${bot}?text=${text}`;
 }
 
 type TelegramMessage = {
   text?: string;
-  from?: { id?: number; language_code?: string };
+  from?: { id?: number; first_name?: string; language_code?: string };
   chat?: { id?: number };
 };
 
-export function telegramInbound(body: unknown): { from: string; text: string; localeHint?: "en" | "es" } | null {
+export function telegramInbound(
+  body: unknown,
+): { from: string; text: string; localeHint?: "en" | "es"; profileName?: string } | null {
   const message = (body as { message?: TelegramMessage })?.message;
   const from = message?.from?.id ?? message?.chat?.id;
   const raw = message?.text?.trim() ?? "";
@@ -33,13 +40,15 @@ export function telegramInbound(body: unknown): { from: string; text: string; lo
       ? "en"
       : undefined;
 
+  const profileName = (message?.from?.first_name ?? "").replace(/\s+/g, " ").trim().slice(0, 40) || undefined;
+
   let text = raw;
   if (/^\/start(?:@\w+)?(?:\s|$)/i.test(raw)) {
     const payload = raw.replace(/^\/start(?:@\w+)?/i, "").trim();
-    text = payload || (localeHint === "es" ? "Hola" : "Hi");
+    text = payload || (localeHint === "es" ? "Hola Agent KBase!" : "Hey Agent KBase!");
   }
 
-  return { from: String(from), text, localeHint };
+  return { from: String(from), text, localeHint, profileName };
 }
 
 export async function sendTelegramText(token: string, chatId: string, text: string): Promise<void> {

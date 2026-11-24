@@ -27,6 +27,7 @@ export async function POST(req: Request) {
   const turn = nextOnboarding(previous, inbound.text, inbound.from, {
     channel: "telegram",
     localeHint: previous ? undefined : inbound.localeHint,
+    profileName: previous ? undefined : inbound.profileName,
   });
   await writeOnboardingSession(turn.session);
   if (turn.finished) await notifyOnboardingLead(turn.session);
