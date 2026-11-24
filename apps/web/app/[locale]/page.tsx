@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { isAppLocale } from "@/i18n/routing";
 import { pageMeta } from "@/lib/site";
 import { SiteNav } from "../components/SiteNav";
@@ -25,6 +26,9 @@ export default async function HomePage() {
           <h1 className="hero-title hero-title-plain">{t("title")}</h1>
           <p className="hero-lead">{t("interface")}</p>
           <p className="hero-examples">{t("examples")}</p>
+          <Link className="btn home-text-cta" href="/login">
+            {t("textCta")}
+          </Link>
         </div>
       </section>
     </div>

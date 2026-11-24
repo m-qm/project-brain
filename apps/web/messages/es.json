@@ -54,6 +54,7 @@
     "title": "Agent KBase es un asistente de empresa al que escribes por WhatsApp.",
     "interface": "No hay app. Mandas tu web. Escribe a partir de esa web.",
     "examples": "Puede redactar un post de LinkedIn, frenar un precio que no cobras, o esperar a que digas sí.",
+    "textCta": "Escribe a Agent KBase",
     "pricingNote": "Gratis. El montaje se cotiza.",
     "startTitle": "Empecemos",
     "startLead": "Dónde vas a usar Agent KBase",

@@ -322,6 +322,10 @@ a.nav-menu-cta {
   line-height: 1.65;
 }
 
+.home-text-cta {
+  margin-top: 0.25rem;
+}
+
 .hero-inner-narrow {
   max-width: 40rem;
 }

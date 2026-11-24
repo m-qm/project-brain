@@ -54,6 +54,7 @@
     "title": "Agent KBase is a company assistant you text on WhatsApp.",
     "interface": "There is no app. Send your website. It writes from that site.",
     "examples": "It can draft a LinkedIn post, stop a price you do not charge, or wait until you say yes.",
+    "textCta": "Text Agent KBase",
     "pricingNote": "Free. Setup is quoted.",
     "startTitle": "Let's get started",
     "startLead": "Where do you plan to use Agent KBase",
