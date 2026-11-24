@@ -1,10 +1,5 @@
 import { telegramInbound, sendTelegramText } from "@/lib/telegram-onboarding";
-import {
-  nextOnboarding,
-  notifyOnboardingLead,
-  readOnboardingSession,
-  writeOnboardingSession,
-} from "@/lib/whatsapp-onboarding";
+import { readTelegramChat, replyToTelegramLead, writeTelegramChat } from "@/lib/telegram-chat";
 
 export async function POST(req: Request) {
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
@@ -23,15 +18,13 @@ export async function POST(req: Request) {
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
   if (!inbound || !token) return Response.json({ ok: true });
 
-  const previous = await readOnboardingSession(inbound.from, "telegram");
-  const turn = nextOnboarding(previous, inbound.text, inbound.from, {
-    channel: "telegram",
-    localeHint: previous ? undefined : inbound.localeHint,
-    profileName: previous ? undefined : inbound.profileName,
+  const previous = await readTelegramChat(inbound.from);
+  const turn = await replyToTelegramLead(previous, {
+    from: inbound.from,
+    text: inbound.text,
+    localeHint: inbound.localeHint,
   });
-  await writeOnboardingSession(turn.session);
-  if (turn.finished) await notifyOnboardingLead(turn.session);
-
+  await writeTelegramChat(turn.chat);
   await sendTelegramText(token, inbound.from, turn.reply).catch(() => undefined);
   return Response.json({ ok: true });
 }

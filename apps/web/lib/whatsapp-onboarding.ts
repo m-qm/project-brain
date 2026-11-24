@@ -95,17 +95,11 @@ function thanks(locale: "en" | "es", channel: OnboardingChannel = "whatsapp", na
     : "Thanks. We have your answers and this WhatsApp. We will contact you here.";
 }
 
-function telegramWelcome(locale: "en" | "es", profileName?: string): string {
+function telegramWelcome(locale: "en" | "es"): string {
   if (locale === "es") {
-    const hello = profileName
-      ? `Hola ${profileName}, me alegra que estés aquí.`
-      : "Hola, me alegra que estés aquí.";
-    return `${hello}\n\nTe escribiré aquí. ¿Cómo te llamas?`;
+    return "Hola!\n\nSoy Agent KBase. Me escribes. No hay app. Mandas tu web y escribo a partir de esa web. Tú das el sí antes de que salga nada.\n\n¿Cómo te llamas?";
   }
-  const hello = profileName
-    ? `Hi ${profileName}, welcome. I'm really glad you're here.`
-    : "Hi, welcome. I'm really glad you're here.";
-  return `${hello}\n\nI'll write to you here. What's your name?`;
+  return "Hi!\n\nI'm Agent KBase. You text me. There is no app. Send your website and I write from that site. You say yes before anything goes live.\n\nWhat's your name?";
 }
 
 function telegramFollowUp(locale: "en" | "es", key: AnswerKey, name?: string): string {
@@ -143,7 +137,6 @@ export function nextOnboarding(
         : /hola|buenas|[áéíóúñ¿¡]/i.test(trimmed)
           ? "es"
           : (options?.localeHint ?? detectLocale(trimmed));
-    const profileName = (options?.profileName ?? "").replace(/\s+/g, " ").trim();
     const fresh: OnboardingSession = {
       from,
       locale,
@@ -152,8 +145,7 @@ export function nextOnboarding(
       done: false,
       channel,
     };
-    const reply =
-      channel === "telegram" ? telegramWelcome(locale, profileName || undefined) : QUESTIONS[locale][0];
+    const reply = channel === "telegram" ? telegramWelcome(locale) : QUESTIONS[locale][0];
     return { session: fresh, reply, finished: false };
   }
 
@@ -243,7 +235,10 @@ export async function writeOnboardingSession(session: OnboardingSession): Promis
 }
 
 /** Email the finished answers so a person can reply in the same chat. */
-export async function notifyOnboardingLead(session: OnboardingSession): Promise<void> {
+export async function notifyOnboardingLead(
+  session: OnboardingSession,
+  notes?: { summary?: string; said?: string[] },
+): Promise<boolean> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
   const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "hello@agentkbase.com";
   const from = process.env.RESEND_FROM?.trim() || "Agent KBase <notifications@agentkbase.com>";
@@ -259,9 +254,11 @@ export async function notifyOnboardingLead(session: OnboardingSession): Promise<
     ...(session.answers.offer ? [`Sells: ${session.answers.offer}`] : []),
     ...(session.answers.never ? [`Never claim: ${session.answers.never}`] : []),
     `Email: ${session.answers.email ?? ""}`,
+    ...(notes?.summary ? ["", `Summary: ${notes.summary}`] : []),
+    ...(notes?.said?.length ? ["", "They said:", ...notes.said.map((line) => `- ${line}`)] : []),
   ];
-  if (!resendKey) return;
-  await fetch("https://api.resend.com/emails", {
+  if (!resendKey) return false;
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${resendKey}`,
@@ -275,4 +272,5 @@ export async function notifyOnboardingLead(session: OnboardingSession): Promise<
       ...(session.answers.email ? { reply_to: session.answers.email } : {}),
     }),
   }).catch(() => undefined);
+  return Boolean(response?.ok);
 }
