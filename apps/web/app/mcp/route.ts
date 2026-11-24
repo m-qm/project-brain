@@ -1,5 +1,5 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import { createRemoteMcpServer } from "@/lib/remote-mcp-server";
+import { mcpAuthGate } from "@/lib/mcp-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +15,10 @@ const methodNotAllowed = () =>
   );
 
 export async function POST(req: Request) {
+  const denied = mcpAuthGate(req);
+  if (denied) return denied;
+
+  const { createRemoteMcpServer } = await import("@/lib/remote-mcp-server");
   const server = createRemoteMcpServer();
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,

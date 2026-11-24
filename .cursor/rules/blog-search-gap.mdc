@@ -1,12 +1,14 @@
 ---
 description: Pick the next blog from a Google search this site does not answer
-globs: examples/content-ads-brain/brain/content/article-slate.md,examples/content-ads-brain/brain/content/articles/**/*.md,apps/web/public/blog/**/*.md,apps/web/public/es/blog/**/*.md
+globs: examples/content-ads-brain/brain/content/article-slate.md,examples/content-ads-brain/brain/content/articles/**/*.md
 alwaysApply: false
 ---
 
 # Blog topics come from a Google gap
 
 Before a new title, compare the live posts and the unused slate rows with Google result pages for the same job.
+
+Read live posts under `apps/web/public/blog/` and `apps/web/public/es/blog/` when comparing gaps. **Do not edit** those paths; approved copy is copied there by a human after review.
 
 Write the next article only when both are true:
 

@@ -6,12 +6,16 @@ Agent KBase remote MCP for Claude directory launch. Plugin marketplace packaging
 
 - **URL:** `https://agentkbase.com/mcp` (dev: `http://localhost:3000/mcp`)
 - **Transport:** Streamable HTTP
+- **Auth:** `Authorization: Bearer <MCP_API_KEY>` — set `MCP_API_KEY` on the server (`apps/web/.env.example`); fail closed without it.
 - **Tools:** `scan_business_website`, `get_what_we_can_claim`, `check_draft_before_publish`
 
 ## Claude Code (no plugin yet)
 
 ```bash
-claude mcp add --transport http agentkbase https://agentkbase.com/mcp
+export MCP_API_KEY='your-long-random-secret'
+
+claude mcp add --transport http agentkbase https://agentkbase.com/mcp \
+  --header "Authorization: Bearer $MCP_API_KEY"
 ```
 
 ## Skill text (for future plugin)
@@ -27,4 +31,4 @@ When drafting marketing copy for a small business:
 ## Next
 
 - Publish plugin to a marketplace repo (see `gurusup-comparison.md` in Project docs).
-- OAuth on first tool use for Claude directory review.
+- OAuth on first tool use for Claude directory review (bearer is v0 until then).

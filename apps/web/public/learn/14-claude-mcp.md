@@ -6,15 +6,32 @@ Use Agent KBase from **Claude** (or any MCP client with Streamable HTTP) before 
 
 **Local dev:** `http://localhost:3000/mcp`
 
-OAuth for Claude directory is in progress. Today the three tools work without login; hosted profiles are stored on the server disk (export **brain.zip** from the [wizard](/wizard) to own files in git).
+## Authentication (required)
 
-## Connect (Claude Code, server only)
+`POST /mcp` expects a shared secret. The server **fails closed**: if `MCP_API_KEY` is not set on the host, every request gets **401 Unauthorized**.
+
+1. **Server:** set `MCP_API_KEY` in Vercel (Production + Preview as needed) or in `apps/web/.env.local` for dev. See `apps/web/.env.example`.
+2. **Client:** send `Authorization: Bearer <MCP_API_KEY>` on every MCP HTTP request.
+
+### Claude Code
 
 ```bash
-claude mcp add --transport http agentkbase https://agentkbase.com/mcp
+export MCP_API_KEY='your-long-random-secret'
+
+claude mcp add --transport http agentkbase https://agentkbase.com/mcp \
+  --header "Authorization: Bearer $MCP_API_KEY"
 ```
 
-Or add a custom connector in Claude with the same URL and transport **Streamable HTTP**.
+Local dev:
+
+```bash
+claude mcp add --transport http agentkbase http://localhost:3000/mcp \
+  --header "Authorization: Bearer $MCP_API_KEY"
+```
+
+Or add a custom connector in Claude with the same URL, transport **Streamable HTTP**, and the same header.
+
+OAuth for the Claude directory is still [CONFIRM] on the roadmap; today operators use this bearer token.
 
 ## What you can ask
 
@@ -28,7 +45,7 @@ Or add a custom connector in Claude with the same URL and transport **Streamable
 
 | Tool | Asks for confirmation | What it does |
 |------|----------------------|--------------|
-| `scan_business_website` | No | Extract public URL → hosted profile + draft facts |
+| `scan_business_website` | No | Extract public URL → hosted profile + draft facts (server writes profile JSON) |
 | `get_what_we_can_claim` | No | Brief text for the profile id |
 | `check_draft_before_publish` | No | Eval draft vs facts (prices, proof, title, sources, CTA) |
 
@@ -38,7 +55,7 @@ Write tools (save fact, send for approval) ship later on the paid Act layer.
 
 - The server reads **public URLs** you pass to scan. It does not read your private repos.
 - Hosted profiles are ephemeral copies for Claude sessions until you export to git.
-- We log MCP tool calls for abuse protection on the public endpoint. See [privacy](/legal/privacy).
+- **Rate limits:** not enforced in app code yet; abuse protection may rely on Vercel edge / firewall — see `brain/open-questions.md`.
 
 ## Local MCP (developers)
 
@@ -47,3 +64,5 @@ For `brain/` in your repo, use the read-only stdio server: [10-mcp](10-mcp.md).
 ## FAQ
 
 **Your brain is files you own; GuruSup is a hosted layer — we give both.** Export `brain.zip` any time. The remote MCP is for owners who start in Claude without installing the CLI.
+
+**401 from `/mcp`?** Check `MCP_API_KEY` on the server and that your client sends the matching `Authorization: Bearer` header.

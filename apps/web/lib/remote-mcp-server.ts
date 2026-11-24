@@ -27,6 +27,13 @@ export function createRemoteMcpServer(): McpServer {
     version: "0.1.0",
   });
 
+  const scanWebsiteAnnotations: ToolAnnotations = {
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: true,
+  };
+
   server.registerTool(
     "scan_business_website",
     {
@@ -36,7 +43,7 @@ export function createRemoteMcpServer(): McpServer {
       inputSchema: {
         url: z.string().describe("Public https URL of the business site."),
       },
-      annotations: readOnly,
+      annotations: scanWebsiteAnnotations,
     },
     async ({ url }) => {
       try {
