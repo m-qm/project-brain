@@ -322,6 +322,44 @@ a.nav-menu-cta {
   line-height: 1.65;
 }
 
+.hero-inner-narrow {
+  max-width: 40rem;
+}
+
+.hero-how {
+  margin: 0 0 1.5rem;
+}
+
+.hero-how-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0 0 0.65rem;
+}
+
+.hero-how-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  max-width: 42rem;
+  font-size: clamp(1rem, 1.5vw, 1.08rem);
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.hero-how-list li + li {
+  margin-top: 0.5rem;
+}
+
+.hero-pricing-note {
+  font-size: 0.95rem;
+  color: var(--ink-2);
+  max-width: 42rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
 .job-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
